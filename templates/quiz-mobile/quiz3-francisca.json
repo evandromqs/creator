@@ -1,0 +1,140 @@
+{
+  "number": 3,
+  "voice": "pt-BR-FranciscaNeural",
+  "audioFile": "assets/video3-francisca-pausado.mp3",
+  "durationInSeconds": 108.77,
+  "questions": [
+    {
+      "category": "GEOGRAFIA",
+      "question": "Qual país tem mais ilhas no mundo?",
+      "options": [
+        "Indonésia",
+        "Filipinas",
+        "Suécia"
+      ],
+      "correctIndex": 2,
+      "startSec": 0,
+      "endSec": 15.73,
+      "countdownStartSec": 7.583,
+      "countdownCuesSec": [
+        7.583,
+        8.911,
+        10.089,
+        11.26,
+        12.53
+      ],
+      "revealSec": 13.63
+    },
+    {
+      "category": "GEOGRAFIA",
+      "question": "Qual é a capital da Austrália?",
+      "options": [
+        "Sydney",
+        "Melbourne",
+        "Canberra"
+      ],
+      "correctIndex": 2,
+      "startSec": 15.73,
+      "endSec": 31.77,
+      "countdownStartSec": 23.623,
+      "countdownCuesSec": [
+        23.623,
+        24.95,
+        26.128,
+        27.299,
+        28.569
+      ],
+      "revealSec": 29.669
+    },
+    {
+      "category": "GEOGRAFIA",
+      "question": "Qual país é conhecido como a Terra do Sol Nascente?",
+      "options": [
+        "China",
+        "Japão",
+        "Coreia do Sul"
+      ],
+      "correctIndex": 1,
+      "startSec": 31.77,
+      "endSec": 48.94,
+      "countdownStartSec": 40.79,
+      "countdownCuesSec": [
+        40.79,
+        42.118,
+        43.295,
+        44.466,
+        45.737
+      ],
+      "revealSec": 46.836
+    },
+    {
+      "category": "GEOGRAFIA",
+      "question": "Qual é o rio mais longo do mundo?",
+      "options": [
+        "Rio Amazonas",
+        "Rio Nilo",
+        "Rio Yangtzé"
+      ],
+      "correctIndex": 1,
+      "startSec": 48.94,
+      "endSec": 65.38,
+      "countdownStartSec": 57.232,
+      "countdownCuesSec": [
+        57.232,
+        58.559,
+        59.737,
+        60.908,
+        62.179
+      ],
+      "revealSec": 63.278
+    },
+    {
+      "category": "GEOGRAFIA",
+      "question": "Qual país possui a maior extensão de costa marítima do mundo?",
+      "options": [
+        "Rússia",
+        "Austrália",
+        "Canadá"
+      ],
+      "correctIndex": 2,
+      "startSec": 65.38,
+      "endSec": 83.23,
+      "countdownStartSec": 75.08,
+      "countdownCuesSec": [
+        75.08,
+        76.407,
+        77.585,
+        78.756,
+        80.027
+      ],
+      "revealSec": 81.126
+    },
+    {
+      "category": "GEOGRAFIA",
+      "question": "Qual é o menor país do mundo em território?",
+      "options": [
+        "Mônaco",
+        "Vaticano",
+        "San Marino"
+      ],
+      "correctIndex": 1,
+      "startSec": 83.23,
+      "endSec": 100.81,
+      "countdownStartSec": 91.872,
+      "countdownCuesSec": [
+        91.872,
+        93.2,
+        94.377,
+        95.548,
+        96.819
+      ],
+      "revealSec": 97.918
+    }
+  ],
+  "outro": {
+    "startSec": 100.81,
+    "title": "QUAL FOI SEU PLACAR?",
+    "subtitle": "Comente quantas você acertou!",
+    "callToAction": "Siga para mais desafios!"
+  }
+}

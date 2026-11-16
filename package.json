@@ -1,0 +1,37 @@
+{
+  "name": "creator",
+  "version": "1.0.0",
+  "description": "Estúdio automatizado de vídeos Hyperframes em múltiplos estilos (Quiz Mobile, Kinetic Shorts, Story Loop, Tech Viral, Commercial Ad)",
+  "private": true,
+  "main": "scripts/build.cjs",
+  "scripts": {
+    "build": "node scripts/build.cjs",
+    "build:quiz": "node scripts/build.cjs --template=quiz-mobile",
+    "build:kinetic": "node scripts/build.cjs --template=kinetic-shorts",
+    "build:story": "node scripts/build.cjs --template=story-loop",
+    "build:tech": "node scripts/build.cjs --template=tech-viral",
+    "build:ad": "node scripts/build.cjs --template=commercial-ad",
+    "dev": "npx --yes hyperframes@0.9.22 dev",
+    "check": "npx --yes hyperframes@0.9.22 check",
+    "render": "npx --yes hyperframes@0.9.22 render -o output/video.mp4",
+    "tts:quiz": "node scripts/generate_quiz_audio.cjs",
+    "tts:edge": "node scripts/generate_audio_edgetts.cjs",
+    "tts:elevenlabs": "node scripts/generate_audio_elevenlabs.cjs",
+    "reset": "node scripts/reset_project.cjs"
+  },
+  "dependencies": {
+    "msedge-tts": "^2.1.1"
+  },
+  "keywords": [
+    "hyperframes",
+    "video-automation",
+    "gsap",
+    "shorts",
+    "quiz-mobile",
+    "kinetic-typography",
+    "tiktok",
+    "reels"
+  ],
+  "author": "Evandro",
+  "license": "ISC"
+}

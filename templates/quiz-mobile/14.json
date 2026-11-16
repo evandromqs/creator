@@ -1,0 +1,150 @@
+{
+  "number": 14,
+  "status": "ready",
+  "timingReviewed": true,
+  "audioFile": "audio_video_14.mp3",
+  "durationInSeconds": 113.109,
+  "questions": [
+    {
+      "category": "ESPAÇO",
+      "question": "Qual planeta é conhecido como planeta vermelho?",
+      "options": [
+        "Marte",
+        "Vênus",
+        "Netuno"
+      ],
+      "correctIndex": 0,
+      "startSec": 0,
+      "endSec": 17.62,
+      "countdownStartSec": 9.01,
+      "countdownCuesSec": [
+        9.01,
+        10.02,
+        11.03,
+        12.04,
+        13.05
+      ],
+      "revealSec": 14.44
+    },
+    {
+      "category": "ESPAÇO",
+      "question": "Qual estrela está no centro do Sistema Solar?",
+      "options": [
+        "Sirius",
+        "Sol",
+        "Polaris"
+      ],
+      "correctIndex": 1,
+      "startSec": 17.62,
+      "endSec": 35.54,
+      "countdownStartSec": 26.96,
+      "countdownCuesSec": [
+        26.96,
+        27.97,
+        28.98,
+        29.99,
+        31
+      ],
+      "revealSec": 32.39
+    },
+    {
+      "category": "ESPAÇO",
+      "question": "Qual é o maior planeta do Sistema Solar?",
+      "options": [
+        "Terra",
+        "Saturno",
+        "Júpiter"
+      ],
+      "correctIndex": 2,
+      "startSec": 35.54,
+      "endSec": 53.43,
+      "countdownStartSec": 44.61,
+      "countdownCuesSec": [
+        44.61,
+        45.63,
+        46.63,
+        47.65,
+        48.66
+      ],
+      "revealSec": 50.05
+    },
+    {
+      "category": "ESPAÇO",
+      "question": "Qual é o satélite natural da Terra?",
+      "options": [
+        "Lua",
+        "Fobos",
+        "Titã"
+      ],
+      "correctIndex": 0,
+      "startSec": 53.43,
+      "endSec": 70.25,
+      "countdownStartSec": 61.77,
+      "countdownCuesSec": [
+        61.77,
+        62.78,
+        63.79,
+        64.8,
+        65.81
+      ],
+      "revealSec": 67.2
+    },
+    {
+      "category": "ESPAÇO",
+      "question": "Qual planeta é famoso pelos seus anéis?",
+      "options": [
+        "Mercúrio",
+        "Saturno",
+        "Marte"
+      ],
+      "correctIndex": 1,
+      "startSec": 70.25,
+      "endSec": 88.2,
+      "countdownStartSec": 79.41,
+      "countdownCuesSec": [
+        79.41,
+        80.42,
+        81.43,
+        82.44,
+        83.45
+      ],
+      "revealSec": 84.83
+    },
+    {
+      "category": "ESPAÇO",
+      "question": "Como se chama a galáxia onde está o Sistema Solar?",
+      "options": [
+        "Andrômeda",
+        "Triângulo",
+        "Via Láctea"
+      ],
+      "correctIndex": 2,
+      "startSec": 88.2,
+      "endSec": 107.01,
+      "countdownStartSec": 98.09,
+      "countdownCuesSec": [
+        98.09,
+        99.1,
+        100.11,
+        101.12,
+        102.13
+      ],
+      "revealSec": 103.52
+    }
+  ],
+  "outro": {
+    "startSec": 107.01,
+    "title": "QUAL FOI SEU PLACAR?",
+    "subtitle": "Conte quantas você acertou!",
+    "callToAction": "Siga o Quiz Mobile!"
+  },
+  "shorts": {
+    "title": "Quiz do espaço: 6 perguntas para testar você",
+    "description": "Quiz do espaço: 6 perguntas para testar você\n\nResponda às seis perguntas e conte seu placar nos comentários.\n\n#QuizMobile #Quiz #Espaço #Shorts"
+  },
+  "enableAudio": true,
+  "enableSoundEffects": true,
+  "alignmentFlags": [],
+  "paceAdjusted": 1.45,
+  "correctEffectsApplied": true
+}

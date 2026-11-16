@@ -1,0 +1,52 @@
+name: Render Video
+
+on:
+  workflow_dispatch:
+    inputs:
+      template:
+        description: 'Template de vídeo a compilar e renderizar'
+        required: true
+        default: 'quiz-mobile'
+        type: choice
+        options:
+          - quiz-mobile
+          - kinetic-shorts
+          - story-loop
+          - tech-viral
+          - commercial-ad
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Instalar FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Instalar dependências
+        run: npm install
+
+      - name: Compilar template selecionado
+        run: node scripts/build.cjs --template=${{ inputs.template }}
+
+      - name: Renderizar vídeo via Hyperframes
+        run: npx --yes hyperframes@0.9.22 render -o output/video.mp4
+
+      - name: Salvar vídeo gerado como artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: video-${{ inputs.template }}
+          path: output/video.mp4
+          retention-days: 14

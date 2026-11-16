@@ -1,0 +1,30 @@
+{
+  "title": "O Mistério do Tempo",
+  "loopHook": "Tudo começou quando o relógio parou...",
+  "scenes": [
+    {
+      "id": "scene-1",
+      "eyebrow": "Capítulo 1",
+      "title": "O Silêncio Absoluto",
+      "text": "Às 3 da manhã, cada som da cidade simplesmente desapareceu.",
+      "start": 0,
+      "end": 6
+    },
+    {
+      "id": "scene-2",
+      "eyebrow": "Capítulo 2",
+      "title": "A Anomalia",
+      "text": "Os ponteiros não andavam para frente. Eles giravam ao contrário.",
+      "start": 6,
+      "end": 13
+    },
+    {
+      "id": "scene-3",
+      "eyebrow": "Capítulo 3",
+      "title": "O Ciclo Infinito",
+      "text": "Ao abrir a porta para escapar, a mesma noite se repetia.",
+      "start": 13,
+      "end": 20
+    }
+  ]
+}

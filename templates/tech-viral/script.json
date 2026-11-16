@@ -1,0 +1,66 @@
+{
+  "topic": "A História Secreta do Wi-Fi — De Hollywood aos Buracos Negros",
+  "fullText": "Você usa o Wi-Fi todo dia, mas conhece a origem secreta desse sinal? Tudo começou em mil novecentos e quarenta e um, em plena Segunda Guerra. A estrela de cinema Hedy Lamarr escondia uma mente inventora genial. Na época, rádios militares falhavam porque o inimigo bloqueava uma frequência fixa. Inspirada num piano, ela criou o salto de frequência, mudando de canal sem parar! A Marinha duvidou da ideia e trancou a patente por décadas. Em noventa e dois, físicos na Austrália caçavam sinais de buracos negros. Na época, ondas sem fio batiam nas paredes num caos de ecos. Unindo a matemática espacial ao salto de Hedy Lamarr, nasceu a rede sem fio! E o nome Wi-Fi? Não significa nada: foi criado só para rimar com Hi-Fi! Do cinema clássico aos roteadores modernos, essa invenção conectou o planeta. Sabia que uma atriz ajudou a criar o Wi-Fi? Comenta aí!",
+  "scenes": [
+    {
+      "id": "S01_Hook",
+      "title": "O Sinal Secreto",
+      "text": "Você usa o Wi-Fi todo dia, mas conhece a origem secreta desse sinal?"
+    },
+    {
+      "id": "S02_Origem1941",
+      "title": "Segunda Guerra 1941",
+      "text": "Tudo começou em mil novecentos e quarenta e um, em plena Segunda Guerra."
+    },
+    {
+      "id": "S03_HedyLamarr",
+      "title": "A Estrela e Inventora Hedy Lamarr",
+      "text": "A estrela de cinema Hedy Lamarr escondia uma mente inventora genial."
+    },
+    {
+      "id": "S04_SinalBloqueado",
+      "title": "Rádios Bloqueados na Guerra",
+      "text": "Na época, rádios militares falhavam porque o inimigo bloqueava uma frequência fixa."
+    },
+    {
+      "id": "S05_SaltoFrequencia",
+      "title": "O Piano e o Salto de Frequência",
+      "text": "Inspirada num piano, ela criou o salto de frequência, mudando de canal sem parar!"
+    },
+    {
+      "id": "S06_PatenteSecreta",
+      "title": "A Patente Engavetada",
+      "text": "A Marinha duvidou da ideia e trancou a patente por décadas."
+    },
+    {
+      "id": "S07_BuracosNegros1992",
+      "title": "Austrália 1992: Buracos Negros",
+      "text": "Em noventa e dois, físicos na Austrália caçavam sinais de buracos negros."
+    },
+    {
+      "id": "S08_CaosEcos",
+      "title": "O Caos de Ecos nas Paredes",
+      "text": "Na época, ondas sem fio batiam nas paredes num caos de ecos."
+    },
+    {
+      "id": "S09_FusaoEspacial",
+      "title": "O Nascimento da Rede Sem Fio",
+      "text": "Unindo a matemática espacial ao salto de Hedy Lamarr, nasceu a rede sem fio!"
+    },
+    {
+      "id": "S10_MitoWiFi",
+      "title": "O Mito do Nome Wi-Fi vs Hi-Fi",
+      "text": "E o nome Wi-Fi? Não significa nada: foi criado só para rimar com Hi-Fi!"
+    },
+    {
+      "id": "S11_Evolucao",
+      "title": "Do Cinema aos Roteadores Modernos",
+      "text": "Do cinema clássico aos roteadores modernos, essa invenção conectou o planeta."
+    },
+    {
+      "id": "S12_CTA",
+      "title": "CTA Final",
+      "text": "Sabia que uma atriz ajudou a criar o Wi-Fi? Comenta aí!"
+    }
+  ]
+}

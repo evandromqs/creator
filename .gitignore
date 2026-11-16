@@ -1,0 +1,22 @@
+# Dependências
+node_modules/
+
+# Cache Hyperframes
+.hyperframes/
+
+# Variáveis de ambiente & Segredos
+.env
+.env.*
+!.env.example
+
+# Arquivos de vídeo renderizados pesados (binários)
+output/*.mp4
+posts/**/*.mp4
+*.tmp.mp4
+
+# Arquivos temporários de áudio
+audio/_tmp*
+
+# Sistema operacional
+.DS_Store
+Thumbs.db

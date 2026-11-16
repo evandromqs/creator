@@ -1,0 +1,487 @@
+[
+  {
+    "word": "Você",
+    "start": 0,
+    "end": 0.24
+  },
+  {
+    "word": "sabia",
+    "start": 0.24,
+    "end": 0.58
+  },
+  {
+    "word": "que",
+    "start": 0.58,
+    "end": 0.78
+  },
+  {
+    "word": "o",
+    "start": 0.78,
+    "end": 0.86
+  },
+  {
+    "word": "Mar",
+    "start": 0.86,
+    "end": 0.98
+  },
+  {
+    "word": "Vermelho",
+    "start": 0.98,
+    "end": 1.4
+  },
+  {
+    "word": "de",
+    "start": 1.4,
+    "end": 1.54
+  },
+  {
+    "word": "Moisés",
+    "start": 1.54,
+    "end": 1.88
+  },
+  {
+    "word": "pode",
+    "start": 1.88,
+    "end": 2.34
+  },
+  {
+    "word": "nem",
+    "start": 2.34,
+    "end": 2.58
+  },
+  {
+    "word": "ter",
+    "start": 2.58,
+    "end": 2.8
+  },
+  {
+    "word": "sido",
+    "start": 2.8,
+    "end": 3.04
+  },
+  {
+    "word": "vermelho?",
+    "start": 3.04,
+    "end": 3.62
+  },
+  {
+    "word": "No",
+    "start": 4,
+    "end": 4.06
+  },
+  {
+    "word": "texto",
+    "start": 4.06,
+    "end": 4.36
+  },
+  {
+    "word": "hebraico",
+    "start": 4.36,
+    "end": 4.8
+  },
+  {
+    "word": "original,",
+    "start": 4.8,
+    "end": 5.28
+  },
+  {
+    "word": "o",
+    "start": 5.68,
+    "end": 5.76
+  },
+  {
+    "word": "nome",
+    "start": 5.76,
+    "end": 5.96
+  },
+  {
+    "word": "é",
+    "start": 5.96,
+    "end": 6.26
+  },
+  {
+    "word": "Yam",
+    "start": 6.26,
+    "end": 6.6
+  },
+  {
+    "word": "Suph,",
+    "start": 6.6,
+    "end": 7.36
+  },
+  {
+    "word": "que",
+    "start": 7.56,
+    "end": 7.76
+  },
+  {
+    "word": "muitos",
+    "start": 7.76,
+    "end": 8
+  },
+  {
+    "word": "estudiosos",
+    "start": 8,
+    "end": 8.7
+  },
+  {
+    "word": "traduzem",
+    "start": 8.7,
+    "end": 9.26
+  },
+  {
+    "word": "como",
+    "start": 9.26,
+    "end": 9.5
+  },
+  {
+    "word": "Mar",
+    "start": 9.5,
+    "end": 9.78
+  },
+  {
+    "word": "de",
+    "start": 9.78,
+    "end": 10.02
+  },
+  {
+    "word": "Juncos.",
+    "start": 10.02,
+    "end": 10.54
+  },
+  {
+    "word": "Isso",
+    "start": 11,
+    "end": 11.24
+  },
+  {
+    "word": "levanta",
+    "start": 11.24,
+    "end": 11.64
+  },
+  {
+    "word": "uma",
+    "start": 11.64,
+    "end": 11.78
+  },
+  {
+    "word": "pergunta:",
+    "start": 11.78,
+    "end": 12.12
+  },
+  {
+    "word": "a",
+    "start": 12.62,
+    "end": 12.7
+  },
+  {
+    "word": "travessia",
+    "start": 12.7,
+    "end": 13.14
+  },
+  {
+    "word": "aconteceu",
+    "start": 13.14,
+    "end": 13.46
+  },
+  {
+    "word": "em",
+    "start": 13.46,
+    "end": 13.8
+  },
+  {
+    "word": "águas",
+    "start": 13.8,
+    "end": 14.12
+  },
+  {
+    "word": "rasas",
+    "start": 14.12,
+    "end": 14.54
+  },
+  {
+    "word": "e",
+    "start": 14.54,
+    "end": 14.72
+  },
+  {
+    "word": "pantanosas,",
+    "start": 14.72,
+    "end": 15.46
+  },
+  {
+    "word": "perto",
+    "start": 15.46,
+    "end": 15.66
+  },
+  {
+    "word": "do",
+    "start": 15.66,
+    "end": 15.96
+  },
+  {
+    "word": "delta",
+    "start": 15.96,
+    "end": 16.18
+  },
+  {
+    "word": "do",
+    "start": 16.18,
+    "end": 16.4
+  },
+  {
+    "word": "Nilo?",
+    "start": 16.4,
+    "end": 16.7
+  },
+  {
+    "word": "Alguns",
+    "start": 17,
+    "end": 17.36
+  },
+  {
+    "word": "pesquisadores",
+    "start": 17.36,
+    "end": 17.9
+  },
+  {
+    "word": "sugerem",
+    "start": 17.9,
+    "end": 18.44
+  },
+  {
+    "word": "que",
+    "start": 18.44,
+    "end": 18.6
+  },
+  {
+    "word": "um",
+    "start": 18.6,
+    "end": 18.7
+  },
+  {
+    "word": "forte",
+    "start": 18.7,
+    "end": 19.04
+  },
+  {
+    "word": "vento",
+    "start": 19.04,
+    "end": 19.5
+  },
+  {
+    "word": "oriental",
+    "start": 19.5,
+    "end": 20.02
+  },
+  {
+    "word": "poderia",
+    "start": 20.02,
+    "end": 20.38
+  },
+  {
+    "word": "ter",
+    "start": 20.38,
+    "end": 20.62
+  },
+  {
+    "word": "recuado",
+    "start": 20.62,
+    "end": 21.18
+  },
+  {
+    "word": "a",
+    "start": 21.18,
+    "end": 21.36
+  },
+  {
+    "word": "água,",
+    "start": 21.36,
+    "end": 21.78
+  },
+  {
+    "word": "como",
+    "start": 22.06,
+    "end": 22.24
+  },
+  {
+    "word": "descreve",
+    "start": 22.24,
+    "end": 22.7
+  },
+  {
+    "word": "o",
+    "start": 22.7,
+    "end": 22.8
+  },
+  {
+    "word": "próprio",
+    "start": 22.8,
+    "end": 23.1
+  },
+  {
+    "word": "relato",
+    "start": 23.1,
+    "end": 23.52
+  },
+  {
+    "word": "bíblico.",
+    "start": 23.52,
+    "end": 24.12
+  },
+  {
+    "word": "Outros",
+    "start": 24.36,
+    "end": 24.76
+  },
+  {
+    "word": "defendem",
+    "start": 24.76,
+    "end": 25.52
+  },
+  {
+    "word": "um",
+    "start": 25.52,
+    "end": 25.66
+  },
+  {
+    "word": "milagre",
+    "start": 25.66,
+    "end": 26.02
+  },
+  {
+    "word": "soberano",
+    "start": 26.02,
+    "end": 26.68
+  },
+  {
+    "word": "e",
+    "start": 26.68,
+    "end": 26.9
+  },
+  {
+    "word": "inexplicável.",
+    "start": 26.9,
+    "end": 27.82
+  },
+  {
+    "word": "Sem",
+    "start": 27.82,
+    "end": 28.34
+  },
+  {
+    "word": "provas",
+    "start": 28.34,
+    "end": 28.78
+  },
+  {
+    "word": "definitivas,",
+    "start": 28.78,
+    "end": 29.56
+  },
+  {
+    "word": "o",
+    "start": 29.88,
+    "end": 29.94
+  },
+  {
+    "word": "mistério",
+    "start": 29.94,
+    "end": 30.26
+  },
+  {
+    "word": "permanece",
+    "start": 30.26,
+    "end": 30.82
+  },
+  {
+    "word": "vivo",
+    "start": 30.82,
+    "end": 31.1
+  },
+  {
+    "word": "através",
+    "start": 31.1,
+    "end": 31.44
+  },
+  {
+    "word": "dos",
+    "start": 31.44,
+    "end": 31.82
+  },
+  {
+    "word": "séculos.",
+    "start": 31.82,
+    "end": 32.34
+  },
+  {
+    "word": "Em",
+    "start": 32.62,
+    "end": 32.8
+  },
+  {
+    "word": "qual",
+    "start": 32.8,
+    "end": 32.94
+  },
+  {
+    "word": "explicação",
+    "start": 32.94,
+    "end": 33.56
+  },
+  {
+    "word": "você",
+    "start": 33.56,
+    "end": 33.8
+  },
+  {
+    "word": "acredita?",
+    "start": 33.8,
+    "end": 34.42
+  },
+  {
+    "word": "Comenta",
+    "start": 34.72,
+    "end": 35.14
+  },
+  {
+    "word": "aí",
+    "start": 35.14,
+    "end": 35.38
+  },
+  {
+    "word": "e",
+    "start": 35.38,
+    "end": 35.64
+  },
+  {
+    "word": "segue",
+    "start": 35.64,
+    "end": 35.96
+  },
+  {
+    "word": "pra",
+    "start": 35.96,
+    "end": 36.18
+  },
+  {
+    "word": "mais",
+    "start": 36.18,
+    "end": 36.46
+  },
+  {
+    "word": "fatos",
+    "start": 36.46,
+    "end": 36.9
+  },
+  {
+    "word": "da",
+    "start": 36.9,
+    "end": 37.02
+  },
+  {
+    "word": "história.",
+    "start": 37.02,
+    "end": 37.42
+  }
+]

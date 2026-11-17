@@ -14,6 +14,14 @@ on:
           - story-loop
           - tech-viral
           - commercial-ad
+      video_title:
+        description: 'Nome ou identificador do vídeo'
+        required: false
+        default: 'video'
+      custom_data:
+        description: 'Dados JSON customizados do quiz ou texto do roteiro'
+        required: false
+        default: ''
 
 jobs:
   render:
@@ -38,6 +46,30 @@ jobs:
       - name: Instalar dependências
         run: npm install
 
+      - name: Injetar dados customizados (se fornecido)
+        run: |
+          node -e '
+            const fs = require("fs");
+            const tpl = "${{ inputs.template }}";
+            const customData = process.env.CUSTOM_DATA;
+            if (customData && customData.trim()) {
+              if (tpl === "quiz-mobile") {
+                fs.writeFileSync("templates/quiz-mobile/quiz3-francisca.json", customData, "utf-8");
+                console.log("Perguntas customizadas salvas em templates/quiz-mobile/quiz3-francisca.json");
+              } else {
+                fs.writeFileSync("audio/roteiro.txt", customData, "utf-8");
+                console.log("Roteiro customizado salvo em audio/roteiro.txt");
+              }
+            }
+          '
+        env:
+          CUSTOM_DATA: ${{ inputs.custom_data }}
+
+      - name: Gerar áudio do Quiz (caso template seja quiz-mobile)
+        if: ${{ inputs.template == 'quiz-mobile' }}
+        run: |
+          node scripts/generate_quiz_audio.cjs templates/quiz-mobile/quiz3-francisca.json audio/quiz-mix.mp3 transcript/quiz-timings.json
+
       - name: Compilar template selecionado
         run: node scripts/build.cjs --template=${{ inputs.template }}
 
@@ -47,6 +79,6 @@ jobs:
       - name: Salvar vídeo gerado como artefato
         uses: actions/upload-artifact@v4
         with:
-          name: video-${{ inputs.template }}
+          name: ${{ inputs.video_title || inputs.template }}
           path: output/video.mp4
           retention-days: 14

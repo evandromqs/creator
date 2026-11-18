@@ -52,7 +52,17 @@ if (template === "commercial-ad") {
 }
 
 // Default: Quiz Mobile (Francisca 0.9x + SFX tick + trim_alarm)
-console.log("Compilando template padrão: Quiz Mobile...");
+const THEMES = {
+  roxo: { bg: "#3b0764", grad: "linear-gradient(155deg,#4c1d95 0%,#6d28d9 45%,#3b0764 100%)", accent: "#22d3ee", accentGlow: "rgba(34,211,238,.45)", clockBg: "#fde047" },
+  neon: { bg: "#090d16", grad: "linear-gradient(155deg,#0f172a 0%,#1e1b4b 50%,#030712 100%)", accent: "#10b981", accentGlow: "rgba(16,185,129,.45)", clockBg: "#34d399" },
+  cyberpunk: { bg: "#18062c", grad: "linear-gradient(155deg,#2e1065 0%,#701a75 50%,#0f0720 100%)", accent: "#f43f5e", accentGlow: "rgba(244,63,94,.45)", clockBg: "#facc15" },
+  esmeralda: { bg: "#022c22", grad: "linear-gradient(155deg,#064e3b 0%,#047857 45%,#022c22 100%)", accent: "#34d399", accentGlow: "rgba(52,211,153,.45)", clockBg: "#fde047" },
+  solar: { bg: "#451a03", grad: "linear-gradient(155deg,#7c2d12 0%,#9a3412 45%,#451a03 100%)", accent: "#fb923c", accentGlow: "rgba(251,146,60,.45)", clockBg: "#fde047" },
+};
+const themeName = String(args.theme || "roxo").toLowerCase();
+const theme = THEMES[themeName] || THEMES.roxo;
+
+console.log(`Compilando template padrão: Quiz Mobile (tema: ${THEMES[themeName] ? themeName : "roxo"})...`);
 const timingsFile = fs.existsSync(path.join(ROOT, "transcript", "quiz-timings.json"))
   ? path.join(ROOT, "transcript", "quiz-timings.json")
   : path.join(ROOT, "templates", "quiz-mobile", "quiz3-francisca.json");
@@ -75,7 +85,7 @@ const scenesHtml = questions.map((q, qi) => {
   const startSec = q.startSec !== undefined ? q.startSec : q.start;
   const endSec = q.endSec !== undefined ? q.endSec : q.end;
   const dur = Number((endSec - startSec).toFixed(2));
-  const category = q.category || "GEOGRAFIA";
+  const category = String(q.category || (typeof args.category === "string" ? args.category : "") || data.category || "QUIZ").toUpperCase();
   const questionText = q.question;
   const options = q.options;
   const cues = q.countdownCuesSec || q.cues || [];
@@ -188,24 +198,24 @@ const html = `<!doctype html>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:1080px;height:1920px;overflow:hidden;font-family:'Poppins',sans-serif;background:#3b0764}
-#root{position:relative;width:1080px;height:1920px;overflow:hidden;background:linear-gradient(155deg,#4c1d95 0%,#6d28d9 45%,#3b0764 100%)}
+html,body{width:1080px;height:1920px;overflow:hidden;font-family:'Poppins',sans-serif;background:${theme.bg}}
+#root{position:relative;width:1080px;height:1920px;overflow:hidden;background:${theme.grad}}
 .stripes{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .stripe{position:absolute;top:-300px;width:4px;height:2600px;background:rgba(255,255,255,.06);transform:rotate(20deg)}
 .scene{position:absolute;inset:0;padding:66px 70px 80px;display:flex;flex-direction:column;align-items:center}
-.header{width:100%;height:106px;padding:0 36px;border-radius:26px;background:rgba(15,23,42,.72);border:3px solid #22d3ee;box-shadow:0 0 28px rgba(34,211,238,.45);display:flex;align-items:center;justify-content:space-between}
+.header{width:100%;height:106px;padding:0 36px;border-radius:26px;background:rgba(15,23,42,.72);border:3px solid ${theme.accent};box-shadow:0 0 28px ${theme.accentGlow};display:flex;align-items:center;justify-content:space-between}
 .h-brand{font-weight:900;font-size:38px;color:#ffffff;letter-spacing:1px}
 .h-round{font-weight:800;font-size:34px;color:#e2e8f0}
-.dots{width:100%;display:grid;grid-template-columns:repeat(6,1fr);gap:18px;margin-top:34px}
+.dots{width:100%;display:grid;grid-template-columns:repeat(${totalQ},1fr);gap:18px;margin-top:34px}
 .dot{height:14px;border-radius:999px;background:rgba(255,255,255,.32)}
-.dot.done{background:rgba(34,211,238,.55)}
-.dot.active{background:#22d3ee;box-shadow:0 0 18px rgba(34,211,238,.9)}
-.category{margin-top:54px;font-weight:900;font-size:36px;letter-spacing:3px;color:#22d3ee}
-.q-box{width:100%;margin-top:30px;padding:64px 48px;border-radius:36px;background:#ffffff;border:5px solid #22d3ee;box-shadow:0 24px 60px rgba(0,0,0,.35);font-weight:900;font-size:56px;line-height:1.25;color:#0f172a;text-align:center;min-height:290px;display:flex;align-items:center;justify-content:center}
+.dot.done{background:${theme.accent};opacity:.55}
+.dot.active{background:${theme.accent};box-shadow:0 0 18px ${theme.accentGlow}}
+.category{margin-top:54px;font-weight:900;font-size:36px;letter-spacing:3px;color:${theme.accent}}
+.q-box{width:100%;margin-top:30px;padding:64px 48px;border-radius:36px;background:#ffffff;border:5px solid ${theme.accent};box-shadow:0 24px 60px rgba(0,0,0,.35);font-weight:900;font-size:56px;line-height:1.25;color:#0f172a;text-align:center;min-height:290px;display:flex;align-items:center;justify-content:center}
 .clock-wrap{margin-top:64px;display:flex;justify-content:center}
-.clock{width:170px;height:170px;border-radius:50%;background:#fde047;border:8px solid #ffffff;box-shadow:0 0 40px rgba(253,224,71,.7);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:82px;color:#0f172a}
+.clock{width:170px;height:170px;border-radius:50%;background:${theme.clockBg};border:8px solid #ffffff;box-shadow:0 0 40px ${theme.accentGlow};display:flex;align-items:center;justify-content:center;font-weight:900;font-size:82px;color:#0f172a}
 .timer-track{width:94%;height:16px;border-radius:999px;background:rgba(255,255,255,.28);overflow:hidden;margin-top:56px}
-.timer-fill{width:100%;height:100%;background:#22d3ee;transform-origin:0 50%}
+.timer-fill{width:100%;height:100%;background:${theme.accent};transform-origin:0 50%}
 .opts{width:100%;margin-top:56px;display:flex;flex-direction:column;gap:26px}
 .opt{position:relative;width:100%;padding:28px 32px;border-radius:28px;background:#ffffff;border:4px solid #0f172a;box-shadow:0 12px 30px rgba(0,0,0,.28);display:flex;align-items:center;gap:28px}
 .opt-let{width:76px;height:76px;border-radius:20px;background:#0f172a;color:#ffffff;font-weight:900;font-size:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -216,7 +226,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;font-family:'Poppins',sans-
 .outro-logo{width:210px;height:210px;border-radius:50%;box-shadow:0 16px 40px rgba(0,0,0,.4)}
 .outro-title{font-weight:900;font-size:74px;color:#ffffff;text-shadow:0 8px 0 #1e1b4b}
 .outro-sub{font-weight:700;font-size:44px;color:#f8fafc}
-.outro-cta{margin-top:16px;padding:34px 66px;border-radius:28px;background:#fde047;color:#0f172a;font-weight:900;font-size:42px;box-shadow:0 14px 36px rgba(0,0,0,.3)}
+.outro-cta{margin-top:16px;padding:34px 66px;border-radius:28px;background:${theme.clockBg};color:#0f172a;font-weight:900;font-size:42px;box-shadow:0 14px 36px rgba(0,0,0,.3)}
 </style>
 </head>
 <body>

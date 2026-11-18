@@ -183,6 +183,7 @@ async function main() {
     const roundEnd = Number(cursor.toFixed(3));
     roundsData.push({
       round: qIdx + 1,
+      category: item.category || undefined,
       question: item.q,
       options: item.opts,
       answer: item.ans,

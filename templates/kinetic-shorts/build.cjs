@@ -4,8 +4,18 @@
 const fs = require("fs");
 const path = require("path");
 
-const ROOT = path.resolve(__dirname, "..");
-const words = JSON.parse(fs.readFileSync(path.join(ROOT, "transcript", "words.json"), "utf-8"));
+const TPL_DIR = __dirname;
+const PROJECT_ROOT = path.resolve(__dirname, "..", "..");
+const wordsPath = fs.existsSync(path.join(PROJECT_ROOT, "transcript", "words.json"))
+  ? path.join(PROJECT_ROOT, "transcript", "words.json")
+  : path.join(TPL_DIR, "words.json");
+const words = JSON.parse(fs.readFileSync(wordsPath, "utf-8"));
+const hasNarration = fs.existsSync(path.join(PROJECT_ROOT, "audio", "narracao.mp3"));
+const ambientSrc = fs.existsSync(path.join(PROJECT_ROOT, "audio", "ambient.mp3"))
+  ? "audio/ambient.mp3"
+  : fs.existsSync(path.join(TPL_DIR, "ambient.mp3"))
+    ? "templates/kinetic-shorts/ambient.mp3"
+    : null;
 const TOTAL = 38.5;
 
 // ---------- PRNG determinístico ----------
@@ -699,8 +709,8 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#02060c;color:#f
 </head>
 <body>
 <div id="root" data-composition-id="main" data-start="0" data-duration="${TOTAL}" data-width="1080" data-height="1920">
-  <audio id="audio-narration" src="audio/narracao.mp3" data-start="0" data-duration="37.8" data-volume="1.0"></audio>
-  <audio id="audio-ambient" src="audio/ambient.mp3" data-start="0" data-duration="38.5" data-volume="0.2" data-fade-in="1.0" data-fade-out="1.5"></audio>
+  ${hasNarration ? `<audio id="audio-narration" src="audio/narracao.mp3" data-start="0" data-duration="37.8" data-volume="1.0"></audio>` : ""}
+  ${ambientSrc ? `<audio id="audio-ambient" src="${ambientSrc}" data-start="0" data-duration="38.5" data-volume="0.2" data-fade-in="1.0" data-fade-out="1.5"></audio>` : ""}
 
   <div class="bg" id="bg">
     ${blobsHtml}
@@ -734,5 +744,5 @@ window.__timelines["main"] = tl;
 </html>
 `;
 
-fs.writeFileSync(path.join(ROOT, "index.html"), html, "utf-8");
+fs.writeFileSync(path.join(TPL_DIR, "index.html"), html, "utf-8");
 console.log(`index.html gerado: ${chunks.length} blocos de legenda, ${wi} palavras, ${js.length} tweens.`);

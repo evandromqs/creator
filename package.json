@@ -17,7 +17,8 @@
     "tts:quiz": "node scripts/generate_quiz_audio.cjs",
     "tts:edge": "node scripts/generate_audio_edgetts.cjs",
     "tts:elevenlabs": "node scripts/generate_audio_elevenlabs.cjs",
-    "reset": "node scripts/reset_project.cjs"
+    "reset": "node scripts/reset_project.cjs",
+    "studio": "node scripts/studio_server.cjs"
   },
   "dependencies": {
     "msedge-tts": "^2.1.1"

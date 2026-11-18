@@ -513,7 +513,7 @@ const html = `<!DOCTYPE html>
 </head>
 <body>
 <div id="viewport">
-  <div id="stage">
+  <div id="stage" data-composition-id="main" data-start="0" data-duration="${round(TOTAL_DURATION)}" data-width="1920" data-height="1080">
     <div id="camera-rig">
       <div id="world">
         ${sceneTimings.map((s, i) => `<div class="scene-slot" data-idx="${i}" data-id="${s.id}">${sceneSVG(s, i)}</div>`).join('\n')}
@@ -912,11 +912,14 @@ window.addEventListener('keydown', (e) => {
   if (e.code === 'KeyR') { master.restart(); }
 });
 window.addEventListener('click', () => { if (!playing) start(); });
+window.__timelines = window.__timelines || {};
+window.__timelines.main = master;
 </script>
 </body>
 </html>`;
 
 fs.writeFileSync(path.join(OUT_DIR, 'index.html'), html);
+fs.writeFileSync(path.join(__dirname, 'index.html'), html);
 
 // ---------------------------------------------------------------------------
 // 9. Relatório

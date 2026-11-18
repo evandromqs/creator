@@ -22,6 +22,10 @@ on:
         description: 'Dados JSON customizados do quiz ou texto do roteiro'
         required: false
         default: ''
+      theme:
+        description: 'Tema visual do Quiz (roxo, neon, cyberpunk, esmeralda, solar)'
+        required: false
+        default: 'roxo'
 
 jobs:
   render:
@@ -70,8 +74,15 @@ jobs:
         run: |
           node scripts/generate_quiz_audio.cjs templates/quiz-mobile/quiz3-francisca.json audio/quiz-mix.mp3 transcript/quiz-timings.json
 
+      - name: Gerar áudio genérico via Edge TTS (se roteiro.txt fornecido)
+        if: ${{ inputs.template != 'quiz-mobile' }}
+        run: |
+          if [ -f "audio/roteiro.txt" ]; then
+            node scripts/generate_audio_edgetts.cjs pt-BR-AntonioNeural audio/roteiro.txt audio/narracao.mp3 transcript/words.json
+          fi
+
       - name: Compilar template selecionado
-        run: node scripts/build.cjs --template=${{ inputs.template }}
+        run: node scripts/build.cjs --template=${{ inputs.template }} --theme=${{ inputs.theme || 'roxo' }}
 
       - name: Renderizar vídeo via Hyperframes
         run: npx --yes hyperframes@0.9.22 render -o output/video.mp4

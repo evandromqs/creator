@@ -48,6 +48,10 @@ const html = kit.renderHtml({
   title: story.title,
   totalDuration: TOTAL,
   narrationDuration: TOTAL,
+  extraCss: `
+    .title { top: 480px; font-size: 130px; color: #facc15; }
+    .story-card { position: absolute; left: 80px; right: 80px; top: 760px; padding: 48px; border-radius: 32px; background: rgba(15, 23, 42, 0.78); border: 2px solid rgba(129, 140, 248, 0.4); font-size: 46px; line-height: 1.4; font-weight: 800; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+  `,
   bgHtml,
   scenesHtml,
   subsHtml: "",

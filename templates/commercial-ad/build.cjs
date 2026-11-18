@@ -29,7 +29,7 @@ h1{font-weight:900;font-size:128px;line-height:1.02;color:#111827;letter-spacing
 </head>
 <body>
 <div id="root" data-composition-id="main" data-start="0" data-duration="${TOTAL}" data-width="1080" data-height="1920">
-  <audio id="audio-narration" src="assets/narracao.mp3" data-start="0" data-duration="18.91" data-volume="1.0"></audio>
+  <audio id="audio-narration" src="templates/commercial-ad/assets/narracao.mp3" data-start="0" data-duration="18.91" data-volume="1.0"></audio>
   <div id="s1" class="scene clip" data-start="0" data-duration="5.2">
     <div class="tag">PRODUTIVIDADE REAL</div>
     <h1>CHEGA DE <span class="accent">DESPERDIÇAR</span> TEMPO</h1>

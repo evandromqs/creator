@@ -597,6 +597,188 @@
     const OWNER = 'evandromqs';
     const REPO = 'creator';
     const WORKFLOW_ID = 'render.yml';
+    const EDGE_TTS_WORKER_URL = 'https://creator-tts.evandrodev.workers.dev/tts';
+    const OUTRO_TEXT = 'Qual foi a mais difícil? Comente sua nota aqui embaixo e siga o canal para mais desafios!';
+    const ttsCache = new Map();
+
+    async function fetchFranciscaBytes(text, rate = '0.9') {
+      const key = `${rate}|${text}`;
+      if (ttsCache.has(key)) return ttsCache.get(key);
+      const url = `${EDGE_TTS_WORKER_URL}?text=${encodeURIComponent(text)}&rate=${encodeURIComponent(rate)}&voice=pt-BR-FranciscaNeural`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Erro TTS Worker (${res.status})`);
+      const buf = await res.arrayBuffer();
+      ttsCache.set(key, buf);
+      return buf;
+    }
+
+    function trimAudioBufferSilence(ctx, buf, threshold = 0.008) {
+      const data = buf.getChannelData(0);
+      const pad = Math.floor(buf.sampleRate * 0.02);
+      let start = 0;
+      while (start < data.length && Math.abs(data[start]) <= threshold) start++;
+      let end = data.length - 1;
+      while (end > start && Math.abs(data[end]) <= threshold) end--;
+      start = Math.max(0, start - pad);
+      end = Math.min(data.length - 1, end + pad);
+      const len = Math.max(1, end - start + 1);
+      const out = ctx.createBuffer(buf.numberOfChannels, len, buf.sampleRate);
+      for (let ch = 0; ch < buf.numberOfChannels; ch++) {
+        out.copyToChannel(buf.getChannelData(ch).subarray(start, end + 1), ch);
+      }
+      return out;
+    }
+
+    function audioBufferToWavBlob(buffer) {
+      const numChannels = buffer.numberOfChannels;
+      const sampleRate = buffer.sampleRate;
+      const length = buffer.length;
+      const bytesPerSample = 2;
+      const blockAlign = numChannels * bytesPerSample;
+      const dataSize = length * blockAlign;
+      const wavBuffer = new ArrayBuffer(44 + dataSize);
+      const view = new DataView(wavBuffer);
+      const writeStr = (offset, s) => {
+        for (let i = 0; i < s.length; i++) view.setUint8(offset + i, s.charCodeAt(i));
+      };
+      writeStr(0, 'RIFF');
+      view.setUint32(4, 36 + dataSize, true);
+      writeStr(8, 'WAVE');
+      writeStr(12, 'fmt ');
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true);
+      view.setUint16(22, numChannels, true);
+      view.setUint32(24, sampleRate, true);
+      view.setUint32(28, sampleRate * blockAlign, true);
+      view.setUint16(32, blockAlign, true);
+      view.setUint16(34, 16, true);
+      writeStr(36, 'data');
+      view.setUint32(40, dataSize, true);
+
+      const channels = [];
+      for (let ch = 0; ch < numChannels; ch++) channels.push(buffer.getChannelData(ch));
+      let offset = 44;
+      for (let i = 0; i < length; i++) {
+        for (let ch = 0; ch < numChannels; ch++) {
+          const sample = Math.max(-1, Math.min(1, channels[ch][i]));
+          view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7fff, true);
+          offset += 2;
+        }
+      }
+      return new Blob([wavBuffer], { type: 'audio/wav' });
+    }
+
+    async function buildFullQuizAudioViaWorker(questions, onProgress) {
+      const textsSet = new Set([OUTRO_TEXT, '5', '4', '3', '2', '1', 'A:', 'B:', 'C:']);
+      questions.forEach(item => {
+        textsSet.add(item.q);
+        (item.opts || []).slice(0, 3).forEach(opt => textsSet.add(`${opt}?`));
+        textsSet.add(`Resposta certa: ${item.ans}!`);
+      });
+      const uniqueTexts = Array.from(textsSet);
+
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      const ctx = new AudioCtx({ sampleRate: 44100 });
+      try {
+        if (onProgress) onProgress(`Baixando ${uniqueTexts.length} falas da Francisca + SFX...`);
+        const rawMap = new Map();
+        const CONCURRENCY = 6;
+        for (let i = 0; i < uniqueTexts.length; i += CONCURRENCY) {
+          const batch = uniqueTexts.slice(i, i + CONCURRENCY);
+          await Promise.all(batch.map(async t => {
+            const bytes = await fetchFranciscaBytes(t, '0.9');
+            const decoded = await ctx.decodeAudioData(bytes.slice(0));
+            rawMap.set(t, trimAudioBufferSilence(ctx, decoded));
+          }));
+          if (onProgress) {
+            const done = Math.min(uniqueTexts.length, i + CONCURRENCY);
+            onProgress(`Sintetizando Francisca (${done}/${uniqueTexts.length})...`);
+          }
+        }
+
+        const [tictacBuf, trimBuf] = await Promise.all([
+          fetch('sfx/tic-tac.mp3').then(r => r.arrayBuffer()).then(b => ctx.decodeAudioData(b)),
+          fetch('sfx/trim_alarm.mp3').then(r => r.arrayBuffer()).then(b => ctx.decodeAudioData(b)),
+        ]);
+
+        const events = [];
+        const roundsMeta = [];
+        let cursor = 0;
+
+        for (const item of questions) {
+          const qBuf = rawMap.get(item.q);
+          events.push({ buf: qBuf, at: cursor });
+          cursor += qBuf.duration + 0.35;
+
+          const letters = ['A:', 'B:', 'C:'];
+          for (let oi = 0; oi < 3; oi++) {
+            const letBuf = rawMap.get(letters[oi]);
+            events.push({ buf: letBuf, at: cursor });
+            cursor += letBuf.duration + 0.2;
+
+            const optBuf = rawMap.get(`${(item.opts || [])[oi] || ''}?`);
+            events.push({ buf: optBuf, at: cursor });
+            cursor += optBuf.duration + (oi < 2 ? 0.3 : 0.45);
+          }
+
+          const startCue = cursor;
+          for (const n of ['5', '4', '3', '2', '1']) {
+            const nBuf = rawMap.get(n);
+            events.push({ buf: nBuf, at: cursor });
+            cursor += nBuf.duration + 0.7;
+          }
+          const revealAt = cursor;
+          roundsMeta.push({ startCue, revealAt });
+
+          const ansBuf = rawMap.get(`Resposta certa: ${item.ans}!`);
+          events.push({ buf: ansBuf, at: cursor });
+          cursor += ansBuf.duration + 0.9;
+        }
+
+        const outroBuf = rawMap.get(OUTRO_TEXT);
+        events.push({ buf: outroBuf, at: cursor });
+        cursor += outroBuf.duration;
+
+        if (onProgress) onProgress('Mixando áudio + tic-tac contínuo + trim_alarm...');
+        const totalSamples = Math.ceil((cursor + 0.5) * 44100);
+        const offline = new OfflineAudioContext(2, totalSamples, 44100);
+
+        for (const ev of events) {
+          const src = offline.createBufferSource();
+          src.buffer = ev.buf;
+          src.connect(offline.destination);
+          src.start(ev.at);
+        }
+
+        for (const rm of roundsMeta) {
+          const ttSrc = offline.createBufferSource();
+          ttSrc.buffer = tictacBuf;
+          ttSrc.loop = true;
+          const ttGain = offline.createGain();
+          const fadeSt = Math.max(rm.startCue, rm.revealAt - 0.12);
+          ttGain.gain.setValueAtTime(0.45, rm.startCue);
+          ttGain.gain.setValueAtTime(0.45, fadeSt);
+          ttGain.gain.linearRampToValueAtTime(0.0001, rm.revealAt);
+          ttSrc.connect(ttGain);
+          ttGain.connect(offline.destination);
+          ttSrc.start(rm.startCue);
+          ttSrc.stop(rm.revealAt + 0.01);
+
+          const alSrc = offline.createBufferSource();
+          alSrc.buffer = trimBuf;
+          const alGain = offline.createGain();
+          alGain.gain.setValueAtTime(0.85, rm.revealAt);
+          alSrc.connect(alGain);
+          alGain.connect(offline.destination);
+          alSrc.start(rm.revealAt);
+        }
+
+        const rendered = await offline.startRendering();
+        return audioBufferToWavBlob(rendered);
+      } finally {
+        ctx.close().catch(() => {});
+      }
+    }
 
     const TEMPLATES = [
       { id: 'quiz-mobile', icon: '❓', name: 'Quiz Mobile' },
@@ -871,6 +1053,7 @@
       const audioObjUrlRef = useRef(null);
       const instantAbortRef = useRef(false);
       const activeTicTacRef = useRef(null);
+      const activeSpeechAudioRef = useRef(null);
 
       const [runs, setRuns] = useState([]);
       const [runsError, setRunsError] = useState('');
@@ -1040,95 +1223,59 @@
           return;
         }
 
-        if (!ghToken) {
-          setCloudAudioLoading(false);
-          setShowKeys(true);
-          return alert('Salve seu GitHub Token nas credenciais para gerar áudio oficial na nuvem (ou use "⚡ Prévia Instantânea").');
-        }
-
-        const title = (videoTitle.trim() || 'quiz-audio') + '-preview';
+        // Modo 100% Online Instantâneo (~3s) via Cloudflare Worker + Web Audio API
         try {
-          setAudioStatus('1/3 Enviando roteiro para sintetização online (Francisca 0.9x + tic-tac)...');
-          const prevRunsData = await ghApi(ghToken, `actions/workflows/${WORKFLOW_ID}/runs?per_page=1`);
-          const prevLatestId = prevRunsData.workflow_runs?.[0]?.id || 0;
-
-          await dispatchRender(ghToken, {
-            template: 'quiz-mobile',
-            title,
-            customData: JSON.stringify(questions),
-            theme: visualTheme,
-            mode: 'audio_only',
-          });
-          fetchRuns();
-
-          let targetRun = null;
-          for (let attempt = 0; attempt < 45; attempt++) {
-            await sleepMs(4000);
-            const runsData = await ghApi(ghToken, `actions/workflows/${WORKFLOW_ID}/runs?per_page=5`);
-            const found = (runsData.workflow_runs || []).find(r => r.id > prevLatestId);
-            if (found) {
-              targetRun = found;
-              if (found.status === 'queued') {
-                setAudioStatus(`2/3 Na fila do GitHub Actions (#${found.run_number})...`);
-              } else if (found.status === 'in_progress') {
-                setAudioStatus(`2/3 Sintetizando voz Francisca + mixando tic-tac (#${found.run_number})...`);
-              } else if (found.status === 'completed') {
-                break;
-              }
-            }
-          }
-
-          if (!targetRun || targetRun.status !== 'completed') {
-            throw new Error('Tempo limite aguardando o áudio na nuvem. Acompanhe na Esteira.');
-          }
-          if (targetRun.conclusion !== 'success') {
-            throw new Error(`Falha na geração online (${targetRun.conclusion}). Confira o log na Esteira.`);
-          }
-
-          setAudioStatus('3/3 Baixando e extraindo MP3 oficial no navegador...');
-          const artData = await ghApi(ghToken, `actions/runs/${targetRun.id}/artifacts`);
-          const audioArt = (artData.artifacts || []).find(a => a.name.endsWith('-audio')) || (artData.artifacts || [])[0];
-          if (!audioArt) throw new Error('Artefato de áudio não encontrado.');
-
-          const zipRes = await fetch(audioArt.archive_download_url, {
-            headers: { Authorization: `Bearer ${ghToken}` },
-          });
-          if (!zipRes.ok) throw new Error(`Erro ao baixar artefato (${zipRes.status})`);
-          const mp3Blob = await extractFirstFileFromZip(await zipRes.arrayBuffer(), 'audio/mpeg');
-          setAudioBlob(mp3Blob, '✅ Áudio oficial (Francisca 0.9x + tic-tac) pronto! Ouça abaixo.');
-          fetchRuns();
+          const wavBlob = await buildFullQuizAudioViaWorker(questions, (msg) => setAudioStatus(msg));
+          setAudioBlob(wavBlob, '✅ Áudio completo (Francisca 0.9x + tic-tac contínuo + trim_alarm) pronto!');
         } catch (err) {
           setAudioStatus(`❌ ${err.message}`);
-          alert(`❌ ${err.message}`);
+          alert(`❌ Erro ao gerar áudio online: ${err.message}`);
         } finally {
           setCloudAudioLoading(false);
         }
       }
 
-      function speakTextPt(text) {
+      function playMp3Bytes(bytes) {
         return new Promise((resolve) => {
           if (instantAbortRef.current) return resolve();
-          const utt = new SpeechSynthesisUtterance(text);
-          const voices = window.speechSynthesis.getVoices();
-          const ptVoice =
-            voices.find(v => /francisca/i.test(v.name)) ||
-            voices.find(v => /pt[-_]BR/i.test(v.lang)) ||
-            voices.find(v => /^pt/i.test(v.lang));
-          if (ptVoice) utt.voice = ptVoice;
-          utt.lang = 'pt-BR';
-          utt.rate = 0.9;
-          utt.onend = () => resolve();
-          utt.onerror = () => resolve();
-          window.speechSynthesis.speak(utt);
+          const url = URL.createObjectURL(new Blob([bytes.slice(0)], { type: 'audio/mpeg' }));
+          const audio = new Audio(url);
+          activeSpeechAudioRef.current = audio;
+          const cleanup = () => {
+            if (activeSpeechAudioRef.current === audio) activeSpeechAudioRef.current = null;
+            URL.revokeObjectURL(url);
+            resolve();
+          };
+          audio.onended = cleanup;
+          audio.onerror = cleanup;
+          audio.play().catch(cleanup);
         });
       }
 
+      async function speakFrancisca(text) {
+        if (instantAbortRef.current) return;
+        try {
+          const bytes = await fetchFranciscaBytes(text, '0.9');
+          if (!instantAbortRef.current) await playMp3Bytes(bytes);
+        } catch {
+          if ('speechSynthesis' in window && !instantAbortRef.current) {
+            await new Promise((resolve) => {
+              const utt = new SpeechSynthesisUtterance(text);
+              utt.lang = 'pt-BR';
+              utt.rate = 0.9;
+              utt.onend = () => resolve();
+              utt.onerror = () => resolve();
+              window.speechSynthesis.speak(utt);
+            });
+          }
+        }
+      }
+
       async function handleInstantPreview() {
-        if (!('speechSynthesis' in window)) return alert('Seu navegador não suporta Web Speech API.');
         if (!questions.length) return alert('Adicione ao menos 1 pergunta.');
 
         instantAbortRef.current = false;
-        window.speechSynthesis.cancel();
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
         setInstantPlaying(true);
 
         const playOneSfx = (path) => {
@@ -1139,22 +1286,38 @@
         };
 
         try {
+          // Pré-aquecer números e letras em paralelo
+          Promise.all(['5', '4', '3', '2', '1', 'A:', 'B:', 'C:'].map(t => fetchFranciscaBytes(t, '0.9'))).catch(() => {});
+
           for (let i = 0; i < questions.length && !instantAbortRef.current; i++) {
             const q = questions[i];
             setActiveIdx(i);
             setSimRevealed(false);
             setSimClock(5);
-            setAudioStatus(`⚡ Rodada ${i + 1}/${questions.length}: Pergunta...`);
-            await speakTextPt(q.q);
+            setAudioStatus(`⚡ Carregando voz Francisca (Rodada ${i + 1}/${questions.length})...`);
+
+            // Pré-carrega todas as falas desta rodada em paralelo
+            const roundTexts = [
+              q.q,
+              `${(q.opts || [])[0] || ''}?`,
+              `${(q.opts || [])[1] || ''}?`,
+              `${(q.opts || [])[2] || ''}?`,
+              `Resposta certa: ${q.ans}!`,
+            ];
+            await Promise.all(roundTexts.map(t => fetchFranciscaBytes(t, '0.9').catch(() => null)));
+            if (instantAbortRef.current) break;
+
+            setAudioStatus(`⚡ Rodada ${i + 1}/${questions.length}: Pergunta (Francisca)...`);
+            await speakFrancisca(q.q);
             if (instantAbortRef.current) break;
             await sleepMs(350);
 
-            const letters = ['A', 'B', 'C'];
+            const letters = ['A:', 'B:', 'C:'];
             for (let oi = 0; oi < 3 && !instantAbortRef.current; oi++) {
-              await speakTextPt(`${letters[oi]}:`);
+              await speakFrancisca(letters[oi]);
               if (instantAbortRef.current) break;
               await sleepMs(200);
-              await speakTextPt(`${(q.opts || [])[oi] || ''}?`);
+              await speakFrancisca(`${(q.opts || [])[oi] || ''}?`);
               if (instantAbortRef.current) break;
               await sleepMs(oi < 2 ? 300 : 450);
             }
@@ -1173,7 +1336,7 @@
               if (instantAbortRef.current) break;
               setSimClock(n);
               setAudioStatus(`⚡ Rodada ${i + 1}/${questions.length}: Contagem ${n}...`);
-              await speakTextPt(String(n));
+              await speakFrancisca(String(n));
               if (instantAbortRef.current) break;
               await sleepMs(700);
             }
@@ -1189,12 +1352,16 @@
             setSimRevealed(true);
             setAudioStatus(`⚡ Rodada ${i + 1}/${questions.length}: Resposta!`);
             playOneSfx('sfx/trim_alarm.mp3');
-            await speakTextPt(`Resposta certa: ${q.ans}!`);
+            await speakFrancisca(`Resposta certa: ${q.ans}!`);
             if (instantAbortRef.current) break;
             await sleepMs(900);
           }
-          if (!instantAbortRef.current) setAudioStatus('✅ Prévia instantânea concluída!');
+          if (!instantAbortRef.current) setAudioStatus('✅ Prévia instantânea com voz Francisca concluída!');
         } finally {
+          if (activeSpeechAudioRef.current) {
+            activeSpeechAudioRef.current.pause();
+            activeSpeechAudioRef.current = null;
+          }
           if (activeTicTacRef.current) {
             activeTicTacRef.current.pause();
             activeTicTacRef.current = null;
@@ -1205,6 +1372,10 @@
 
       function stopInstantPreview() {
         instantAbortRef.current = true;
+        if (activeSpeechAudioRef.current) {
+          activeSpeechAudioRef.current.pause();
+          activeSpeechAudioRef.current = null;
+        }
         if (activeTicTacRef.current) {
           activeTicTacRef.current.pause();
           activeTicTacRef.current = null;
@@ -1581,11 +1752,11 @@
 
                         <div style={{ marginTop: '12px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                           <button className="btn-ai" type="button" onClick={handleCloudAudio} disabled={cloudAudioLoading}>
-                            {cloudAudioLoading ? '⏳ Gerando Áudio...' : '☁️ Gerar Áudio Online (Francisca + SFX)'}
+                            {cloudAudioLoading ? '⏳ Gerando Áudio...' : '🔊 Gerar Áudio Completo (~3s Francisca)'}
                           </button>
                           {!instantPlaying ? (
                             <button className="btn-secondary" type="button" onClick={handleInstantPreview}>
-                              ⚡ Prévia Instantânea (0s)
+                              ⚡ Prévia Ao Vivo (Francisca + Simulador)
                             </button>
                           ) : (
                             <button className="btn-secondary" type="button" onClick={stopInstantPreview} style={{ color: '#f87171' }}>

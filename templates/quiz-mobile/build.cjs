@@ -14,10 +14,13 @@ const stripesHtml = Array.from({ length: 10 }, (_, i) =>
 const jsLines = [];
 const sets = [];
 
+const ROUND_COLORS = ["#facc15", "#22d3ee", "#fb7185", "#4ade80", "#a78bfa", "#fb923c"];
+
 const scenesHtml = data.questions.map((q, qi) => {
   const qNum = qi + 1;
   const id = `q${qNum}`;
   const dur = Number((q.endSec - q.startSec).toFixed(2));
+  const bg = ROUND_COLORS[qi % ROUND_COLORS.length];
 
   const dotsHtml = data.questions
     .map((_, di) => `<span class="dot ${di < qNum ? (di === qi ? "active" : "done") : ""}"></span>`)
@@ -76,20 +79,22 @@ const scenesHtml = data.questions.map((q, qi) => {
   jsLines.push(`tl.to("#${id}", { opacity: 0, x: -60, duration: 0.25, ease: "power2.in" }, ${Number((q.endSec - 0.25).toFixed(2))});`);
 
   return `
-  <div id="${id}" class="scene clip" data-start="${q.startSec}" data-duration="${dur}">
-    <div class="header">
-      <span class="h-brand">QUIZ MOBILE</span>
-      <span class="h-round">RODADA ${qNum}/${totalQ}</span>
-    </div>
-    <div class="dots">${dotsHtml}</div>
-    <div class="category">${q.category}</div>
-    <div class="q-box" id="${id}-qbox">${q.question}</div>
-    <div class="clock-wrap">
+  <div id="${id}" class="scene clip" style="background:${bg}" data-start="${q.startSec}" data-duration="${dur}">
+    <div class="wave-header">
+      <div class="h-left">
+        <span class="h-badge">🎓</span>
+        <div class="h-titles">
+          <span class="h-cat">${q.category || "CONHECIMENTOS GERAIS"}</span>
+          <span class="h-round">RODADA ${qNum}/${totalQ}</span>
+        </div>
+      </div>
       <div class="clock" id="${id}-clock"><span id="${id}-num">5</span></div>
     </div>
+    <div class="dots">${dotsHtml}</div>
+    <div class="q-box" id="${id}-qbox">${q.question}</div>
     <div class="timer-track"><div class="timer-fill" id="${id}-bar"></div></div>
     <div class="opts">${optsHtml}</div>
-    <div class="footer">@QUIZMOBILE</div>
+    <div class="footer">@CREATORSTUDIO</div>
   </div>`;
 }).join("\n");
 
@@ -120,26 +125,27 @@ html,body{width:1080px;height:1920px;overflow:hidden;font-family:'Poppins',sans-
 #root{position:relative;width:1080px;height:1920px;overflow:hidden;background:linear-gradient(155deg,#4c1d95 0%,#6d28d9 45%,#3b0764 100%)}
 .stripes{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .stripe{position:absolute;top:-300px;width:4px;height:2600px;background:rgba(255,255,255,.06);transform:rotate(20deg)}
-.scene{position:absolute;inset:0;padding:66px 70px 80px;display:flex;flex-direction:column;align-items:center}
-.header{width:100%;height:106px;padding:0 36px;border-radius:26px;background:rgba(15,23,42,.72);border:3px solid #22d3ee;box-shadow:0 0 28px rgba(34,211,238,.45);display:flex;align-items:center;justify-content:space-between}
-.h-brand{font-weight:900;font-size:38px;color:#ffffff;letter-spacing:1px}
-.h-round{font-weight:800;font-size:34px;color:#e2e8f0}
-.dots{width:100%;display:grid;grid-template-columns:repeat(6,1fr);gap:18px;margin-top:34px}
-.dot{height:14px;border-radius:999px;background:rgba(255,255,255,.32)}
-.dot.done{background:rgba(34,211,238,.55)}
-.dot.active{background:#22d3ee;box-shadow:0 0 18px rgba(34,211,238,.9)}
-.category{margin-top:54px;font-weight:900;font-size:36px;letter-spacing:3px;color:#22d3ee}
-.q-box{width:100%;margin-top:30px;padding:64px 48px;border-radius:36px;background:#ffffff;border:5px solid #22d3ee;box-shadow:0 24px 60px rgba(0,0,0,.35);font-weight:900;font-size:56px;line-height:1.25;color:#0f172a;text-align:center;min-height:290px;display:flex;align-items:center;justify-content:center}
-.clock-wrap{margin-top:64px;display:flex;justify-content:center}
-.clock{width:170px;height:170px;border-radius:50%;background:#fde047;border:8px solid #ffffff;box-shadow:0 0 40px rgba(253,224,71,.7);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:82px;color:#0f172a}
-.timer-track{width:94%;height:16px;border-radius:999px;background:rgba(255,255,255,.28);overflow:hidden;margin-top:56px}
-.timer-fill{width:100%;height:100%;background:#22d3ee;transform-origin:0 50%}
-.opts{width:100%;margin-top:56px;display:flex;flex-direction:column;gap:26px}
-.opt{position:relative;width:100%;padding:28px 32px;border-radius:28px;background:#ffffff;border:4px solid #0f172a;box-shadow:0 12px 30px rgba(0,0,0,.28);display:flex;align-items:center;gap:28px}
-.opt-let{width:76px;height:76px;border-radius:20px;background:#0f172a;color:#ffffff;font-weight:900;font-size:40px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.scene{position:absolute;inset:0;padding:0 64px 72px;display:flex;flex-direction:column;align-items:center}
+.wave-header{width:calc(100% + 128px);margin:0 -64px;padding:52px 64px 48px;background:#31105f;border-bottom:8px solid #0f172a;border-radius:0 0 60px 60px;box-shadow:0 12px 0 rgba(15,23,42,.25);display:flex;align-items:center;justify-content:space-between}
+.h-left{display:flex;align-items:center;gap:22px}
+.h-badge{font-size:68px;line-height:1}
+.h-titles{display:flex;flex-direction:column;gap:4px}
+.h-cat{font-weight:900;font-size:38px;color:#ffffff;text-shadow:0 4px 0 #0f172a;letter-spacing:1px}
+.h-round{font-weight:800;font-size:26px;color:#fde047}
+.dots{width:100%;display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:36px}
+.dot{height:14px;border-radius:999px;background:rgba(15,23,42,.2);border:2px solid rgba(15,23,42,.3)}
+.dot.done{background:#0f172a}
+.dot.active{background:#ffffff;border-color:#0f172a}
+.q-box{width:100%;margin-top:48px;padding:64px 48px;border-radius:40px;background:#ffffff;border:6px solid #0f172a;box-shadow:0 12px 0 #0f172a;font-weight:900;font-size:56px;line-height:1.25;color:#0f172a;text-align:center;min-height:320px;display:flex;align-items:center;justify-content:center}
+.clock{width:136px;height:136px;border-radius:50%;background:#fde047;border:6px solid #0f172a;box-shadow:0 8px 0 #0f172a;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:70px;color:#0f172a;flex-shrink:0}
+.timer-track{width:96%;height:18px;border-radius:999px;background:rgba(15,23,42,.2);border:3px solid #0f172a;overflow:hidden;margin-top:44px}
+.timer-fill{width:100%;height:100%;background:#ffffff;transform-origin:0 50%}
+.opts{width:100%;margin-top:44px;display:flex;flex-direction:column;gap:28px}
+.opt{position:relative;width:100%;padding:28px 34px;border-radius:999px;background:#ffffff;border:5px solid #0f172a;box-shadow:0 10px 0 #0f172a;display:flex;align-items:center;gap:26px}
+.opt-let{width:74px;height:74px;border-radius:50%;background:#31105f;color:#ffffff;font-weight:900;font-size:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .opt-txt{font-weight:800;font-size:44px;color:#0f172a;flex:1}
 .opt-check{font-weight:900;font-size:44px;color:#0f172a;margin-right:10px}
-.footer{margin-top:auto;font-weight:900;font-size:32px;letter-spacing:2px;color:#ffffff}
+.footer{margin-top:auto;font-weight:900;font-size:30px;letter-spacing:2px;color:#0f172a;opacity:.75}
 .outro{justify-content:center;text-align:center;gap:34px}
 .outro-logo{width:210px;height:210px;border-radius:50%;box-shadow:0 16px 40px rgba(0,0,0,.4)}
 .outro-title{font-weight:900;font-size:74px;color:#ffffff;text-shadow:0 8px 0 #1e1b4b}

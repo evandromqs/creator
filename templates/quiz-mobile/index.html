@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="pt-BR" data-resolution="portrait">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Quiz Mobile 3 (Francisca + SFX) — Hyperframes</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&display=block" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;font-family:'Poppins',sans-serif;background:#3b0764}
+#root{position:relative;width:1080px;height:1920px;overflow:hidden;background:linear-gradient(155deg,#4c1d95 0%,#6d28d9 45%,#3b0764 100%)}
+.stripes{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.stripe{position:absolute;top:-300px;width:4px;height:2600px;background:rgba(255,255,255,.06);transform:rotate(20deg)}
+.scene{position:absolute;inset:0;padding:0 64px 72px;display:flex;flex-direction:column;align-items:center}
+.wave-header{width:calc(100% + 128px);margin:0 -64px;padding:52px 64px 48px;background:#31105f;border-bottom:8px solid #0f172a;border-radius:0 0 60px 60px;box-shadow:0 12px 0 rgba(15,23,42,.25);display:flex;align-items:center;justify-content:space-between}
+.h-left{display:flex;align-items:center;gap:22px}
+.h-badge{font-size:68px;line-height:1}
+.h-titles{display:flex;flex-direction:column;gap:4px}
+.h-cat{font-weight:900;font-size:38px;color:#ffffff;text-shadow:0 4px 0 #0f172a;letter-spacing:1px}
+.h-round{font-weight:800;font-size:26px;color:#fde047}
+.dots{width:100%;display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:36px}
+.dot{height:14px;border-radius:999px;background:rgba(15,23,42,.2);border:2px solid rgba(15,23,42,.3)}
+.dot.done{background:#0f172a}
+.dot.active{background:#ffffff;border-color:#0f172a}
+.q-box{width:100%;margin-top:48px;padding:64px 48px;border-radius:40px;background:#ffffff;border:6px solid #0f172a;box-shadow:0 12px 0 #0f172a;font-weight:900;font-size:56px;line-height:1.25;color:#0f172a;text-align:center;min-height:320px;display:flex;align-items:center;justify-content:center}
+.clock{width:136px;height:136px;border-radius:50%;background:#fde047;border:6px solid #0f172a;box-shadow:0 8px 0 #0f172a;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:70px;color:#0f172a;flex-shrink:0}
+.timer-track{width:96%;height:18px;border-radius:999px;background:rgba(15,23,42,.2);border:3px solid #0f172a;overflow:hidden;margin-top:44px}
+.timer-fill{width:100%;height:100%;background:#ffffff;transform-origin:0 50%}
+.opts{width:100%;margin-top:44px;display:flex;flex-direction:column;gap:28px}
+.opt{position:relative;width:100%;padding:28px 34px;border-radius:999px;background:#ffffff;border:5px solid #0f172a;box-shadow:0 10px 0 #0f172a;display:flex;align-items:center;gap:26px}
+.opt-let{width:74px;height:74px;border-radius:50%;background:#31105f;color:#ffffff;font-weight:900;font-size:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.opt-txt{font-weight:800;font-size:44px;color:#0f172a;flex:1}
+.opt-check{font-weight:900;font-size:44px;color:#0f172a;margin-right:10px}
+.footer{margin-top:auto;font-weight:900;font-size:30px;letter-spacing:2px;color:#0f172a;opacity:.75}
+.outro{justify-content:center;text-align:center;gap:34px}
+.outro-logo{width:210px;height:210px;border-radius:50%;box-shadow:0 16px 40px rgba(0,0,0,.4)}
+.outro-title{font-weight:900;font-size:74px;color:#ffffff;text-shadow:0 8px 0 #1e1b4b}
+.outro-sub{font-weight:700;font-size:44px;color:#f8fafc}
+.outro-cta{margin-top:16px;padding:34px 66px;border-radius:28px;background:#fde047;color:#0f172a;font-weight:900;font-size:42px;box-shadow:0 14px 36px rgba(0,0,0,.3)}
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="108.77" data-width="1080" data-height="1920">
+  <audio id="audio-narration" src="assets/quiz3-mix.mp3" data-start="0" data-duration="108.77" data-volume="1.0"></audio>
+  <div class="stripes" data-layout-allow-overflow><div class="stripe" style="left:-400px"></div><div class="stripe" style="left:-180px"></div><div class="stripe" style="left:40px"></div><div class="stripe" style="left:260px"></div><div class="stripe" style="left:480px"></div><div class="stripe" style="left:700px"></div><div class="stripe" style="left:920px"></div><div class="stripe" style="left:1140px"></div><div class="stripe" style="left:1360px"></div><div class="stripe" style="left:1580px"></div></div>
+
+  <div id="q1" class="scene clip" style="background:#facc15" data-start="0" data-duration="15.73">
+    <div class="wave-header">
+      <div class="h-left">
+        <span class="h-badge">🎓</span>
+        <div class="h-titles">
+          <span class="h-cat">GEOGRAFIA</span>
+          <span class="h-round">RODADA 1/6</span>
+        </div>
+      </div>
+      <div class="clock" id="q1-clock"><span id="q1-num">5</span></div>
+    </div>
+    <div class="dots"><span class="dot active"></span><span class="dot "></span><span class="dot "></span><span class="dot "></span><span class="dot "></span><span class="dot "></span></div>
+    <div class="q-box" id="q1-qbox">Qual país tem mais ilhas no mundo?</div>
+    <div class="timer-track"><div class="timer-fill" id="q1-bar"></div></div>
+    <div class="opts">
+      <div class="opt" id="q1-opt-0">
+        <span class="opt-let">A</span>
+        <span class="opt-txt">Indonésia</span>
+        <span class="opt-check" id="q1-chk-0">✓</span>
+      </div>
+      <div class="opt" id="q1-opt-1">
+        <span class="opt-let">B</span>
+        <span class="opt-txt">Filipinas</span>
+        <span class="opt-check" id="q1-chk-1">✓</span>
+      </div>
+      <div class="opt" id="q1-opt-2">
+        <span class="opt-let">C</span>
+        <span class="opt-txt">Suécia</span>
+        <span class="opt-check" id="q1-chk-2">✓</span>
+      </div></div>
+    <div class="footer">@CREATORSTUDIO</div>
+  </div>
+
+  <div id="q2" class="scene clip" style="background:#22d3ee" data-start="15.73" data-duration="16.04">
+    <div class="wave-header">
+      <div class="h-left">
+        <span class="h-badge">🎓</span>
+        <div class="h-titles">
+          <span class="h-cat">GEOGRAFIA</span>
+          <span class="h-round">RODADA 2/6</span>
+        </div>
+      </div>
+      <div class="clock" id="q2-clock"><span id="q2-num">5</span></div>
+    </div>
+    <div class="dots"><span class="dot done"></span><span class="dot active"></span><span class="dot "></span><span class="dot "></span><span class="dot "></span><span class="dot "></span></div>
+    <div class="q-box" id="q2-qbox">Qual é a capital da Austrália?</div>
+    <div class="timer-track"><div class="timer-fill" id="q2-bar"></div></div>
+    <div class="opts">
+      <div class="opt" id="q2-opt-0">
+        <span class="opt-let">A</span>
+        <span class="opt-txt">Sydney</span>
+        <span class="opt-check" id="q2-chk-0">✓</span>
+      </div>
+      <div class="opt" id="q2-opt-1">
+        <span class="opt-let">B</span>
+        <span class="opt-txt">Melbourne</span>
+        <span class="opt-check" id="q2-chk-1">✓</span>
+      </div>
+      <div class="opt" id="q2-opt-2">
+        <span class="opt-let">C</span>
+        <span class="opt-txt">Canberra</span>
+        <span class="opt-check" id="q2-chk-2">✓</span>
+      </div></div>
+    <div class="footer">@CREATORSTUDIO</div>
+  </div>
+
+  <div id="q3" class="scene clip" style="background:#fb7185" data-start="31.77" data-duration="17.17">
+    <div class="wave-header">
+      <div class="h-left">
+        <span class="h-badge">🎓</span>
+        <div class="h-titles">
+          <span class="h-cat">GEOGRAFIA</span>
+          <span class="h-round">RODADA 3/6</span>
+        </div>
+      </div>
+      <div class="clock" id="q3-clock"><span id="q3-num">5</span></div>
+    </div>
+    <div class="dots"><span class="dot done"></span><span class="dot done"></span><span class="dot active"></span><span class="dot "></span><span class="dot "></span><span class="dot "></span></div>
+    <div class="q-box" id="q3-qbox">Qual país é conhecido como a Terra do Sol Nascente?</div>
+    <div class="timer-track"><div class="timer-fill" id="q3-bar"></div></div>
+    <div class="opts">
+      <div class="opt" id="q3-opt-0">
+        <span class="opt-let">A</span>
+        <span class="opt-txt">China</span>
+        <span class="opt-check" id="q3-chk-0">✓</span>
+      </div>
+      <div class="opt" id="q3-opt-1">
+        <span class="opt-let">B</span>
+        <span class="opt-txt">Japão</span>
+        <span class="opt-check" id="q3-chk-1">✓</span>
+      </div>
+      <div class="opt" id="q3-opt-2">
+        <span class="opt-let">C</span>
+        <span class="opt-txt">Coreia do Sul</span>
+        <span class="opt-check" id="q3-chk-2">✓</span>
+      </div></div>
+    <div class="footer">@CREATORSTUDIO</div>
+  </div>
+
+  <div id="q4" class="scene clip" style="background:#4ade80" data-start="48.94" data-duration="16.44">
+    <div class="wave-header">
+      <div class="h-left">
+        <span class="h-badge">🎓</span>
+        <div class="h-titles">
+          <span class="h-cat">GEOGRAFIA</span>
+          <span class="h-round">RODADA 4/6</span>
+        </div>
+      </div>
+      <div class="clock" id="q4-clock"><span id="q4-num">5</span></div>
+    </div>
+    <div class="dots"><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot active"></span><span class="dot "></span><span class="dot "></span></div>
+    <div class="q-box" id="q4-qbox">Qual é o rio mais longo do mundo?</div>
+    <div class="timer-track"><div class="timer-fill" id="q4-bar"></div></div>
+    <div class="opts">
+      <div class="opt" id="q4-opt-0">
+        <span class="opt-let">A</span>
+        <span class="opt-txt">Rio Amazonas</span>
+        <span class="opt-check" id="q4-chk-0">✓</span>
+      </div>
+      <div class="opt" id="q4-opt-1">
+        <span class="opt-let">B</span>
+        <span class="opt-txt">Rio Nilo</span>
+        <span class="opt-check" id="q4-chk-1">✓</span>
+      </div>
+      <div class="opt" id="q4-opt-2">
+        <span class="opt-let">C</span>
+        <span class="opt-txt">Rio Yangtzé</span>
+        <span class="opt-check" id="q4-chk-2">✓</span>
+      </div></div>
+    <div class="footer">@CREATORSTUDIO</div>
+  </div>
+
+  <div id="q5" class="scene clip" style="background:#a78bfa" data-start="65.38" data-duration="17.85">
+    <div class="wave-header">
+      <div class="h-left">
+        <span class="h-badge">🎓</span>
+        <div class="h-titles">
+          <span class="h-cat">GEOGRAFIA</span>
+          <span class="h-round">RODADA 5/6</span>
+        </div>
+      </div>
+      <div class="clock" id="q5-clock"><span id="q5-num">5</span></div>
+    </div>
+    <div class="dots"><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot active"></span><span class="dot "></span></div>
+    <div class="q-box" id="q5-qbox">Qual país possui a maior extensão de costa marítima do mundo?</div>
+    <div class="timer-track"><div class="timer-fill" id="q5-bar"></div></div>
+    <div class="opts">
+      <div class="opt" id="q5-opt-0">
+        <span class="opt-let">A</span>
+        <span class="opt-txt">Rússia</span>
+        <span class="opt-check" id="q5-chk-0">✓</span>
+      </div>
+      <div class="opt" id="q5-opt-1">
+        <span class="opt-let">B</span>
+        <span class="opt-txt">Austrália</span>
+        <span class="opt-check" id="q5-chk-1">✓</span>
+      </div>
+      <div class="opt" id="q5-opt-2">
+        <span class="opt-let">C</span>
+        <span class="opt-txt">Canadá</span>
+        <span class="opt-check" id="q5-chk-2">✓</span>
+      </div></div>
+    <div class="footer">@CREATORSTUDIO</div>
+  </div>
+
+  <div id="q6" class="scene clip" style="background:#fb923c" data-start="83.23" data-duration="17.58">
+    <div class="wave-header">
+      <div class="h-left">
+        <span class="h-badge">🎓</span>
+        <div class="h-titles">
+          <span class="h-cat">GEOGRAFIA</span>
+          <span class="h-round">RODADA 6/6</span>
+        </div>
+      </div>
+      <div class="clock" id="q6-clock"><span id="q6-num">5</span></div>
+    </div>
+    <div class="dots"><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot active"></span></div>
+    <div class="q-box" id="q6-qbox">Qual é o menor país do mundo em território?</div>
+    <div class="timer-track"><div class="timer-fill" id="q6-bar"></div></div>
+    <div class="opts">
+      <div class="opt" id="q6-opt-0">
+        <span class="opt-let">A</span>
+        <span class="opt-txt">Mônaco</span>
+        <span class="opt-check" id="q6-chk-0">✓</span>
+      </div>
+      <div class="opt" id="q6-opt-1">
+        <span class="opt-let">B</span>
+        <span class="opt-txt">Vaticano</span>
+        <span class="opt-check" id="q6-chk-1">✓</span>
+      </div>
+      <div class="opt" id="q6-opt-2">
+        <span class="opt-let">C</span>
+        <span class="opt-txt">San Marino</span>
+        <span class="opt-check" id="q6-chk-2">✓</span>
+      </div></div>
+    <div class="footer">@CREATORSTUDIO</div>
+  </div>
+
+  <div id="outro" class="scene outro clip" data-start="100.81" data-duration="7.96">
+    <img class="outro-logo" src="assets/quiz_logo.png" alt="Quiz Mobile" />
+    <div class="outro-title">QUAL FOI SEU PLACAR?</div>
+    <div class="outro-sub">Comente quantas você acertou!</div>
+    <div class="outro-cta" id="outro-cta">Siga para mais desafios!</div>
+  </div>
+</div>
+<script>
+gsap.set("#q1-qbox", { opacity: 0, scale: 0.94 });
+gsap.set("#q1-opt-0", { opacity: 0, y: 24 });
+gsap.set("#q1-chk-0", { opacity: 0, scale: 0.4 });
+gsap.set("#q1-opt-1", { opacity: 0, y: 24 });
+gsap.set("#q1-chk-1", { opacity: 0, scale: 0.4 });
+gsap.set("#q1-opt-2", { opacity: 0, y: 24 });
+gsap.set("#q1-chk-2", { opacity: 0, scale: 0.4 });
+gsap.set("#q1-bar", { scaleX: 0 });
+gsap.set("#q2", { opacity: 0, x: 60 });
+gsap.set("#q2-qbox", { opacity: 0, scale: 0.94 });
+gsap.set("#q2-opt-0", { opacity: 0, y: 24 });
+gsap.set("#q2-chk-0", { opacity: 0, scale: 0.4 });
+gsap.set("#q2-opt-1", { opacity: 0, y: 24 });
+gsap.set("#q2-chk-1", { opacity: 0, scale: 0.4 });
+gsap.set("#q2-opt-2", { opacity: 0, y: 24 });
+gsap.set("#q2-chk-2", { opacity: 0, scale: 0.4 });
+gsap.set("#q2-bar", { scaleX: 0 });
+gsap.set("#q3", { opacity: 0, x: 60 });
+gsap.set("#q3-qbox", { opacity: 0, scale: 0.94 });
+gsap.set("#q3-opt-0", { opacity: 0, y: 24 });
+gsap.set("#q3-chk-0", { opacity: 0, scale: 0.4 });
+gsap.set("#q3-opt-1", { opacity: 0, y: 24 });
+gsap.set("#q3-chk-1", { opacity: 0, scale: 0.4 });
+gsap.set("#q3-opt-2", { opacity: 0, y: 24 });
+gsap.set("#q3-chk-2", { opacity: 0, scale: 0.4 });
+gsap.set("#q3-bar", { scaleX: 0 });
+gsap.set("#q4", { opacity: 0, x: 60 });
+gsap.set("#q4-qbox", { opacity: 0, scale: 0.94 });
+gsap.set("#q4-opt-0", { opacity: 0, y: 24 });
+gsap.set("#q4-chk-0", { opacity: 0, scale: 0.4 });
+gsap.set("#q4-opt-1", { opacity: 0, y: 24 });
+gsap.set("#q4-chk-1", { opacity: 0, scale: 0.4 });
+gsap.set("#q4-opt-2", { opacity: 0, y: 24 });
+gsap.set("#q4-chk-2", { opacity: 0, scale: 0.4 });
+gsap.set("#q4-bar", { scaleX: 0 });
+gsap.set("#q5", { opacity: 0, x: 60 });
+gsap.set("#q5-qbox", { opacity: 0, scale: 0.94 });
+gsap.set("#q5-opt-0", { opacity: 0, y: 24 });
+gsap.set("#q5-chk-0", { opacity: 0, scale: 0.4 });
+gsap.set("#q5-opt-1", { opacity: 0, y: 24 });
+gsap.set("#q5-chk-1", { opacity: 0, scale: 0.4 });
+gsap.set("#q5-opt-2", { opacity: 0, y: 24 });
+gsap.set("#q5-chk-2", { opacity: 0, scale: 0.4 });
+gsap.set("#q5-bar", { scaleX: 0 });
+gsap.set("#q6", { opacity: 0, x: 60 });
+gsap.set("#q6-qbox", { opacity: 0, scale: 0.94 });
+gsap.set("#q6-opt-0", { opacity: 0, y: 24 });
+gsap.set("#q6-chk-0", { opacity: 0, scale: 0.4 });
+gsap.set("#q6-opt-1", { opacity: 0, y: 24 });
+gsap.set("#q6-chk-1", { opacity: 0, scale: 0.4 });
+gsap.set("#q6-opt-2", { opacity: 0, y: 24 });
+gsap.set("#q6-chk-2", { opacity: 0, scale: 0.4 });
+gsap.set("#q6-bar", { scaleX: 0 });
+gsap.set("#outro", { opacity: 0, scale: 0.94 });
+const tl = gsap.timeline({ paused: true });
+tl.to("#q1-qbox", { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)" }, 0.1);
+tl.to("#q1-opt-0", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 1.2);
+tl.to("#q1-opt-1", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 1.55);
+tl.to("#q1-opt-2", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 1.9);
+tl.to("#q1-bar", { scaleX: 1, duration: 6.05, ease: "none" }, 7.583);
+tl.set("#q1-num", { textContent: "5" }, 7.583);
+tl.fromTo("#q1-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 7.583);
+tl.set("#q1-num", { textContent: "4" }, 8.911);
+tl.fromTo("#q1-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 8.911);
+tl.set("#q1-num", { textContent: "3" }, 10.089);
+tl.fromTo("#q1-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 10.089);
+tl.set("#q1-num", { textContent: "2" }, 11.26);
+tl.fromTo("#q1-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 11.26);
+tl.set("#q1-num", { textContent: "1" }, 12.53);
+tl.fromTo("#q1-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 12.53);
+tl.set("#q1-num", { textContent: "0" }, 13.63);
+tl.to("#q1-clock", { backgroundColor: "#4ade80", scale: 1.12, duration: 0.2, yoyo: true, repeat: 1 }, 13.63);
+tl.to("#q1-opt-0", { opacity: 0.48, duration: 0.25 }, 13.63);
+tl.to("#q1-opt-1", { opacity: 0.48, duration: 0.25 }, 13.63);
+tl.to("#q1-opt-2", { backgroundColor: "#4ade80", borderColor: "#ffffff", boxShadow: "0 0 36px rgba(74,222,128,.75)", scale: 1.03, duration: 0.28, ease: "back.out(2)" }, 13.63);
+tl.to("#q1-chk-2", { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2.5)" }, 13.680000000000001);
+tl.to("#q1", { opacity: 0, x: -60, duration: 0.25, ease: "power2.in" }, 15.48);
+tl.to("#q2", { opacity: 1, x: 0, duration: 0.28, ease: "power3.out" }, 15.73);
+tl.to("#q2-qbox", { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)" }, 15.83);
+tl.to("#q2-opt-0", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 16.93);
+tl.to("#q2-opt-1", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 17.28);
+tl.to("#q2-opt-2", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 17.63);
+tl.to("#q2-bar", { scaleX: 1, duration: 6.05, ease: "none" }, 23.623);
+tl.set("#q2-num", { textContent: "5" }, 23.623);
+tl.fromTo("#q2-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 23.623);
+tl.set("#q2-num", { textContent: "4" }, 24.95);
+tl.fromTo("#q2-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 24.95);
+tl.set("#q2-num", { textContent: "3" }, 26.128);
+tl.fromTo("#q2-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 26.128);
+tl.set("#q2-num", { textContent: "2" }, 27.299);
+tl.fromTo("#q2-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 27.299);
+tl.set("#q2-num", { textContent: "1" }, 28.569);
+tl.fromTo("#q2-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 28.569);
+tl.set("#q2-num", { textContent: "0" }, 29.669);
+tl.to("#q2-clock", { backgroundColor: "#4ade80", scale: 1.12, duration: 0.2, yoyo: true, repeat: 1 }, 29.669);
+tl.to("#q2-opt-0", { opacity: 0.48, duration: 0.25 }, 29.669);
+tl.to("#q2-opt-1", { opacity: 0.48, duration: 0.25 }, 29.669);
+tl.to("#q2-opt-2", { backgroundColor: "#4ade80", borderColor: "#ffffff", boxShadow: "0 0 36px rgba(74,222,128,.75)", scale: 1.03, duration: 0.28, ease: "back.out(2)" }, 29.669);
+tl.to("#q2-chk-2", { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2.5)" }, 29.719);
+tl.to("#q2", { opacity: 0, x: -60, duration: 0.25, ease: "power2.in" }, 31.52);
+tl.to("#q3", { opacity: 1, x: 0, duration: 0.28, ease: "power3.out" }, 31.77);
+tl.to("#q3-qbox", { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)" }, 31.87);
+tl.to("#q3-opt-0", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 32.97);
+tl.to("#q3-opt-1", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 33.32);
+tl.to("#q3-opt-2", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 33.67);
+tl.to("#q3-bar", { scaleX: 1, duration: 6.05, ease: "none" }, 40.79);
+tl.set("#q3-num", { textContent: "5" }, 40.79);
+tl.fromTo("#q3-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 40.79);
+tl.set("#q3-num", { textContent: "4" }, 42.118);
+tl.fromTo("#q3-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 42.118);
+tl.set("#q3-num", { textContent: "3" }, 43.295);
+tl.fromTo("#q3-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 43.295);
+tl.set("#q3-num", { textContent: "2" }, 44.466);
+tl.fromTo("#q3-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 44.466);
+tl.set("#q3-num", { textContent: "1" }, 45.737);
+tl.fromTo("#q3-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 45.737);
+tl.set("#q3-num", { textContent: "0" }, 46.836);
+tl.to("#q3-clock", { backgroundColor: "#4ade80", scale: 1.12, duration: 0.2, yoyo: true, repeat: 1 }, 46.836);
+tl.to("#q3-opt-0", { opacity: 0.48, duration: 0.25 }, 46.836);
+tl.to("#q3-opt-1", { backgroundColor: "#4ade80", borderColor: "#ffffff", boxShadow: "0 0 36px rgba(74,222,128,.75)", scale: 1.03, duration: 0.28, ease: "back.out(2)" }, 46.836);
+tl.to("#q3-chk-1", { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2.5)" }, 46.885999999999996);
+tl.to("#q3-opt-2", { opacity: 0.48, duration: 0.25 }, 46.836);
+tl.to("#q3", { opacity: 0, x: -60, duration: 0.25, ease: "power2.in" }, 48.69);
+tl.to("#q4", { opacity: 1, x: 0, duration: 0.28, ease: "power3.out" }, 48.94);
+tl.to("#q4-qbox", { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)" }, 49.04);
+tl.to("#q4-opt-0", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 50.14);
+tl.to("#q4-opt-1", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 50.49);
+tl.to("#q4-opt-2", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 50.84);
+tl.to("#q4-bar", { scaleX: 1, duration: 6.05, ease: "none" }, 57.232);
+tl.set("#q4-num", { textContent: "5" }, 57.232);
+tl.fromTo("#q4-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 57.232);
+tl.set("#q4-num", { textContent: "4" }, 58.559);
+tl.fromTo("#q4-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 58.559);
+tl.set("#q4-num", { textContent: "3" }, 59.737);
+tl.fromTo("#q4-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 59.737);
+tl.set("#q4-num", { textContent: "2" }, 60.908);
+tl.fromTo("#q4-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 60.908);
+tl.set("#q4-num", { textContent: "1" }, 62.179);
+tl.fromTo("#q4-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 62.179);
+tl.set("#q4-num", { textContent: "0" }, 63.278);
+tl.to("#q4-clock", { backgroundColor: "#4ade80", scale: 1.12, duration: 0.2, yoyo: true, repeat: 1 }, 63.278);
+tl.to("#q4-opt-0", { opacity: 0.48, duration: 0.25 }, 63.278);
+tl.to("#q4-opt-1", { backgroundColor: "#4ade80", borderColor: "#ffffff", boxShadow: "0 0 36px rgba(74,222,128,.75)", scale: 1.03, duration: 0.28, ease: "back.out(2)" }, 63.278);
+tl.to("#q4-chk-1", { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2.5)" }, 63.327999999999996);
+tl.to("#q4-opt-2", { opacity: 0.48, duration: 0.25 }, 63.278);
+tl.to("#q4", { opacity: 0, x: -60, duration: 0.25, ease: "power2.in" }, 65.13);
+tl.to("#q5", { opacity: 1, x: 0, duration: 0.28, ease: "power3.out" }, 65.38);
+tl.to("#q5-qbox", { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)" }, 65.47999999999999);
+tl.to("#q5-opt-0", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 66.58);
+tl.to("#q5-opt-1", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 66.93);
+tl.to("#q5-opt-2", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 67.28);
+tl.to("#q5-bar", { scaleX: 1, duration: 6.05, ease: "none" }, 75.08);
+tl.set("#q5-num", { textContent: "5" }, 75.08);
+tl.fromTo("#q5-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 75.08);
+tl.set("#q5-num", { textContent: "4" }, 76.407);
+tl.fromTo("#q5-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 76.407);
+tl.set("#q5-num", { textContent: "3" }, 77.585);
+tl.fromTo("#q5-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 77.585);
+tl.set("#q5-num", { textContent: "2" }, 78.756);
+tl.fromTo("#q5-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 78.756);
+tl.set("#q5-num", { textContent: "1" }, 80.027);
+tl.fromTo("#q5-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 80.027);
+tl.set("#q5-num", { textContent: "0" }, 81.126);
+tl.to("#q5-clock", { backgroundColor: "#4ade80", scale: 1.12, duration: 0.2, yoyo: true, repeat: 1 }, 81.126);
+tl.to("#q5-opt-0", { opacity: 0.48, duration: 0.25 }, 81.126);
+tl.to("#q5-opt-1", { opacity: 0.48, duration: 0.25 }, 81.126);
+tl.to("#q5-opt-2", { backgroundColor: "#4ade80", borderColor: "#ffffff", boxShadow: "0 0 36px rgba(74,222,128,.75)", scale: 1.03, duration: 0.28, ease: "back.out(2)" }, 81.126);
+tl.to("#q5-chk-2", { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2.5)" }, 81.176);
+tl.to("#q5", { opacity: 0, x: -60, duration: 0.25, ease: "power2.in" }, 82.98);
+tl.to("#q6", { opacity: 1, x: 0, duration: 0.28, ease: "power3.out" }, 83.23);
+tl.to("#q6-qbox", { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)" }, 83.33);
+tl.to("#q6-opt-0", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 84.43);
+tl.to("#q6-opt-1", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 84.78);
+tl.to("#q6-opt-2", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 85.13);
+tl.to("#q6-bar", { scaleX: 1, duration: 6.05, ease: "none" }, 91.872);
+tl.set("#q6-num", { textContent: "5" }, 91.872);
+tl.fromTo("#q6-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 91.872);
+tl.set("#q6-num", { textContent: "4" }, 93.2);
+tl.fromTo("#q6-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 93.2);
+tl.set("#q6-num", { textContent: "3" }, 94.377);
+tl.fromTo("#q6-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 94.377);
+tl.set("#q6-num", { textContent: "2" }, 95.548);
+tl.fromTo("#q6-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 95.548);
+tl.set("#q6-num", { textContent: "1" }, 96.819);
+tl.fromTo("#q6-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 96.819);
+tl.set("#q6-num", { textContent: "0" }, 97.918);
+tl.to("#q6-clock", { backgroundColor: "#4ade80", scale: 1.12, duration: 0.2, yoyo: true, repeat: 1 }, 97.918);
+tl.to("#q6-opt-0", { opacity: 0.48, duration: 0.25 }, 97.918);
+tl.to("#q6-opt-1", { backgroundColor: "#4ade80", borderColor: "#ffffff", boxShadow: "0 0 36px rgba(74,222,128,.75)", scale: 1.03, duration: 0.28, ease: "back.out(2)" }, 97.918);
+tl.to("#q6-chk-1", { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2.5)" }, 97.968);
+tl.to("#q6-opt-2", { opacity: 0.48, duration: 0.25 }, 97.918);
+tl.to("#q6", { opacity: 0, x: -60, duration: 0.25, ease: "power2.in" }, 100.56);
+tl.to("#outro", { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.6)" }, 100.81);
+tl.to("#outro-cta", { scale: 1.07, duration: 0.4, yoyo: true, repeat: 6, ease: "sine.inOut" }, 101.31);
+tl.set({}, {}, 108.77);
+window.__timelines = { main: tl };
+</script>
+</body>
+</html>

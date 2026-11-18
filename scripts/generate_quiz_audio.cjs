@@ -128,7 +128,7 @@ async function main() {
 
   // Gera arquivos de silêncio para pausas calibradas
   const silMap = {};
-  for (const d of [0.2, 0.3, 0.35, 0.45, 0.7, 0.9]) {
+  for (const d of [0.2, 0.3, 0.35, 0.45, 0.7, 0.9, 1.0]) {
     const f = path.join(tmpDir, `sil_${d}.mp3`);
     execFileSync(
       FFMPEG,
@@ -181,15 +181,11 @@ async function main() {
       cursor += pauseOpt;
     }
 
-    // 3. Contagem regressiva 5..1 com pausas de 0.70s
-    for (const num of ["5", "4", "3", "2", "1"]) {
+    // 3. Contagem regressiva 5..1 silenciosa (1.0s por segundo, apenas tick/tic-tac)
+    for (let s = 0; s < 5; s++) {
       cues.push(Number(cursor.toFixed(3)));
-      const numFile = path.join(tmpDir, `seg_${segIndex++}.mp3`);
-      const numInfo = await synthChunk(tts, num, numFile);
-      listLines.push(`file '${numFile.replace(/\\/g, "/")}'`);
-      cursor += numInfo.duration;
-      listLines.push(`file '${silMap[0.7].replace(/\\/g, "/")}'`);
-      cursor += 0.7;
+      listLines.push(`file '${silMap[1.0].replace(/\\/g, "/")}'`);
+      cursor += 1.0;
     }
 
     // 4. Resposta e Revelação
@@ -243,9 +239,24 @@ async function main() {
   // e disparar trim_alarm.mp3 no instante exato da revelação
   const hasTick = fs.existsSync(tickSfx);
   const hasTrim = fs.existsSync(trimSfx);
+  const swooshSfx = path.join(ROOT, "assets", "sfx", "swoosh.mp3");
+  if (!fs.existsSync(swooshSfx)) {
+    fs.mkdirSync(path.dirname(swooshSfx), { recursive: true });
+    execFileSync(
+      FFMPEG,
+      [
+        "-y", "-f", "lavfi", "-i", "anoisesrc=d=0.35:c=pink:r=44100",
+        "-af", "bandpass=f=900:width_type=h:w=1200,afade=t=in:st=0:d=0.08,afade=t=out:st=0.15:d=0.20,volume=0.6",
+        "-b:a", "128k", swooshSfx
+      ],
+      { stdio: "ignore" }
+    );
+  }
+  const hasSwoosh = fs.existsSync(swooshSfx);
 
   if (hasTick && hasTrim) {
     const inputs = ["-i", voiceMp3, "-i", tickSfx, "-i", trimSfx];
+    if (hasSwoosh) inputs.push("-i", swooshSfx);
     const filterParts = ["[0:a]aformat=sample_rates=44100:channel_layouts=stereo[voice]"];
     const mixInputsLabels = ["[voice]"];
     let mixInputsCount = 1;
@@ -274,6 +285,20 @@ async function main() {
       mixInputsLabels.push(`[${label}]`);
       mixInputsCount++;
     });
+
+    // swoosh na transição entre perguntas (rIdx > 0)
+    if (hasSwoosh) {
+      roundsData.forEach((r, rIdx) => {
+        if (rIdx === 0) return;
+        const delayMs = Math.max(0, Math.round((r.start - 0.15) * 1000));
+        const label = `swoosh_${rIdx}`;
+        filterParts.push(
+          `[3:a]aformat=sample_rates=44100:channel_layouts=stereo,volume=0.75,adelay=${delayMs}|${delayMs}[${label}]`
+        );
+        mixInputsLabels.push(`[${label}]`);
+        mixInputsCount++;
+      });
+    }
 
     filterParts.push(
       `${mixInputsLabels.join("")}amix=inputs=${mixInputsCount}:duration=first:dropout_transition=0:normalize=0,volume=1.0[outa]`

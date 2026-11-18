@@ -470,6 +470,7 @@
     /* Simulador 9:16 */
     .sim-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; }
     .phone-frame {
+      position: relative;
       width: 264px;
       height: 468px;
       border-radius: 22px;
@@ -482,6 +483,15 @@
       align-items: center;
       box-shadow: 0 20px 50px rgba(0,0,0,0.55);
     }
+    .k-vis-bg { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+    .k-fg { position: relative; z-index: 2; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; }
+    @keyframes kSpin { to { transform: rotate(360deg); } }
+    @keyframes kWave { 0%, 100% { transform: translateX(-18px) translateY(0); } 50% { transform: translateX(18px) translateY(-6px); } }
+    @keyframes kWind { 0% { transform: translateX(-120%); opacity: 0; } 30%, 70% { opacity: 0.65; } 100% { transform: translateX(140%); opacity: 0; } }
+    @keyframes kScan { 0%, 100% { transform: translateY(36px); } 50% { transform: translateY(340px); } }
+    @keyframes kPulse { 0% { transform: scale(0.45); opacity: 0.75; } 100% { transform: scale(1.75); opacity: 0; } }
+    @keyframes kDrift { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+    .k-dolly { animation: kDrift 5s ease-in-out infinite; width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .sim-header { width: 100%; padding: 6px 10px; border-radius: 8px; background: rgba(15, 23, 42, 0.75); display: flex; justify-content: space-between; font-size: 9px; font-weight: 900; color: #fff; }
     .sim-dots { width: 100%; display: grid; gap: 4px; margin-top: 8px; }
     .sim-dot { height: 4px; border-radius: 99px; background: rgba(255,255,255,0.28); }
@@ -603,6 +613,18 @@
       { id: 'split_vs', label: '⚔️ Comparativo VS' },
       { id: 'cta', label: '📣 CTA Final' },
     ];
+    const KINETIC_VISUALS = [
+      { id: 'waves', label: '🌊 Ondas & Águas' },
+      { id: 'wind', label: '💨 Vento & Juncos' },
+      { id: 'map_radar', label: '🗺️ Mapa & Radar' },
+      { id: 'sun_rays', label: '☀️ Raios & Partículas' },
+      { id: 'ancient_scroll', label: '📜 Pergaminho Antigo' },
+      { id: 'cyber_grid', label: '🌐 Grade Cyber HUD' },
+      { id: 'shockwave', label: '💥 Onda de Choque' },
+      { id: 'eclipse', label: '🌒 Eclipse & Nebulosa' },
+      { id: 'scales_duel', label: '⚖️ Duelo A vs B' },
+      { id: 'viral_cta', label: '💬 Comentários & Toque' },
+    ];
     const KINETIC_ACCENTS = {
       gold: { label: '🟡 Dourado', main: '#facc15', soft: '#fde68a' },
       crimson: { label: '🔴 Carmesim', main: '#f43f5e', soft: '#fda4af' },
@@ -612,16 +634,16 @@
     };
 
     const DEFAULT_KINETIC = [
-      { id: 'c1', layout: 'impact', accent: 'crimson', eyebrow: 'VOCÊ SABIA?', headline: 'MAR VERMELHO', subheadline: 'DE MOISÉS PODE NÃO SER VERMELHO', narration: 'Você sabia que o Mar Vermelho de Moisés pode nem ter sido vermelho?' },
-      { id: 'c2', layout: 'timeline', accent: 'gold', eyebrow: 'TEXTO ORIGINAL', headline: 'YAM SUPH', subheadline: 'A EXPRESSÃO HEBRAICA ANTIGA', badge: 'HEBRAICO', narration: 'No texto hebraico original, o nome usado é Yam Suph.' },
-      { id: 'c3', layout: 'stamp', accent: 'emerald', eyebrow: 'TRADUÇÃO REAL', headline: 'MAR DE JUNCOS', subheadline: 'VEGETAÇÃO DE ÁGUAS RASAS', badge: 'COMPROVADO', narration: 'Muitos estudiosos traduzem essa expressão literalmente como Mar de Juncos.' },
-      { id: 'c4', layout: 'mystery', accent: 'cyan', eyebrow: 'GEOGRAFIA DO ÊXODO', headline: 'DELTA DO NILO', subheadline: 'PÂNTANOS E CANAIS ANTIGOS', narration: 'Isso levanta uma dúvida: a travessia aconteceu perto do Delta do Nilo?' },
-      { id: 'c5', layout: 'impact', accent: 'cyan', eyebrow: 'HIPÓTESE CIENTÍFICA', headline: 'VENTO ORIENTAL', subheadline: 'RECUOU AS ÁGUAS DURANTE A NOITE', narration: 'Pesquisadores sugerem que um forte vento oriental poderia ter recuado a água.' },
-      { id: 'c6', layout: 'quote', accent: 'gold', eyebrow: 'RELATO ANTIGO', headline: 'ÊXODO 14:21', subheadline: '...por um forte vento oriental fez retirar-se o mar.', badge: 'TEXTO SAGRADO', narration: 'Como descreve o próprio relato bíblico registrado em Êxodo catorze.' },
-      { id: 'c7', layout: 'stamp', accent: 'violet', eyebrow: 'OUTRA VISÃO', headline: 'MILAGRE SOBERANO', subheadline: 'ALÉM DAS LEIS NATURAIS', badge: 'INEXPLICÁVEL', narration: 'Por outro lado, milhões defendem um milagre soberano e inexplicável.' },
-      { id: 'c8', layout: 'stat', accent: 'violet', eyebrow: 'SEM PROVAS DEFINITIVAS', headline: 'ANOS DE MISTÉRIO', statNumber: 3000, statLabel: 'ANOS ATRAVÉS DOS SÉCULOS', narration: 'Sem provas definitivas, esse mistério atravessa mais de três mil anos de história.' },
-      { id: 'c9', layout: 'split_vs', accent: 'gold', eyebrow: 'DUAS EXPLICAÇÕES', headline: 'QUAL É A REAL?', vsLeft: 'VENTO NATURAL', vsRight: 'MILAGRE DIVINO', narration: 'De um lado a força extrema da natureza, do outro o poder de um milagre.' },
-      { id: 'c10', layout: 'cta', accent: 'gold', eyebrow: 'PARTICIPE DO DEBATE', headline: 'EM QUAL VOCÊ ACREDITA?', vsLeft: 'A · VENTO', vsRight: 'B · MILAGRE', subheadline: 'COMENTA AÍ E SEGUE O CANAL', narration: 'Em qual explicação você acredita? Comenta aí e segue para mais fatos da história!' },
+      { id: 'c1', layout: 'impact', visual: 'waves', accent: 'crimson', eyebrow: 'VOCÊ SABIA?', headline: 'MAR VERMELHO', subheadline: 'DE MOISÉS PODE NÃO SER VERMELHO', narration: 'Você sabia que o Mar Vermelho de Moisés pode nem ter sido vermelho?' },
+      { id: 'c2', layout: 'timeline', visual: 'ancient_scroll', accent: 'gold', eyebrow: 'TEXTO ORIGINAL', headline: 'YAM SUPH', subheadline: 'A EXPRESSÃO HEBRAICA ANTIGA', badge: 'HEBRAICO', narration: 'No texto hebraico original, o nome usado é Yam Suph.' },
+      { id: 'c3', layout: 'stamp', visual: 'waves', accent: 'emerald', eyebrow: 'TRADUÇÃO REAL', headline: 'MAR DE JUNCOS', subheadline: 'VEGETAÇÃO DE ÁGUAS RASAS', badge: 'COMPROVADO', narration: 'Muitos estudiosos traduzem essa expressão literalmente como Mar de Juncos.' },
+      { id: 'c4', layout: 'mystery', visual: 'map_radar', accent: 'cyan', eyebrow: 'GEOGRAFIA DO ÊXODO', headline: 'DELTA DO NILO', subheadline: 'PÂNTANOS E CANAIS ANTIGOS', narration: 'Isso levanta uma dúvida: a travessia aconteceu perto do Delta do Nilo?' },
+      { id: 'c5', layout: 'impact', visual: 'wind', accent: 'cyan', eyebrow: 'HIPÓTESE CIENTÍFICA', headline: 'VENTO ORIENTAL', subheadline: 'RECUOU AS ÁGUAS DURANTE A NOITE', narration: 'Pesquisadores sugerem que um forte vento oriental poderia ter recuado a água.' },
+      { id: 'c6', layout: 'quote', visual: 'sun_rays', accent: 'gold', eyebrow: 'RELATO ANTIGO', headline: 'ÊXODO 14:21', subheadline: '...por um forte vento oriental fez retirar-se o mar.', badge: 'TEXTO SAGRADO', narration: 'Como descreve o próprio relato bíblico registrado em Êxodo catorze.' },
+      { id: 'c7', layout: 'stamp', visual: 'sun_rays', accent: 'violet', eyebrow: 'OUTRA VISÃO', headline: 'MILAGRE SOBERANO', subheadline: 'ALÉM DAS LEIS NATURAIS', badge: 'INEXPLICÁVEL', narration: 'Por outro lado, milhões defendem um milagre soberano e inexplicável.' },
+      { id: 'c8', layout: 'stat', visual: 'shockwave', accent: 'violet', eyebrow: 'SEM PROVAS DEFINITIVAS', headline: 'ANOS DE MISTÉRIO', statNumber: 3000, statLabel: 'ANOS ATRAVÉS DOS SÉCULOS', narration: 'Sem provas definitivas, esse mistério atravessa mais de três mil anos de história.' },
+      { id: 'c9', layout: 'split_vs', visual: 'scales_duel', accent: 'gold', eyebrow: 'DUAS EXPLICAÇÕES', headline: 'QUAL É A REAL?', vsLeft: 'VENTO NATURAL', vsRight: 'MILAGRE DIVINO', narration: 'De um lado a força extrema da natureza, do outro o poder de um milagre.' },
+      { id: 'c10', layout: 'cta', visual: 'viral_cta', accent: 'gold', eyebrow: 'PARTICIPE DO DEBATE', headline: 'EM QUAL VOCÊ ACREDITA?', vsLeft: 'A · VENTO', vsRight: 'B · MILAGRE', subheadline: 'COMENTA AÍ E SEGUE O CANAL', narration: 'Em qual explicação você acredita? Comenta aí e segue para mais fatos da história!' },
     ];
 
     const SECTION_META = {
@@ -905,6 +927,90 @@
       );
     }
 
+    function KineticVisualLayer({ visual, pal }) {
+      const v = visual || 'shockwave';
+      if (v === 'waves') {
+        return (
+          <div className="k-vis-bg">
+            <svg viewBox="0 0 264 468" width="264" height="468" style={{ animation: 'kWave 3.2s ease-in-out infinite', opacity: 0.45 }}>
+              <path d="M-40,310 Q40,285 120,310 T280,310 T420,310 L420,468 L-40,468 Z" fill={pal.main} opacity="0.4" />
+              <path d="M-60,335 Q20,310 100,335 T260,335 T400,335 L400,468 L-60,468 Z" fill={pal.soft} opacity="0.28" />
+            </svg>
+          </div>
+        );
+      }
+      if (v === 'wind') {
+        return (
+          <div className="k-vis-bg">
+            {[110, 185, 275, 340].map((top, i) => (
+              <div key={i} style={{ position: 'absolute', top: `${top}px`, left: 0, width: '130px', height: '3px', borderRadius: '99px', background: `linear-gradient(90deg, transparent, ${pal.soft}, transparent)`, animation: `kWind ${1.7 + i * 0.35}s linear infinite` }} />
+            ))}
+          </div>
+        );
+      }
+      if (v === 'map_radar') {
+        return (
+          <div className="k-vis-bg" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ position: 'relative', width: '180px', height: '180px', borderRadius: '50%', border: `1.5px dashed ${pal.main}66`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ position: 'absolute', inset: '22px', borderRadius: '50%', border: `2px solid ${pal.main}`, animation: 'kPulse 2.2s ease-out infinite' }} />
+              <div style={{ width: '90px', height: '90px', borderRadius: '50%', background: `conic-gradient(from 0deg, ${pal.main}44, transparent 70%)`, animation: 'kSpin 3.6s linear infinite' }} />
+            </div>
+          </div>
+        );
+      }
+      if (v === 'sun_rays') {
+        return (
+          <div className="k-vis-bg" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: '440px', height: '440px', borderRadius: '50%', background: `repeating-conic-gradient(from 0deg, ${pal.main}28 0deg 8deg, transparent 8deg 22deg)`, animation: 'kSpin 18s linear infinite' }} />
+          </div>
+        );
+      }
+      if (v === 'ancient_scroll') {
+        return (
+          <div className="k-vis-bg">
+            <div style={{ position: 'absolute', inset: '28px 20px 85px', border: `1.5px dashed ${pal.main}55`, borderRadius: '10px' }} />
+            <div style={{ position: 'absolute', left: '22px', right: '22px', height: '2px', background: pal.main, boxShadow: `0 0 12px ${pal.main}`, animation: 'kScan 3.4s ease-in-out infinite' }} />
+          </div>
+        );
+      }
+      if (v === 'cyber_grid') {
+        return (
+          <div className="k-vis-bg">
+            <div style={{ position: 'absolute', inset: 0, backgroundImage: `linear-gradient(${pal.main}22 1px, transparent 1px), linear-gradient(90deg, ${pal.main}22 1px, transparent 1px)`, backgroundSize: '28px 28px', opacity: 0.45 }} />
+            <div style={{ position: 'absolute', left: '50%', top: '42%', width: '160px', height: '160px', marginLeft: '-80px', marginTop: '-80px', borderRadius: '50%', border: `2px dashed ${pal.soft}55`, animation: 'kSpin 10s linear infinite' }} />
+          </div>
+        );
+      }
+      if (v === 'eclipse') {
+        return (
+          <div className="k-vis-bg" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: '140px', height: '140px', marginTop: '-45px', borderRadius: '50%', background: '#030a14', border: `2px solid ${pal.soft}99`, boxShadow: `0 0 38px ${pal.main}88`, animation: 'kDrift 4s ease-in-out infinite' }} />
+          </div>
+        );
+      }
+      if (v === 'scales_duel') {
+        return (
+          <div className="k-vis-bg">
+            <div style={{ position: 'absolute', left: '-40px', top: '120px', width: '140px', height: '140px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(56,189,248,0.4), transparent 70%)' }} />
+            <div style={{ position: 'absolute', right: '-40px', top: '120px', width: '140px', height: '140px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(244,63,94,0.4), transparent 70%)' }} />
+          </div>
+        );
+      }
+      if (v === 'viral_cta') {
+        return (
+          <div className="k-vis-bg">
+            <div style={{ position: 'absolute', left: '14px', bottom: '112px', background: 'rgba(15,23,42,0.85)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '99px', padding: '3px 8px', fontSize: '7.5px', fontWeight: 800 }}>🔥 Incrível!</div>
+            <div style={{ position: 'absolute', right: '14px', bottom: '92px', background: 'rgba(15,23,42,0.85)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '99px', padding: '3px 8px', fontSize: '7.5px', fontWeight: 800 }}>👀 Chocante</div>
+          </div>
+        );
+      }
+      return (
+        <div className="k-vis-bg" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: '130px', height: '130px', borderRadius: '50%', border: `3px solid ${pal.main}`, animation: 'kPulse 2s ease-out infinite' }} />
+        </div>
+      );
+    }
+
     function KineticPhonePreview({ scenes, activeIdx, onPrev, onNext }) {
       const total = scenes.length || 1;
       const idx = Math.min(activeIdx, total - 1);
@@ -914,49 +1020,46 @@
       return (
         <div className="sim-wrap">
           <div className="phone-frame" style={{ background: `radial-gradient(circle at 50% 38%, ${pal.main}33, #030a14 78%)` }}>
-            <div className="sim-header" style={{ border: `1.5px solid ${pal.main}` }}>
-              <span>DOCUMENTÁRIO</span><span>CENA {idx + 1}/{total}</span>
-            </div>
-            <div className="sim-dots" style={{ gridTemplateColumns: `repeat(${total}, 1fr)` }}>
-              {scenes.map((_, i) => <span key={i} className="sim-dot" style={i === idx ? { background: pal.main } : i < idx ? { background: pal.main, opacity: 0.5 } : undefined} />)}
-            </div>
-            <div className="sim-cat" style={{ color: pal.soft, textAlign: 'center', marginTop: '14px' }}>{(sc.eyebrow || '').toUpperCase()}</div>
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '0 6px', textAlign: 'center' }}>
-              {layout === 'stat' ? (
-                <>
-                  <div style={{ fontSize: '36px', fontWeight: 900, color: pal.main, lineHeight: 1 }}>+{Number(sc.statNumber || 1000).toLocaleString('pt-BR')}</div>
-                  <div style={{ fontSize: '14px', fontWeight: 900, color: '#fff', marginTop: '6px' }}>{sc.headline}</div>
-                  <div style={{ fontSize: '10px', color: pal.soft, marginTop: '4px' }}>{sc.statLabel || sc.subheadline}</div>
-                </>
-              ) : layout === 'quote' ? (
-                <div style={{ background: 'rgba(10,15,30,0.85)', border: `2px solid ${pal.main}`, borderRadius: '12px', padding: '14px 10px', width: '100%' }}>
-                  <div style={{ fontSize: '12px', fontWeight: 900, color: pal.main, marginBottom: '6px' }}>{sc.headline}</div>
-                  <div style={{ fontSize: '11px', fontStyle: 'italic', color: '#f8fafc', lineHeight: 1.35 }}>“{sc.subheadline}”</div>
-                </div>
-              ) : (layout === 'split_vs' || layout === 'cta') ? (
-                <>
-                  <div style={{ fontSize: '14px', fontWeight: 900, color: '#fff', marginBottom: '10px' }}>{sc.headline}</div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', width: '100%' }}>
-                    <div style={{ background: '#082f49', border: '1.5px solid #38bdf8', borderRadius: '8px', padding: '12px 6px', fontSize: '10px', fontWeight: 900 }}>{sc.vsLeft || 'OPÇÃO A'}</div>
-                    <div style={{ background: '#422006', border: '1.5px solid #facc15', borderRadius: '8px', padding: '12px 6px', fontSize: '10px', fontWeight: 900 }}>{sc.vsRight || 'OPÇÃO B'}</div>
+            <KineticVisualLayer visual={sc.visual} pal={pal} />
+            <div className="k-fg">
+              {sc.eyebrow && <div className="sim-cat" style={{ color: pal.soft, textAlign: 'center', marginTop: '24px' }}>{sc.eyebrow.toUpperCase()}</div>}
+              <div className="k-dolly" style={{ width: '100%', padding: '0 6px', textAlign: 'center' }}>
+                {layout === 'stat' ? (
+                  <>
+                    <div style={{ fontSize: '36px', fontWeight: 900, color: pal.main, lineHeight: 1 }}>+{Number(sc.statNumber || 1000).toLocaleString('pt-BR')}</div>
+                    <div style={{ fontSize: '14px', fontWeight: 900, color: '#fff', marginTop: '6px' }}>{sc.headline}</div>
+                    <div style={{ fontSize: '10px', color: pal.soft, marginTop: '4px' }}>{sc.statLabel || sc.subheadline}</div>
+                  </>
+                ) : layout === 'quote' ? (
+                  <div style={{ background: 'rgba(10,15,30,0.85)', border: `2px solid ${pal.main}`, borderRadius: '12px', padding: '14px 10px', width: '100%' }}>
+                    <div style={{ fontSize: '12px', fontWeight: 900, color: pal.main, marginBottom: '6px' }}>{sc.headline}</div>
+                    <div style={{ fontSize: '11px', fontStyle: 'italic', color: '#f8fafc', lineHeight: 1.35 }}>“{sc.subheadline}”</div>
                   </div>
-                  {layout === 'cta' && <div style={{ marginTop: '10px', padding: '4px 12px', borderRadius: '99px', background: '#facc15', color: '#0b1220', fontSize: '9px', fontWeight: 900 }}>COMENTA AÍ</div>}
-                </>
-              ) : (
-                <>
-                  <div style={{ fontSize: '20px', fontWeight: 900, color: pal.soft, lineHeight: 1.08, textTransform: 'uppercase', textShadow: `0 0 18px ${pal.main}66` }}>{sc.headline}</div>
-                  {layout === 'stamp' && sc.badge && <div style={{ marginTop: '8px', padding: '3px 10px', border: `2px solid ${pal.main}`, color: pal.main, fontSize: '10px', fontWeight: 900, borderRadius: '6px', transform: 'rotate(-5deg)' }}>{sc.badge}</div>}
-                  {sc.subheadline && <div style={{ fontSize: '10.5px', fontWeight: 800, color: '#e2e8f0', marginTop: '10px', lineHeight: 1.25 }}>{sc.subheadline}</div>}
-                </>
-              )}
-            </div>
-            <div style={{ width: '100%', background: 'rgba(0,0,0,0.65)', borderRadius: '8px', padding: '7px 8px', fontSize: '9.5px', fontWeight: 800, color: '#fff', textAlign: 'center', lineHeight: 1.3 }}>
-              {sc.narration}
+                ) : (layout === 'split_vs' || layout === 'cta') ? (
+                  <>
+                    <div style={{ fontSize: '14px', fontWeight: 900, color: '#fff', marginBottom: '10px' }}>{sc.headline}</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', width: '100%' }}>
+                      <div style={{ background: '#082f49', border: '1.5px solid #38bdf8', borderRadius: '8px', padding: '12px 6px', fontSize: '10px', fontWeight: 900 }}>{sc.vsLeft || 'OPÇÃO A'}</div>
+                      <div style={{ background: '#422006', border: '1.5px solid #facc15', borderRadius: '8px', padding: '12px 6px', fontSize: '10px', fontWeight: 900 }}>{sc.vsRight || 'OPÇÃO B'}</div>
+                    </div>
+                    {layout === 'cta' && <div style={{ marginTop: '10px', padding: '4px 12px', borderRadius: '99px', background: '#facc15', color: '#0b1220', fontSize: '9px', fontWeight: 900 }}>COMENTA AÍ</div>}
+                  </>
+                ) : (
+                  <>
+                    <div style={{ fontSize: '20px', fontWeight: 900, color: pal.soft, lineHeight: 1.08, textTransform: 'uppercase', textShadow: `0 0 18px ${pal.main}66` }}>{sc.headline}</div>
+                    {layout === 'stamp' && sc.badge && <div style={{ marginTop: '8px', padding: '3px 10px', border: `2px solid ${pal.main}`, color: pal.main, fontSize: '10px', fontWeight: 900, borderRadius: '6px', transform: 'rotate(-5deg)' }}>{sc.badge}</div>}
+                    {sc.subheadline && <div style={{ fontSize: '10.5px', fontWeight: 800, color: '#e2e8f0', marginTop: '10px', lineHeight: 1.25 }}>{sc.subheadline}</div>}
+                  </>
+                )}
+              </div>
+              <div style={{ width: '100%', background: 'rgba(15,23,42,0.82)', border: `1px solid ${pal.main}55`, borderRadius: '10px', padding: '7px 9px', fontSize: '9.5px', fontWeight: 800, color: '#fff', textAlign: 'center', lineHeight: 1.3 }}>
+                <span style={{ background: pal.main, color: '#02060c', padding: '1px 5px', borderRadius: '4px', marginRight: '5px', fontWeight: 900 }}>AO VIVO</span>
+                {sc.narration}
+              </div>
             </div>
           </div>
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'center' }}>
             <button className="btn-secondary" type="button" onClick={onPrev}>◀</button>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700 }}>Cena {idx + 1} / {total}</span>
             <button className="btn-secondary" type="button" onClick={onNext}>▶</button>
           </div>
         </div>
@@ -1208,18 +1311,20 @@
         }
         if (tplId === 'kinetic-shorts') {
           const sceneNum = Math.min(12, Math.max(10, Number(count) || 10));
+          const validVisuals = new Set(KINETIC_VISUALS.map(v => v.id));
           const raw = await callGroq(
             key, groqModel,
-            'Retorne APENAS um JSON válido no formato {"title":"Título","scenes":[{"id":"c1","layout":"impact|timeline|stat|quote|stamp|mystery|split_vs|cta","accent":"gold|crimson|cyan|emerald|violet","eyebrow":"TEXTO CURTO","headline":"MANCHETE CURTA","subheadline":"SUBTÍTULO CURTO","statNumber":1000,"statLabel":"UNIDADE","badge":"SELO","vsLeft":"LADO A","vsRight":"LADO B","narration":"Frase narrada natural de 1 a 2 sentenças."}]} sem markdown. Varie os layouts entre as cenas e termine a última cena obrigatoriamente com layout "cta".',
-            `Crie um mini-documentário vertical dinâmico de EXATAMENTE ${sceneNum} cenas sobre "${topic}" com tom "${tone}" em português do Brasil.`
+            'Retorne APENAS um JSON válido no formato {"title":"Título","scenes":[{"id":"c1","layout":"impact|timeline|stat|quote|stamp|mystery|split_vs|cta","visual":"waves|wind|map_radar|sun_rays|ancient_scroll|cyber_grid|shockwave|eclipse|scales_duel|viral_cta","accent":"gold|crimson|cyan|emerald|violet","eyebrow":"GANCHO CURTO","headline":"MANCHETE CURTA","subheadline":"SUBTÍTULO CURTO","statNumber":1000,"statLabel":"UNIDADE","badge":"SELO","vsLeft":"LADO A","vsRight":"LADO B","narration":"Frase narrada natural e envolvente de 1 a 2 sentenças."}]} sem markdown. REGRA CRÍTICA: NUNCA use contadores ou números de cena no eyebrow (PROIBIDO "PARTE 1", "CENA 1", "1/10"); use ganchos virais como "VOCÊ SABIA?", "O SEGREDO", "REVELAÇÃO", "CHOCANTE". Escolha sempre o campo "visual" mais contextual com o assunto da frase para gerar animações SVG vivas em cada cena. Varie layout, visual e accent entre todas as cenas e termine a última obrigatoriamente com layout "cta" e visual "viral_cta".',
+            `Crie um mini-documentário viral de retenção máxima com EXATAMENTE ${sceneNum} cenas sobre "${topic}" com tom "${tone}" em português do Brasil.`
           );
           const parsed = JSON.parse(raw);
           const list = Array.isArray(parsed) ? parsed : parsed.scenes || [];
           const normalized = list.map((s, idx) => ({
             id: s.id || `c${idx + 1}`,
             layout: s.layout || 'impact',
+            visual: validVisuals.has(s.visual) ? s.visual : (idx === list.length - 1 ? 'viral_cta' : KINETIC_VISUALS[idx % (KINETIC_VISUALS.length - 1)].id),
             accent: KINETIC_ACCENTS[s.accent] ? s.accent : 'gold',
-            eyebrow: String(s.eyebrow || `PARTE ${idx + 1}`),
+            eyebrow: String(s.eyebrow || 'DESCOBERTA').replace(/^(?:parte|cena)\s*\d+[:.\-\s]*/i, '').trim() || 'DESCOBERTA',
             headline: String(s.headline || ''),
             subheadline: String(s.subheadline || ''),
             statNumber: s.statNumber,
@@ -1535,7 +1640,7 @@
       function addKineticScene() {
         const next = [
           ...kineticScenes,
-          { id: `c${kineticScenes.length + 1}`, layout: 'impact', accent: 'cyan', eyebrow: 'NOVO FATO', headline: 'MANCHETE', subheadline: 'DETALHE VISUAL', narration: 'Texto da narração desta cena.' },
+          { id: `c${kineticScenes.length + 1}`, layout: 'impact', visual: 'cyber_grid', accent: 'cyan', eyebrow: 'NOVO FATO', headline: 'MANCHETE', subheadline: 'DETALHE VISUAL', narration: 'Texto da narração desta cena.' },
         ];
         syncKineticScenes(next);
         setActiveKineticIdx(next.length - 1);
@@ -1819,9 +1924,12 @@
                                     <button type="button" className="icon-btn del" onClick={() => deleteKineticScene(sIdx)}>🗑️</button>
                                   </div>
                                 </div>
-                                <div className="row-2" style={{ marginBottom: '6px' }}>
+                                <div className="row-3" style={{ marginBottom: '6px' }}>
                                   <select value={sc.layout || 'impact'} onChange={e => updateKineticScene(sIdx, { layout: e.target.value })}>
                                     {KINETIC_LAYOUTS.map(l => <option key={l.id} value={l.id}>{l.label}</option>)}
+                                  </select>
+                                  <select value={sc.visual || 'shockwave'} onChange={e => updateKineticScene(sIdx, { visual: e.target.value })}>
+                                    {KINETIC_VISUALS.map(v => <option key={v.id} value={v.id}>{v.label}</option>)}
                                   </select>
                                   <select value={sc.accent || 'gold'} onChange={e => updateKineticScene(sIdx, { accent: e.target.value })}>
                                     {Object.entries(KINETIC_ACCENTS).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}

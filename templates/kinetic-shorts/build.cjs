@@ -1,5 +1,6 @@
 // Motor Dinâmico Kinetic Shorts (1080x1920, 30fps, GSAP 3.15.0)
-// Suporta 10 a 12 cenas dinâmicas com 8 layouts cinematográficos, 5 paletas de cor e legendas karaokê.
+// Motor viral com elementos visuais procedurais animados em SVG + GSAP em todas as cenas,
+// câmera contínua (Ken Burns / dolly), transições dinâmicas e legendas karaokê — sem contadores de cena.
 const fs = require("fs");
 const path = require("path");
 
@@ -123,12 +124,259 @@ const ACCENTS = {
   },
 };
 
+const DEFAULT_VISUAL_BY_LAYOUT = {
+  impact: "shockwave",
+  timeline: "ancient_scroll",
+  stat: "cyber_grid",
+  quote: "sun_rays",
+  stamp: "shockwave",
+  mystery: "eclipse",
+  split_vs: "scales_duel",
+  cta: "viral_cta",
+};
+
 function headlineSize(txt) {
   const len = String(txt || "").length;
   if (len <= 10) return 185;
   if (len <= 16) return 140;
   if (len <= 24) return 108;
   return 86;
+}
+
+// ================================================================
+// GERADOR DE ELEMENTOS VISUAIS PROCEDURAIS ANIMADOS POR CENA
+// Cada cena recebe um cenário vetorial dinâmico dirigido por GSAP
+// ================================================================
+function buildSceneVisual(visualRaw, id, idx, t0, dur, pal) {
+  const visual = String(visualRaw || "shockwave").toLowerCase();
+  const vid = `${id}-v`;
+
+  if (visual === "waves") {
+    let spHtml = "";
+    for (let i = 0; i < 16; i++) {
+      const bx = Math.round(R(60, 1020));
+      const by = Math.round(R(1150, 1580));
+      const r = Math.round(R(4, 12));
+      spHtml += `<circle class="vis-bub" id="${vid}-b${i}" cx="${bx}" cy="${by}" r="${r}" fill="${pal.soft}" opacity="0.55"/>`;
+      T(`tl.to("#${vid}-b${i}", { y: ${-Math.round(R(260, 620))}, x: ${Math.round(R(-60, 60))}, opacity: 0, duration: ${dur}, ease: "power1.out" }, ${t0});`);
+    }
+    T(`tl.to("#${vid}-w1", { x: -240, duration: ${dur}, ease: "none" }, ${t0});`);
+    T(`tl.to("#${vid}-w2", { x: 220, duration: ${dur}, ease: "none" }, ${t0});`);
+    T(`tl.to("#${vid}-w3", { x: -160, y: -18, duration: ${dur}, ease: "sine.inOut" }, ${t0});`);
+    T(`tl.to("#${vid}-wl", { x: -130, duration: ${f(dur * 0.7)}, ease: "power2.out" }, ${t0 + 0.1});`);
+    T(`tl.to("#${vid}-wr", { x: 130, duration: ${f(dur * 0.7)}, ease: "power2.out" }, ${t0 + 0.1});`);
+    return `<div class="vis-layer" data-layout-allow-overflow>
+      <svg viewBox="0 0 1080 1920" width="1080" height="1920" style="position:absolute;inset:0">
+        <defs>
+          <linearGradient id="${vid}-wg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${pal.main}" stop-opacity="0.34"/><stop offset="100%" stop-color="#02060c" stop-opacity="0"/></linearGradient>
+        </defs>
+        <g id="${vid}-wl" opacity="0.45"><path d="M-120,1920 L-120,1040 Q260,960 440,1240 L480,1920 Z" fill="url(#${vid}-wg1)"/></g>
+        <g id="${vid}-wr" opacity="0.45"><path d="M1200,1920 L1200,1040 Q820,960 640,1240 L600,1920 Z" fill="url(#${vid}-wg1)"/></g>
+        <g id="${vid}-w1" opacity="0.32"><path d="M-200,1250 Q80,1170 360,1250 T920,1250 T1480,1250 L1480,1920 L-200,1920 Z" fill="${pal.main}"/></g>
+        <g id="${vid}-w2" opacity="0.24"><path d="M-360,1330 Q-60,1240 240,1330 T840,1330 T1440,1330 L1440,1920 L-360,1920 Z" fill="${pal.soft}"/></g>
+        <g id="${vid}-w3" opacity="0.45"><path d="M-120,1290 Q180,1220 480,1290 T1080,1290 T1680,1290" fill="none" stroke="${pal.soft}" stroke-width="5"/></g>
+        ${spHtml}
+      </svg>
+    </div>`;
+  }
+
+  if (visual === "wind") {
+    let lines = "";
+    for (let i = 0; i < 9; i++) {
+      const y = 260 + i * 165 + Math.round(R(-20, 20));
+      const dir = idx % 2 === 0 ? 1 : -1;
+      const startX = dir > 0 ? -520 : 1200;
+      const endX = dir > 0 ? 1180 : -620;
+      const w = Math.round(R(280, 560));
+      lines += `<path id="${vid}-g${i}" d="M${startX},${y} Q${startX + w * 0.45},${y - 36} ${startX + w},${y} Q${startX + w * 0.72},${y + 32} ${startX + w * 0.5},${y + 12}" fill="none" stroke="${i % 2 === 0 ? pal.soft : pal.main}" stroke-width="${Math.round(R(3, 8))}" stroke-linecap="round" opacity="${f(R(0.25, 0.65))}"/>`;
+      const delay = f(R(0, Math.min(0.6, dur * 0.3)), 2);
+      T(`tl.to("#${vid}-g${i}", { x: ${endX - startX}, duration: ${f(Math.max(0.7, dur - delay))}, ease: "power1.inOut" }, ${f(t0 + delay, 3)});`);
+    }
+    let reeds = "";
+    for (let j = 0; j < 11; j++) {
+      const rx = 50 + j * 100;
+      const rh = Math.round(R(220, 390));
+      reeds += `<path id="${vid}-rd${j}" d="M${rx},1920 Q${rx - 18},${1920 - rh * 0.55} ${rx + 12},${1920 - rh}" fill="none" stroke="${pal.main}" stroke-width="10" stroke-linecap="round" opacity="0.34" style="transform-origin:${rx}px 1920px"/>`;
+      T(`tl.to("#${vid}-rd${j}", { rotation: ${idx % 2 === 0 ? 22 : -22}, duration: ${f(dur * 0.45)}, ease: "sine.inOut", yoyo: true, repeat: 1 }, ${t0});`);
+    }
+    return `<div class="vis-layer" data-layout-allow-overflow>
+      <svg viewBox="0 0 1080 1920" width="1080" height="1920" style="position:absolute;inset:0">${lines}${reeds}</svg>
+    </div>`;
+  }
+
+  if (visual === "map_radar") {
+    S(`gsap.set("#${vid}-coast", { strokeDashoffset: 1600 });`);
+    S(`gsap.set("#${vid}-p1", { opacity: 0.75, scale: 0.2, transformOrigin: "540px 660px" });`);
+    S(`gsap.set("#${vid}-p2", { opacity: 0.75, scale: 0.2, transformOrigin: "540px 660px" });`);
+    S(`gsap.set("#${vid}-pin", { opacity: 0, y: -90, scale: 1.5, transformOrigin: "540px 660px" });`);
+    T(`tl.to("#${vid}-coast", { strokeDashoffset: 0, duration: ${f(Math.min(1.6, dur * 0.75))}, ease: "power2.out" }, ${t0});`);
+    T(`tl.to("#${vid}-beam", { rotation: 360, transformOrigin: "540px 660px", duration: ${f(Math.max(1.8, dur))}, ease: "none" }, ${t0});`);
+    T(`tl.to("#${vid}-p1", { opacity: 0, scale: 2.8, duration: ${f(Math.min(1.5, dur * 0.7))}, ease: "power2.out", repeat: 1 }, ${t0 + 0.1});`);
+    T(`tl.to("#${vid}-p2", { opacity: 0, scale: 2.8, duration: ${f(Math.min(1.5, dur * 0.7))}, ease: "power2.out", repeat: 1 }, ${t0 + 0.55});`);
+    T(`tl.to("#${vid}-pin", { opacity: 1, y: 0, scale: 1, duration: 0.45, ease: "bounce.out" }, ${t0 + 0.35});`);
+    return `<div class="vis-layer" data-layout-allow-overflow>
+      <svg viewBox="0 0 1080 1920" width="1080" height="1920" style="position:absolute;inset:0;opacity:0.62">
+        <defs>
+          <radialGradient id="${vid}-rg"><stop offset="0%" stop-color="${pal.main}" stop-opacity="0.35"/><stop offset="100%" stop-color="${pal.main}" stop-opacity="0"/></radialGradient>
+        </defs>
+        <g stroke="${pal.main}" stroke-opacity="0.14" stroke-width="2">
+          <line x1="0" y1="420" x2="1080" y2="420"/><line x1="0" y1="660" x2="1080" y2="660"/><line x1="0" y1="900" x2="1080" y2="900"/>
+          <line x1="270" y1="200" x2="270" y2="1280"/><line x1="540" y1="200" x2="540" y2="1280"/><line x1="810" y1="200" x2="810" y2="1280"/>
+        </g>
+        <circle cx="540" cy="660" r="360" fill="none" stroke="${pal.main}" stroke-width="2" stroke-dasharray="10 14" opacity="0.35"/>
+        <circle cx="540" cy="660" r="220" fill="none" stroke="${pal.soft}" stroke-width="2" opacity="0.28"/>
+        <path id="${vid}-coast" d="M120,460 Q280,520 350,620 T540,670 T760,590 T960,720" fill="none" stroke="${pal.soft}" stroke-width="6" stroke-dasharray="1600" stroke-linecap="round"/>
+        <path id="${vid}-beam" d="M540,660 L540,300 A360,360 0 0,1 850,480 Z" fill="url(#${vid}-rg)" opacity="0.65"/>
+        <circle id="${vid}-p1" cx="540" cy="660" r="140" fill="none" stroke="${pal.main}" stroke-width="4"/>
+        <circle id="${vid}-p2" cx="540" cy="660" r="140" fill="none" stroke="${pal.soft}" stroke-width="3"/>
+        <g id="${vid}-pin">
+          <circle cx="540" cy="660" r="20" fill="${pal.main}" stroke="#fff" stroke-width="5"/>
+        </g>
+      </svg>
+    </div>`;
+  }
+
+  if (visual === "sun_rays") {
+    let spk = "";
+    for (let i = 0; i < 20; i++) {
+      const sx = Math.round(R(100, 980));
+      const sy = Math.round(R(650, 1450));
+      const r = f(R(2.5, 6), 1);
+      spk += `<div class="vis-spark" id="${vid}-sp${i}" style="left:${sx}px;top:${sy}px;width:${r * 2}px;height:${r * 2}px;background:${pal.soft};box-shadow:0 0 18px ${pal.main}"></div>`;
+      T(`tl.to("#${vid}-sp${i}", { y: ${-Math.round(R(250, 620))}, opacity: 0, scale: 0.4, duration: ${dur}, ease: "power1.out" }, ${t0});`);
+    }
+    T(`tl.to("#${vid}-rays", { rotation: 38, duration: ${dur}, ease: "none" }, ${t0});`);
+    T(`tl.to("#${vid}-halo", { scale: 1.22, opacity: 0.72, duration: ${f(dur * 0.5)}, ease: "sine.inOut", yoyo: true, repeat: 1 }, ${t0});`);
+    return `<div class="vis-layer" data-layout-allow-overflow>
+      <div class="rays" id="${vid}-rays" style="opacity:0.6;background:repeating-conic-gradient(from 0deg, ${pal.main}44 0deg 6deg, transparent 6deg 18deg)"></div>
+      <div id="${vid}-halo" style="position:absolute;left:240px;top:240px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,${pal.main}66,transparent 68%);opacity:0.45"></div>
+      ${spk}
+    </div>`;
+  }
+
+  if (visual === "ancient_scroll") {
+    const glyphs = ["א", "ב", "ש", "ם", "Ω", "Σ", "Δ", "Ψ"];
+    let gHtml = "";
+    for (let i = 0; i < 8; i++) {
+      const gx = i % 2 === 0 ? Math.round(R(40, 220)) : Math.round(R(820, 980));
+      const gy = Math.round(R(280, 1280));
+      gHtml += `<div id="${vid}-gl${i}" style="position:absolute;left:${gx}px;top:${gy}px;font-family:'Playfair Display',serif;font-size:${Math.round(R(58, 105))}px;color:${pal.soft};opacity:0.16;font-weight:900">${glyphs[i % glyphs.length]}</div>`;
+      T(`tl.to("#${vid}-gl${i}", { y: ${-Math.round(R(90, 190))}, opacity: 0.32, duration: ${dur}, ease: "none" }, ${t0});`);
+    }
+    T(`tl.to("#${vid}-scan", { y: 820, duration: ${f(Math.max(1.2, dur))}, ease: "sine.inOut" }, ${t0});`);
+    return `<div class="vis-layer" data-layout-allow-overflow>
+      <svg viewBox="0 0 1080 1920" width="1080" height="1920" style="position:absolute;inset:0;opacity:0.28">
+        <rect x="110" y="250" width="860" height="920" rx="28" fill="none" stroke="${pal.main}" stroke-width="3" stroke-dasharray="18 12"/>
+        <line x1="170" y1="390" x2="910" y2="390" stroke="${pal.soft}" stroke-width="2" opacity="0.4"/>
+        <line x1="170" y1="530" x2="860" y2="530" stroke="${pal.soft}" stroke-width="2" opacity="0.25"/>
+        <line x1="170" y1="880" x2="910" y2="880" stroke="${pal.soft}" stroke-width="2" opacity="0.25"/>
+        <line x1="170" y1="1040" x2="840" y2="1040" stroke="${pal.soft}" stroke-width="2" opacity="0.4"/>
+      </svg>
+      <div id="${vid}-scan" style="position:absolute;left:110px;right:110px;top:270px;height:6px;background:linear-gradient(90deg,transparent,${pal.main},transparent);box-shadow:0 0 28px ${pal.main};opacity:0.7"></div>
+      ${gHtml}
+    </div>`;
+  }
+
+  if (visual === "cyber_grid") {
+    T(`tl.to("#${vid}-ret", { rotation: 180, transformOrigin: "540px 640px", duration: ${dur}, ease: "none" }, ${t0});`);
+    T(`tl.to("#${vid}-grid", { y: 85, duration: ${dur}, ease: "none" }, ${t0});`);
+    return `<div class="vis-layer" data-layout-allow-overflow>
+      <svg viewBox="0 0 1080 1920" width="1080" height="1920" style="position:absolute;inset:0;opacity:0.48">
+        <g id="${vid}-grid" stroke="${pal.main}" stroke-opacity="0.24" stroke-width="2">
+          <line x1="0" y1="1120" x2="1080" y2="1120"/><line x1="0" y1="1220" x2="1080" y2="1220"/>
+          <line x1="0" y1="1340" x2="1080" y2="1340"/><line x1="0" y1="1490" x2="1080" y2="1490"/>
+          <line x1="540" y1="980" x2="540" y2="1920"/>
+          <line x1="420" y1="980" x2="120" y2="1920"/><line x1="660" y1="980" x2="960" y2="1920"/>
+          <line x1="300" y1="980" x2="-180" y2="1920"/><line x1="780" y1="980" x2="1260" y2="1920"/>
+        </g>
+        <g id="${vid}-ret" opacity="0.48">
+          <circle cx="540" cy="640" r="320" fill="none" stroke="${pal.main}" stroke-width="3" stroke-dasharray="40 20 12 20"/>
+          <circle cx="540" cy="640" r="245" fill="none" stroke="${pal.soft}" stroke-width="2" stroke-dasharray="8 16"/>
+        </g>
+      </svg>
+    </div>`;
+  }
+
+  if (visual === "eclipse") {
+    S(`gsap.set("#${vid}-moon", { x: -110 });`);
+    T(`tl.to("#${vid}-moon", { x: 25, duration: ${dur}, ease: "sine.inOut" }, ${t0});`);
+    T(`tl.to("#${vid}-cor", { scale: 1.18, opacity: 0.8, rotation: 28, duration: ${dur}, ease: "none" }, ${t0});`);
+    let stars = "";
+    for (let i = 0; i < 14; i++) {
+      stars += `<circle id="${vid}-st${i}" cx="${Math.round(R(70, 1010))}" cy="${Math.round(R(140, 1280))}" r="${f(R(1.5, 4), 1)}" fill="#fff" opacity="${f(R(0.2, 0.7))}"/>`;
+      T(`tl.to("#${vid}-st${i}", { opacity: ${f(R(0.3, 0.95))}, scale: 1.4, duration: ${f(dur * 0.5)}, yoyo: true, repeat: 1 }, ${t0});`);
+    }
+    return `<div class="vis-layer" data-layout-allow-overflow>
+      <svg viewBox="0 0 1080 1920" width="1080" height="1920" style="position:absolute;inset:0">
+        ${stars}
+        <g id="${vid}-cor" style="transform-origin:540px 580px;opacity:0.65">
+          <circle cx="540" cy="580" r="250" fill="none" stroke="${pal.main}" stroke-width="14" opacity="0.38" style="filter:blur(10px)"/>
+          <circle cx="540" cy="580" r="218" fill="${pal.main}" opacity="0.22"/>
+        </g>
+        <circle cx="540" cy="580" r="210" fill="none" stroke="${pal.soft}" stroke-width="4" opacity="0.65"/>
+        <circle id="${vid}-moon" cx="540" cy="580" r="204" fill="#030a14" opacity="0.92"/>
+      </svg>
+    </div>`;
+  }
+
+  if (visual === "scales_duel") {
+    T(`tl.to("#${vid}-bar", { rotation: 9, transformOrigin: "540px 580px", duration: ${f(dur * 0.45)}, ease: "sine.inOut", yoyo: true, repeat: 1 }, ${t0});`);
+    T(`tl.to("#${vid}-cl", { x: 40, opacity: 0.68, duration: ${f(dur * 0.5)}, ease: "sine.inOut", yoyo: true, repeat: 1 }, ${t0});`);
+    T(`tl.to("#${vid}-cr", { x: -40, opacity: 0.68, duration: ${f(dur * 0.5)}, ease: "sine.inOut", yoyo: true, repeat: 1 }, ${t0});`);
+    return `<div class="vis-layer" data-layout-allow-overflow>
+      <div id="${vid}-cl" style="position:absolute;left:-140px;top:380px;width:620px;height:620px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,0.45),transparent 65%);opacity:0.4"></div>
+      <div id="${vid}-cr" style="position:absolute;right:-140px;top:380px;width:620px;height:620px;border-radius:50%;background:radial-gradient(circle,rgba(244,63,94,0.45),transparent 65%);opacity:0.4"></div>
+      <svg viewBox="0 0 1080 1920" width="1080" height="1920" style="position:absolute;inset:0;opacity:0.35">
+        <line id="${vid}-bar" x1="170" y1="580" x2="910" y2="580" stroke="${pal.soft}" stroke-width="6" stroke-linecap="round"/>
+      </svg>
+    </div>`;
+  }
+
+  if (visual === "viral_cta") {
+    const bubbles = [
+      { l: "A", c: "#38bdf8", x: 110, y: 1220, txt: "Vento científico!" },
+      { l: "B", c: "#facc15", x: 640, y: 1245, txt: "Milagre total!" },
+      { l: "B", c: "#f43f5e", x: 190, y: 1325, txt: "Chocado com isso" },
+    ];
+    let bHtml = "";
+    bubbles.forEach((b, bi) => {
+      const bt = f(t0 + 0.35 + bi * 0.45, 3);
+      S(`gsap.set("#${vid}-cb${bi}", { opacity: 0, y: 45, scale: 0.8 });`);
+      T(`tl.to("#${vid}-cb${bi}", { opacity: 0.92, y: 0, scale: 1, duration: 0.36, ease: "back.out(2)" }, ${bt});`);
+      T(`tl.to("#${vid}-cb${bi}", { opacity: 0, y: -55, duration: 0.4 }, ${f(Math.max(bt + 0.5, t0 + dur - 0.55), 3)});`);
+      bHtml += `<div class="live-pop" id="${vid}-cb${bi}" style="left:${b.x}px;top:${b.y}px"><span class="live-av" style="background:${b.c}">${b.l}</span><span>${b.txt}</span></div>`;
+    });
+    S(`gsap.set("#${vid}-tap", { opacity: 0, scale: 0.3 });`);
+    T(`tl.to("#${vid}-tap", { opacity: 0.9, scale: 1.5, duration: 0.32, ease: "power2.out" }, ${f(t0 + Math.min(1.4, dur * 0.55), 3)});`);
+    T(`tl.to("#${vid}-tap", { opacity: 0, scale: 2.3, duration: 0.35 }, ${f(t0 + Math.min(1.72, dur * 0.55 + 0.32), 3)});`);
+    return `<div class="vis-layer" data-layout-allow-overflow>
+      ${bHtml}
+      <div id="${vid}-tap" style="position:absolute;left:710px;top:1142px;width:96px;height:96px;border-radius:50%;border:6px solid #fff"></div>
+    </div>`;
+  }
+
+  // Default: shockwave (ondas de choque + linhas radiais explosivas)
+  S(`gsap.set("#${vid}-sw1", { opacity: 0.85, scale: 0.25, transformOrigin: "540px 650px" });`);
+  S(`gsap.set("#${vid}-sw2", { opacity: 0.7, scale: 0.2, transformOrigin: "540px 650px" });`);
+  T(`tl.to("#${vid}-sw1", { opacity: 0, scale: 2.7, duration: ${f(Math.min(1.4, dur * 0.65))}, ease: "power2.out", repeat: 1 }, ${t0});`);
+  T(`tl.to("#${vid}-sw2", { opacity: 0, scale: 2.7, duration: ${f(Math.min(1.4, dur * 0.65))}, ease: "power2.out", repeat: 1 }, ${t0 + 0.25});`);
+  let rays = "";
+  for (let i = 0; i < 12; i++) {
+    const ang = (i * 30 * Math.PI) / 180;
+    const x1 = Math.round(540 + Math.cos(ang) * 190);
+    const y1 = Math.round(650 + Math.sin(ang) * 190);
+    const x2 = Math.round(540 + Math.cos(ang) * 520);
+    const y2 = Math.round(650 + Math.sin(ang) * 520);
+    rays += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${pal.main}" stroke-width="4" stroke-dasharray="14 18" opacity="0.32"/>`;
+  }
+  T(`tl.to("#${vid}-burst", { rotation: 40, transformOrigin: "540px 650px", duration: ${dur}, ease: "none" }, ${t0});`);
+  return `<div class="vis-layer" data-layout-allow-overflow>
+    <svg viewBox="0 0 1080 1920" width="1080" height="1920" style="position:absolute;inset:0">
+      <g id="${vid}-burst">${rays}</g>
+      <circle id="${vid}-sw1" cx="540" cy="650" r="220" fill="none" stroke="${pal.main}" stroke-width="8"/>
+      <circle id="${vid}-sw2" cx="540" cy="650" r="220" fill="none" stroke="${pal.soft}" stroke-width="5"/>
+    </svg>
+  </div>`;
 }
 
 // ================================================================
@@ -165,38 +413,49 @@ scenes.forEach((sc, idx) => {
 });
 
 // ================================================================
-// GERADOR DAS 10-12 CENAS DINÂMICAS
+// MONTAGEM DAS CENAS DINÂMICAS (ZERO CONTADORES DE CENA)
 // ================================================================
 const scenesHtml = scenes
   .map((sc, idx) => {
     const id = `sc${idx + 1}`;
     const camId = `cam-${id}`;
+    const dollyId = `dolly-${id}`;
     const t0 = sc.startSec;
     const t1 = sc.endSec;
     const dur = f(Math.max(0.5, t1 - t0), 3);
     const pal = ACCENTS[sc.accent] || ACCENTS.gold;
     const layout = String(sc.layout || "impact").toLowerCase();
-    const ey = esc(sc.eyebrow || `PARTE ${idx + 1}`);
+    const visual = sc.visual || DEFAULT_VISUAL_BY_LAYOUT[layout] || "shockwave";
+    const ey = esc(sc.eyebrow || "");
     const hl = String(sc.headline || "");
     const sub = esc(sc.subheadline || "");
     const badge = esc(sc.badge || "DESTAQUE");
     const hSize = headlineSize(hl);
 
-    // Transição de entrada da câmera
+    // Câmera Ken Burns contínua (evita qualquer frame estático)
+    const driftY = idx % 2 === 0 ? -14 : 14;
+    T(`tl.fromTo("#${dollyId}", { scale: 1.0, y: 0 }, { scale: 1.08, y: ${driftY}, duration: ${dur}, ease: "none", immediateRender: false }, ${t0});`);
+
+    // Transições energéticas + flash branco sutil entre cortes
     if (idx > 0) {
+      if (idx % 2 === 0) {
+        const flashAt = f(Math.max(0.05, t0 - 0.05), 3);
+        T(`tl.to("#flash", { opacity: 0.62, duration: 0.05, ease: "power2.out" }, ${flashAt});`);
+        T(`tl.to("#flash", { opacity: 0, duration: 0.22, ease: "power2.out" }, ${t0});`);
+      }
       if (idx % 3 === 1) {
         S(`gsap.set("#${camId}", { opacity: 0, x: 900, skewX: -10 });`);
         T(`tl.to("#${camId}", { opacity: 1, x: 0, skewX: 0, duration: 0.36, ease: "expo.out" }, ${t0});`);
       } else if (idx % 3 === 2) {
-        S(`gsap.set("#${camId}", { opacity: 0, scale: 0.84 });`);
-        T(`tl.to("#${camId}", { opacity: 1, scale: 1, duration: 0.38, ease: "back.out(1.5)" }, ${t0});`);
+        S(`gsap.set("#${camId}", { opacity: 0, scale: 0.82 });`);
+        T(`tl.to("#${camId}", { opacity: 1, scale: 1, duration: 0.38, ease: "back.out(1.6)" }, ${t0});`);
       } else {
-        S(`gsap.set("#${camId}", { opacity: 0, y: 120 });`);
+        S(`gsap.set("#${camId}", { opacity: 0, y: 140 });`);
         T(`tl.to("#${camId}", { opacity: 1, y: 0, duration: 0.36, ease: "power3.out" }, ${t0});`);
       }
     }
 
-    // Saída da câmera (mantém visível até o fim da última cena)
+    // Saída da câmera (última cena faz fade out suave)
     if (idx < scenes.length - 1) {
       const exitAt = f(Math.max(t0 + 0.35, t1 - 0.28), 3);
       if (idx % 2 === 0) {
@@ -208,6 +467,7 @@ const scenesHtml = scenes
       T(`tl.to("#fade", { opacity: 1, duration: 0.45, ease: "power1.in" }, ${f(Math.max(t0 + 0.5, TOTAL - 0.45), 3)});`);
     }
 
+    const visualLayerHtml = buildSceneVisual(visual, id, idx, t0, dur, pal);
     let bodyHtml = "";
 
     if (layout === "timeline") {
@@ -249,16 +509,13 @@ const scenesHtml = scenes
       T(`tl.to("#${id}-sub", { opacity: 1, y: 0, duration: 0.35 }, ${t0 + 0.5});`);
     } else if (layout === "quote") {
       bodyHtml = `
-        <div class="rays" id="${id}-rays"></div>
         <div class="eyebrow" id="${id}-ey" style="top:320px;color:${pal.soft}">${ey}</div>
         <div class="quote-card" id="${id}-card" style="border-color:${pal.main}">
           <div class="quote-badge" style="color:${pal.main}">${esc(hl || badge)}</div>
-          <div class="quote-txt">“${sub || ey}”</div>
+          <div class="quote-txt">“${sub || esc(sc.narration || "")}”</div>
         </div>`;
-      S(`gsap.set("#${id}-rays", { opacity: 0, scale: 0.6 });`);
       S(`gsap.set("#${id}-ey", { opacity: 0, y: 20 });`);
       S(`gsap.set("#${id}-card", { opacity: 0, y: 70, rotationX: 25 });`);
-      T(`tl.to("#${id}-rays", { opacity: 0.65, scale: 1, rotation: 22, duration: ${dur}, ease: "none" }, ${t0});`);
       T(`tl.to("#${id}-ey", { opacity: 1, y: 0, duration: 0.3 }, ${t0 + 0.08});`);
       T(`tl.to("#${id}-card", { opacity: 1, y: 0, rotationX: 0, duration: 0.48, ease: "back.out(1.6)" }, ${t0 + 0.2});`);
     } else if (layout === "stamp") {
@@ -353,7 +610,12 @@ const scenesHtml = scenes
     return `
 <div id="${id}" class="scene clip" data-start="${t0}" data-duration="${dur}">
   <div class="cam" id="${camId}">
-    ${bodyHtml}
+    <div class="dolly" id="${dollyId}">
+      ${visualLayerHtml}
+      <div class="fg-layer">
+        ${bodyHtml}
+      </div>
+    </div>
   </div>
 </div>`;
   })
@@ -452,6 +714,12 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#02060c;color:#f
 .dust{position:absolute;border-radius:50%;background:#e0f2fe;box-shadow:0 0 8px #bae6fd}
 .scene{position:absolute;inset:0;overflow:hidden}
 .cam{position:absolute;inset:0;transform-origin:50% 45%}
+.dolly{position:absolute;inset:0;transform-origin:50% 42%}
+.vis-layer{position:absolute;inset:0;pointer-events:none;z-index:0}
+.fg-layer{position:absolute;inset:0;z-index:5}
+.vis-spark{position:absolute;border-radius:50%}
+.live-pop{position:absolute;display:flex;align-items:center;gap:14px;background:rgba(15,23,42,.88);border:2px solid rgba(255,255,255,.22);padding:14px 24px;border-radius:999px;font-weight:800;font-size:28px;color:#fff;box-shadow:0 16px 40px rgba(0,0,0,.55)}
+.live-av{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Anton',sans-serif;font-size:24px;color:#02060c}
 .center{position:absolute;left:0;right:0;text-align:center}
 .wrap-hl{padding:0 70px;line-height:1.02}
 .anton{font-family:'Anton',sans-serif;line-height:1;text-transform:uppercase}
@@ -490,6 +758,7 @@ html,body{width:1080px;height:1920px;overflow:hidden;background:#02060c;color:#f
 .sw b{position:relative;display:block;font-family:'Montserrat',system-ui,sans-serif;font-weight:900;font-size:74px;line-height:1.08;color:#fff;letter-spacing:-1px;-webkit-text-stroke:2px rgba(0,0,0,.35);text-shadow:0 6px 20px rgba(0,0,0,.85)}
 #grain{position:absolute;inset:-50px;z-index:80;opacity:.09;pointer-events:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 #vignette{position:absolute;inset:0;z-index:81;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 50%,rgba(0,0,0,.7) 100%)}
+#flash{position:absolute;inset:0;z-index:90;background:#fff;opacity:0;pointer-events:none}
 #fade{position:absolute;inset:0;z-index:95;background:#000;opacity:0;pointer-events:none}
 </style>
 </head>
@@ -507,6 +776,7 @@ ${scenesHtml}
 ${subsHtml}  </div>
   <div id="grain" data-layout-allow-occlusion></div>
   <div id="vignette" data-layout-allow-occlusion></div>
+  <div id="flash" data-layout-allow-occlusion></div>
   <div id="fade" data-layout-allow-occlusion></div>
 </div>
 <script>
@@ -522,4 +792,4 @@ window.__timelines["main"] = tl;
 </html>`;
 
 fs.writeFileSync(path.join(TPL_DIR, "index.html"), html, "utf-8");
-console.log(`index.html gerado: ${scenes.length} cenas dinâmicas, ${chunks.length} blocos de legenda, ${wi} palavras (${TOTAL}s).`);
+console.log(`index.html gerado: ${scenes.length} cenas dinâmicas (0 contadores), ${chunks.length} blocos de legenda, ${wi} palavras (${TOTAL}s).`);

@@ -531,11 +531,13 @@
               <span style="font-size:0.75rem; color:var(--text-muted); margin-top:4px; display:block;">
                 🎙️ Pipeline: Voz <strong>Francisca (0.9x)</strong> + pausas calculadas + SFX de relógio e alarme.
               </span>
-              <div style="margin-top:10px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-                <button class="btn-secondary" id="previewAudioBtn" type="button">🔊 Gerar e Ouvir Áudio (Local)</button>
-                <button class="btn-secondary" id="previewVideoBtn" type="button">🎬 Compilar & Visualizar Vídeo (Local)</button>
-                <span id="audioPreviewStatus" style="font-size:0.78rem; color:var(--text-muted);"></span>
+              <div style="margin-top:10px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                <button class="btn-ai" id="cloudAudioBtn" type="button">☁️ Gerar Áudio Online (Francisca + SFX)</button>
+                <button class="btn-secondary" id="instantAudioBtn" type="button">⚡ Prévia Instantânea (0s)</button>
+                <button class="btn-secondary" id="stopInstantBtn" type="button" style="display:none; color:#f87171;">⏹ Parar</button>
+                <button class="btn-secondary" id="previewVideoBtn" type="button">🎬 Preview Vídeo (Local)</button>
               </div>
+              <span id="audioPreviewStatus" style="font-size:0.78rem; color:var(--text-muted); display:block; margin-top:6px;"></span>
               <audio id="audioPreviewPlayer" controls style="display:none; width:100%; margin-top:10px;"></audio>
               <div id="videoPreviewWrap" style="display:none; margin-top:14px; text-align:center;">
                 <iframe id="videoPreviewFrame" style="width:300px; height:533px; border:2px solid var(--accent); border-radius:14px; background:#000;"></iframe>
@@ -613,13 +615,17 @@
     const genericScriptSettings = document.getElementById('genericScriptSettings');
     const generateQuizBtn = document.getElementById('generateQuizBtn');
     const batchDispatchBtn = document.getElementById('batchDispatchBtn');
-    const previewAudioBtn = document.getElementById('previewAudioBtn');
+    const cloudAudioBtn = document.getElementById('cloudAudioBtn');
+    const instantAudioBtn = document.getElementById('instantAudioBtn');
+    const stopInstantBtn = document.getElementById('stopInstantBtn');
     const previewVideoBtn = document.getElementById('previewVideoBtn');
     const audioPreviewPlayer = document.getElementById('audioPreviewPlayer');
     const audioPreviewStatus = document.getElementById('audioPreviewStatus');
     const videoPreviewWrap = document.getElementById('videoPreviewWrap');
     const videoPreviewFrame = document.getElementById('videoPreviewFrame');
     const quizVisualTheme = document.getElementById('quizVisualTheme');
+    let currentAudioObjectUrl = null;
+    let instantAbort = false;
 
     // Carregar credenciais do localStorage
     const savedToken = localStorage.getItem('creator_gh_token') || '';
@@ -657,13 +663,57 @@
       quizJson.value = JSON.stringify(defaultQuizExample, null, 2);
     });
 
-    previewAudioBtn.addEventListener('click', async () => {
-      const isLocal = location.hostname === '127.0.0.1' || location.hostname === 'localhost';
-      if (!isLocal) {
-        alert('O preview de áudio local requer rodar "npm run studio" no seu PC e acessar http://127.0.0.1:3456.');
-        return;
+    function setAudioPlayerBlob(blob, statusMsg) {
+      if (currentAudioObjectUrl) URL.revokeObjectURL(currentAudioObjectUrl);
+      currentAudioObjectUrl = URL.createObjectURL(blob);
+      audioPreviewPlayer.src = currentAudioObjectUrl;
+      audioPreviewPlayer.style.display = 'block';
+      audioPreviewPlayer.play().catch(() => {});
+      audioPreviewStatus.textContent = statusMsg;
+    }
+
+    async function extractFirstFileFromZip(arrayBuffer, mimeType = 'application/octet-stream') {
+      const bytes = new Uint8Array(arrayBuffer);
+      const view = new DataView(arrayBuffer);
+      let eocdOffset = -1;
+      for (let i = bytes.length - 22; i >= Math.max(0, bytes.length - 65557); i--) {
+        if (bytes[i] === 0x50 && bytes[i + 1] === 0x4b && bytes[i + 2] === 0x05 && bytes[i + 3] === 0x06) {
+          eocdOffset = i;
+          break;
+        }
+      }
+      if (eocdOffset === -1) throw new Error('Arquivo ZIP inválido (EOCD não encontrado).');
+
+      const cdOffset = view.getUint32(eocdOffset + 16, true);
+      if (view.getUint32(cdOffset, true) !== 0x02014b50) {
+        throw new Error('Cabeçalho Central Directory inválido no ZIP.');
       }
 
+      const compressionMethod = view.getUint16(cdOffset + 10, true);
+      const compressedSize = view.getUint32(cdOffset + 20, true);
+      const localHeaderOffset = view.getUint32(cdOffset + 42, true);
+      if (view.getUint32(localHeaderOffset, true) !== 0x04034b50) {
+        throw new Error('Cabeçalho local inválido no ZIP.');
+      }
+
+      const fileNameLen = view.getUint16(localHeaderOffset + 26, true);
+      const extraLen = view.getUint16(localHeaderOffset + 28, true);
+      const dataStart = localHeaderOffset + 30 + fileNameLen + extraLen;
+      const compressedSlice = arrayBuffer.slice(dataStart, dataStart + compressedSize);
+
+      if (compressionMethod === 0) {
+        return new Blob([compressedSlice], { type: mimeType });
+      }
+      if (compressionMethod === 8) {
+        const ds = new DecompressionStream('deflate-raw');
+        const stream = new Blob([compressedSlice]).stream().pipeThrough(ds);
+        const decompressedBlob = await new Response(stream).blob();
+        return new Blob([decompressedBlob], { type: mimeType });
+      }
+      throw new Error(`Método de compressão ZIP não suportado: ${compressionMethod}`);
+    }
+
+    cloudAudioBtn.addEventListener('click', async () => {
       let parsed;
       try {
         parsed = JSON.parse(quizJson.value.trim());
@@ -672,36 +722,206 @@
         return;
       }
 
+      const isLocal = location.hostname === '127.0.0.1' || location.hostname === 'localhost';
       const visualTheme = quizVisualTheme.value;
       const category = document.getElementById('quizTheme').value.split(',')[0].trim();
 
-      previewAudioBtn.disabled = true;
-      previewAudioBtn.textContent = '⏳ Sintetizando Francisca + SFX...';
-      audioPreviewStatus.textContent = 'Gerando áudio e compilando vídeo, aguarde alguns segundos...';
-      try {
-        const res = await fetch('/api/preview-audio', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ questions: parsed, theme: visualTheme, category })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || `Erro HTTP ${res.status}`);
+      cloudAudioBtn.disabled = true;
+      cloudAudioBtn.textContent = '⏳ Gerando áudio...';
 
-        audioPreviewPlayer.src = data.audioUrl;
-        audioPreviewPlayer.style.display = 'block';
-        audioPreviewPlayer.play().catch(() => {});
-        if (data.videoPreviewUrl) {
-          videoPreviewFrame.src = data.videoPreviewUrl;
-          videoPreviewWrap.style.display = 'block';
+      if (isLocal) {
+        audioPreviewStatus.textContent = 'Sintetizando Francisca 0.9x + SFX localmente...';
+        try {
+          const res = await fetch('/api/preview-audio', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ questions: parsed, theme: visualTheme, category })
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || `Erro HTTP ${res.status}`);
+
+          audioPreviewPlayer.src = data.audioUrl;
+          audioPreviewPlayer.style.display = 'block';
+          audioPreviewPlayer.play().catch(() => {});
+          if (data.videoPreviewUrl) {
+            videoPreviewFrame.src = data.videoPreviewUrl;
+            videoPreviewWrap.style.display = 'block';
+          }
+          audioPreviewStatus.textContent = '✅ Áudio e preview visual prontos!';
+        } catch (err) {
+          audioPreviewStatus.textContent = '';
+          alert(`❌ Erro ao gerar áudio: ${err.message}`);
+        } finally {
+          cloudAudioBtn.disabled = false;
+          cloudAudioBtn.textContent = '☁️ Gerar Áudio Online (Francisca + SFX)';
         }
-        audioPreviewStatus.textContent = '✅ Áudio e preview visual prontos!';
-      } catch (err) {
-        audioPreviewStatus.textContent = '';
-        alert(`❌ Erro ao gerar áudio: ${err.message}`);
-      } finally {
-        previewAudioBtn.disabled = false;
-        previewAudioBtn.textContent = '🔊 Gerar e Ouvir Áudio (Local)';
+        return;
       }
+
+      // Modo 100% Online via GitHub Actions (audio_only)
+      const token = tokenInput.value.trim() || localStorage.getItem('creator_gh_token');
+      if (!token) {
+        cloudAudioBtn.disabled = false;
+        cloudAudioBtn.textContent = '☁️ Gerar Áudio Online (Francisca + SFX)';
+        alert('Insira e salve seu GitHub Token no topo para gerar áudio oficial na nuvem (ou use "⚡ Prévia Instantânea").');
+        tokenInput.focus();
+        return;
+      }
+
+      const title = (videoTitle.value.trim() || 'quiz-audio') + '-preview';
+      try {
+        audioPreviewStatus.textContent = '1/3 Enviando roteiro para sintetização online (Francisca 0.9x + SFX)...';
+        const prevRunsData = await ghApi(`actions/workflows/${WORKFLOW_ID}/runs?per_page=1`);
+        const prevLatestId = prevRunsData.workflow_runs?.[0]?.id || 0;
+
+        await dispatchRender('quiz-mobile', title, JSON.stringify(parsed), visualTheme, 'audio_only');
+        fetchRuns();
+
+        let targetRun = null;
+        for (let attempt = 0; attempt < 45; attempt++) {
+          await new Promise(r => setTimeout(r, 4000));
+          const runsData = await ghApi(`actions/workflows/${WORKFLOW_ID}/runs?per_page=5`);
+          const runs = runsData.workflow_runs || [];
+          const found = runs.find(r => r.id > prevLatestId);
+          if (found) {
+            targetRun = found;
+            if (found.status === 'queued') {
+              audioPreviewStatus.textContent = `2/3 Na fila do GitHub Actions (#${found.run_number})...`;
+            } else if (found.status === 'in_progress') {
+              audioPreviewStatus.textContent = `2/3 Sintetizando voz Francisca + mixando SFX (#${found.run_number})...`;
+            } else if (found.status === 'completed') {
+              break;
+            }
+          }
+        }
+
+        if (!targetRun || targetRun.status !== 'completed') {
+          throw new Error('Tempo limite aguardando o áudio na nuvem. Acompanhe na Esteira ao lado.');
+        }
+        if (targetRun.conclusion !== 'success') {
+          throw new Error(`Falha na geração do áudio na nuvem (${targetRun.conclusion}). Veja o log na Esteira.`);
+        }
+
+        audioPreviewStatus.textContent = '3/3 Baixando e extraindo MP3 oficial no navegador...';
+        const artData = await ghApi(`actions/runs/${targetRun.id}/artifacts`);
+        const audioArtifact = (artData.artifacts || []).find(a => a.name.endsWith('-audio')) || (artData.artifacts || [])[0];
+        if (!audioArtifact) throw new Error('Artefato de áudio não encontrado.');
+
+        const zipRes = await fetch(audioArtifact.archive_download_url, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!zipRes.ok) throw new Error(`Erro ao baixar artefato (${zipRes.status})`);
+        const zipBuf = await zipRes.arrayBuffer();
+        const mp3Blob = await extractFirstFileFromZip(zipBuf, 'audio/mpeg');
+        setAudioPlayerBlob(mp3Blob, '✅ Áudio oficial (Francisca 0.9x + SFX) pronto! Ouça abaixo.');
+        fetchRuns();
+      } catch (err) {
+        audioPreviewStatus.textContent = `❌ ${err.message}`;
+        alert(`❌ ${err.message}`);
+      } finally {
+        cloudAudioBtn.disabled = false;
+        cloudAudioBtn.textContent = '☁️ Gerar Áudio Online (Francisca + SFX)';
+      }
+    });
+
+    function sleepMs(ms) {
+      return new Promise(r => setTimeout(r, ms));
+    }
+
+    function speakTextPt(text) {
+      return new Promise((resolve) => {
+        if (instantAbort) return resolve();
+        const utt = new SpeechSynthesisUtterance(text);
+        const voices = window.speechSynthesis.getVoices();
+        const ptVoice =
+          voices.find(v => /francisca/i.test(v.name)) ||
+          voices.find(v => /pt[-_]BR/i.test(v.lang)) ||
+          voices.find(v => /^pt/i.test(v.lang));
+        if (ptVoice) utt.voice = ptVoice;
+        utt.lang = 'pt-BR';
+        utt.rate = 0.9;
+        utt.onend = () => resolve();
+        utt.onerror = () => resolve();
+        window.speechSynthesis.speak(utt);
+      });
+    }
+
+    instantAudioBtn.addEventListener('click', async () => {
+      if (!('speechSynthesis' in window)) {
+        alert('Seu navegador não suporta Web Speech API.');
+        return;
+      }
+      let parsed;
+      try {
+        parsed = JSON.parse(quizJson.value.trim());
+        if (!Array.isArray(parsed) || parsed.length === 0) throw new Error('Lista vazia');
+      } catch (e) {
+        alert('JSON do Quiz inválido!');
+        return;
+      }
+
+      instantAbort = false;
+      window.speechSynthesis.cancel();
+      instantAudioBtn.style.display = 'none';
+      stopInstantBtn.style.display = 'inline-flex';
+      audioPreviewStatus.textContent = '⚡ Reproduzindo prévia instantânea (ritmo + SFX)...';
+
+      const playSfx = (path) => {
+        if (instantAbort) return;
+        const a = new Audio(path);
+        a.volume = 0.9;
+        a.play().catch(() => {});
+      };
+
+      try {
+        for (let i = 0; i < parsed.length && !instantAbort; i++) {
+          const q = parsed[i];
+          audioPreviewStatus.textContent = `⚡ Rodada ${i + 1}/${parsed.length}: Pergunta...`;
+          await speakTextPt(q.q);
+          if (instantAbort) break;
+          await sleepMs(350);
+
+          const letters = ['A', 'B', 'C'];
+          for (let oi = 0; oi < 3 && !instantAbort; oi++) {
+            await speakTextPt(`${letters[oi]}:`);
+            if (instantAbort) break;
+            await sleepMs(200);
+            await speakTextPt(`${q.opts[oi]}?`);
+            if (instantAbort) break;
+            await sleepMs(oi < 2 ? 300 : 450);
+          }
+
+          for (const n of ['5', '4', '3', '2', '1']) {
+            if (instantAbort) break;
+            audioPreviewStatus.textContent = `⚡ Rodada ${i + 1}/${parsed.length}: Contagem ${n}...`;
+            playSfx('sfx/tick.mp3');
+            await speakTextPt(n);
+            if (instantAbort) break;
+            await sleepMs(700);
+          }
+
+          if (instantAbort) break;
+          audioPreviewStatus.textContent = `⚡ Rodada ${i + 1}/${parsed.length}: Resposta!`;
+          playSfx('sfx/trim_alarm.mp3');
+          await speakTextPt(`Resposta certa: ${q.ans}!`);
+          if (instantAbort) break;
+          await sleepMs(900);
+        }
+        if (!instantAbort) {
+          audioPreviewStatus.textContent = '✅ Prévia instantânea concluída!';
+        }
+      } finally {
+        instantAudioBtn.style.display = 'inline-flex';
+        stopInstantBtn.style.display = 'none';
+      }
+    });
+
+    stopInstantBtn.addEventListener('click', () => {
+      instantAbort = true;
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      instantAudioBtn.style.display = 'inline-flex';
+      stopInstantBtn.style.display = 'none';
+      audioPreviewStatus.textContent = '⏹ Prévia interrompida.';
     });
 
     previewVideoBtn.addEventListener('click', async () => {
@@ -848,7 +1068,7 @@
       return res.json();
     }
 
-    async function dispatchRender(template, title, customData, theme = 'roxo') {
+    async function dispatchRender(template, title, customData, theme = 'roxo', mode = 'full') {
       try {
         return await ghApi(`actions/workflows/${WORKFLOW_ID}/dispatches`, {
           method: 'POST',
@@ -858,7 +1078,8 @@
               template,
               video_title: title,
               custom_data: customData,
-              theme
+              theme,
+              mode
             }
           })
         });
@@ -911,6 +1132,35 @@
       }
     });
 
+    window.playArtifactAudio = async function(runId, btnEl) {
+      const token = tokenInput.value.trim() || localStorage.getItem('creator_gh_token');
+      if (!token) return alert('Token GitHub necessário.');
+      const originalText = btnEl.textContent;
+      btnEl.disabled = true;
+      btnEl.textContent = '⏳ Carregando MP3...';
+      try {
+        const data = await ghApi(`actions/runs/${runId}/artifacts`);
+        const audioArtifact = (data.artifacts || []).find(a => a.name.endsWith('-audio'));
+        if (!audioArtifact) {
+          throw new Error('Artefato de áudio (-audio) não encontrado para esta execução.');
+        }
+
+        const res = await fetch(audioArtifact.archive_download_url, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error(`Erro ao baixar (${res.status})`);
+        const buf = await res.arrayBuffer();
+        const mp3Blob = await extractFirstFileFromZip(buf, 'audio/mpeg');
+        setAudioPlayerBlob(mp3Blob, `✅ Reproduzindo áudio da execução (artefato ${audioArtifact.name}).`);
+        audioPreviewPlayer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } catch (err) {
+        alert(`❌ ${err.message}`);
+      } finally {
+        btnEl.disabled = false;
+        btnEl.textContent = originalText;
+      }
+    };
+
     window.downloadArtifact = async function(runId, btnEl) {
       const token = tokenInput.value.trim() || localStorage.getItem('creator_gh_token');
       if (!token) return alert('Token GitHub necessário.');
@@ -919,7 +1169,8 @@
       btnEl.textContent = '⏳ Baixando...';
       try {
         const data = await ghApi(`actions/runs/${runId}/artifacts`);
-        const artifact = (data.artifacts || [])[0];
+        const artifacts = data.artifacts || [];
+        const artifact = artifacts.find(a => !a.name.endsWith('-audio')) || artifacts[0];
         if (!artifact) throw new Error('Artefato não encontrado ou expirado.');
 
         const res = await fetch(artifact.archive_download_url, {
@@ -990,8 +1241,11 @@
           }
 
           const created = new Date(run.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          const audioBtn = (run.status === 'completed' && run.conclusion === 'success')
+            ? `<button class="run-btn" onclick="playArtifactAudio(${run.id}, this)">🔊 Ouvir MP3</button>`
+            : '';
           const downloadBtn = (run.status === 'completed' && run.conclusion === 'success')
-            ? `<button class="run-btn download" onclick="downloadArtifact(${run.id}, this)">⬇️ Baixar MP4 (.zip)</button>`
+            ? `<button class="run-btn download" onclick="downloadArtifact(${run.id}, this)">⬇️ Baixar (.zip)</button>`
             : '';
 
           return `
@@ -1008,6 +1262,7 @@
                 <div class="step-bar ${s3}"></div>
               </div>
               <div class="run-actions">
+                ${audioBtn}
                 ${downloadBtn}
                 <a href="${run.html_url}" target="_blank" class="run-btn">Acompanhar Log</a>
               </div>

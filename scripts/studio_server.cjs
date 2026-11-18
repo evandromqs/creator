@@ -272,6 +272,15 @@ const server = http.createServer(async (req, res) => {
     return serveStaticFile(req, res, QUIZ_MP3);
   }
 
+  if (req.method === 'GET' && urlPath.startsWith('/sfx/')) {
+    const resolved = path.resolve(ROOT, 'public', '.' + urlPath);
+    if (!resolved.startsWith(path.join(ROOT, 'public'))) {
+      res.writeHead(403);
+      return res.end('Forbidden');
+    }
+    return serveStaticFile(req, res, resolved);
+  }
+
   if (
     req.method === 'GET' &&
     (urlPath.startsWith('/assets/') ||

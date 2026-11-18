@@ -26,6 +26,10 @@ on:
         description: 'Tema visual do Quiz (roxo, neon, cyberpunk, esmeralda, solar)'
         required: false
         default: 'roxo'
+      mode:
+        description: 'Modo de execução (full = áudio + vídeo MP4, audio_only = apenas áudio MP3)'
+        required: false
+        default: 'full'
 
 jobs:
   render:
@@ -74,6 +78,14 @@ jobs:
         run: |
           node scripts/generate_quiz_audio.cjs templates/quiz-mobile/quiz3-francisca.json audio/quiz-mix.mp3 transcript/quiz-timings.json
 
+      - name: Salvar áudio MP3 como artefato
+        if: ${{ inputs.template == 'quiz-mobile' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.video_title || 'quiz' }}-audio
+          path: audio/quiz-mix.mp3
+          retention-days: 14
+
       - name: Gerar áudio genérico via Edge TTS (se roteiro.txt fornecido)
         if: ${{ inputs.template != 'quiz-mobile' }}
         run: |
@@ -82,12 +94,15 @@ jobs:
           fi
 
       - name: Compilar template selecionado
+        if: ${{ inputs.mode != 'audio_only' }}
         run: node scripts/build.cjs --template=${{ inputs.template }} --theme=${{ inputs.theme || 'roxo' }}
 
       - name: Renderizar vídeo via Hyperframes
+        if: ${{ inputs.mode != 'audio_only' }}
         run: npx --yes hyperframes@0.9.22 render -o output/video.mp4
 
       - name: Salvar vídeo gerado como artefato
+        if: ${{ inputs.mode != 'audio_only' }}
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.video_title || inputs.template }}

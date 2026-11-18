@@ -30,8 +30,29 @@ let questions = DEFAULT_QUESTIONS;
 if (inputQuizFile && fs.existsSync(inputQuizFile)) {
   try {
     const raw = JSON.parse(fs.readFileSync(inputQuizFile, "utf-8"));
-    if (Array.isArray(raw)) questions = raw;
-    else if (Array.isArray(raw.questions)) questions = raw.questions;
+    const list = Array.isArray(raw)
+      ? raw
+      : Array.isArray(raw.questions)
+        ? raw.questions
+        : Array.isArray(raw.rounds)
+          ? raw.rounds
+          : null;
+    if (list && list.length > 0) {
+      questions = list.map((item) => {
+        const opts = item.opts || item.options || [];
+        const ans =
+          item.ans ||
+          item.answer ||
+          (item.correctIndex !== undefined ? opts[item.correctIndex] : opts[0]) ||
+          "";
+        return {
+          q: item.q || item.question || "",
+          opts,
+          ans,
+          category: item.category || undefined,
+        };
+      });
+    }
   } catch (err) {
     console.warn("Aviso ao carregar quiz personalizado, usando padrão:", err.message);
   }

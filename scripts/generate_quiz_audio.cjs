@@ -40,7 +40,7 @@ if (inputQuizFile && fs.existsSync(inputQuizFile)) {
 const outMp3Final = process.argv[3] || path.join(ROOT, "audio", "quiz-mix.mp3");
 const outTimingsFinal = process.argv[4] || path.join(ROOT, "transcript", "quiz-timings.json");
 
-const tickSfx = path.join(ROOT, "assets", "sfx", "tick.mp3");
+const tickSfx = path.join(ROOT, "assets", "sfx", "tic-tac.mp3");
 const trimSfx = path.join(ROOT, "assets", "sfx", "trim_alarm.mp3");
 
 async function synthChunk(tts, text, outMp3) {
@@ -216,47 +216,46 @@ async function main() {
     { stdio: "ignore" }
   );
 
-  console.log(`Voz base gerada (${totalDur}s). Mixando SFX (tick e trim_alarm)...`);
+  console.log(`Voz base gerada (${totalDur}s). Mixando SFX (tic-tac contínuo e trim_alarm)...`);
 
-  // Monta o filtro de mixagem do FFmpeg para inserir ticks e trim_alarm nos momentos exatos
-  // tick.mp3 em cada um dos cues da contagem (volume moderado e nítido)
-  // trim_alarm.mp3 em cada uma das revelações de resposta
+  // Monta o filtro de mixagem do FFmpeg para tocar tic-tac.mp3 em loop durante toda a contagem 5..1
+  // e disparar trim_alarm.mp3 no instante exato da revelação
   const hasTick = fs.existsSync(tickSfx);
   const hasTrim = fs.existsSync(trimSfx);
 
   if (hasTick && hasTrim) {
     const inputs = ["-i", voiceMp3, "-i", tickSfx, "-i", trimSfx];
-    const filterParts = [];
-    let mixInputsCount = 1; // [0:a] voz
+    const filterParts = ["[0:a]aformat=sample_rates=44100:channel_layouts=stereo[voice]"];
+    const mixInputsLabels = ["[voice]"];
+    let mixInputsCount = 1;
 
-    // ticks
+    // tic-tac contínuo durante a contagem (de cues[0] até reveal)
     roundsData.forEach((r, rIdx) => {
-      r.cues.forEach((cueTime, cIdx) => {
-        const delayMs = Math.round(cueTime * 1000);
-        const label = `tick_${rIdx}_${cIdx}`;
-        filterParts.push(`[1:a]adelay=${delayMs}|${delayMs},volume=0.85[${label}]`);
-        mixInputsCount++;
-      });
-    });
-
-    // trims
-    roundsData.forEach((r, rIdx) => {
-      const delayMs = Math.round(r.reveal * 1000);
-      const label = `trim_${rIdx}`;
-      filterParts.push(`[2:a]adelay=${delayMs}|${delayMs},volume=0.90[${label}]`);
+      const startCue = r.cues[0] ?? 0;
+      const countDur = Number(Math.max(0.5, r.reveal - startCue).toFixed(3));
+      const delayMs = Math.round(startCue * 1000);
+      const fadeSt = Number(Math.max(0, countDur - 0.12).toFixed(3));
+      const label = `tictac_${rIdx}`;
+      filterParts.push(
+        `[1:a]aformat=sample_rates=44100:channel_layouts=stereo,aloop=loop=-1:size=2097152,atrim=0:${countDur},asetpts=PTS-STARTPTS,afade=t=out:st=${fadeSt}:d=0.12,volume=0.45,adelay=${delayMs}|${delayMs}[${label}]`
+      );
+      mixInputsLabels.push(`[${label}]`);
       mixInputsCount++;
     });
 
-    const mixInputsLabels = ["[0:a]"];
+    // trim_alarm no segundo exato da revelação
     roundsData.forEach((r, rIdx) => {
-      r.cues.forEach((_, cIdx) => mixInputsLabels.push(`[tick_${rIdx}_${cIdx}]`));
-    });
-    roundsData.forEach((r, rIdx) => {
-      mixInputsLabels.push(`[trim_${rIdx}]`);
+      const delayMs = Math.round(r.reveal * 1000);
+      const label = `trim_${rIdx}`;
+      filterParts.push(
+        `[2:a]aformat=sample_rates=44100:channel_layouts=stereo,volume=0.85,adelay=${delayMs}|${delayMs}[${label}]`
+      );
+      mixInputsLabels.push(`[${label}]`);
+      mixInputsCount++;
     });
 
     filterParts.push(
-      `${mixInputsLabels.join("")}amix=inputs=${mixInputsCount}:duration=first:dropout_transition=0,volume=1.0[outa]`
+      `${mixInputsLabels.join("")}amix=inputs=${mixInputsCount}:duration=first:dropout_transition=0:normalize=0,volume=1.0[outa]`
     );
 
     fs.mkdirSync(path.dirname(outMp3Final), { recursive: true });

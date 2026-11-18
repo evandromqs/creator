@@ -626,6 +626,7 @@
     const quizVisualTheme = document.getElementById('quizVisualTheme');
     let currentAudioObjectUrl = null;
     let instantAbort = false;
+    let activeTicTac = null;
 
     // Carregar credenciais do localStorage
     const savedToken = localStorage.getItem('creator_gh_token') || '';
@@ -891,13 +892,27 @@
             await sleepMs(oi < 2 ? 300 : 450);
           }
 
+          if (activeTicTac) {
+            activeTicTac.pause();
+            activeTicTac = null;
+          }
+          activeTicTac = new Audio('sfx/tic-tac.mp3');
+          activeTicTac.loop = true;
+          activeTicTac.volume = 0.45;
+          activeTicTac.play().catch(() => {});
+
           for (const n of ['5', '4', '3', '2', '1']) {
             if (instantAbort) break;
             audioPreviewStatus.textContent = `⚡ Rodada ${i + 1}/${parsed.length}: Contagem ${n}...`;
-            playSfx('sfx/tick.mp3');
             await speakTextPt(n);
             if (instantAbort) break;
             await sleepMs(700);
+          }
+
+          if (activeTicTac) {
+            activeTicTac.pause();
+            activeTicTac.currentTime = 0;
+            activeTicTac = null;
           }
 
           if (instantAbort) break;
@@ -911,6 +926,10 @@
           audioPreviewStatus.textContent = '✅ Prévia instantânea concluída!';
         }
       } finally {
+        if (activeTicTac) {
+          activeTicTac.pause();
+          activeTicTac = null;
+        }
         instantAudioBtn.style.display = 'inline-flex';
         stopInstantBtn.style.display = 'none';
       }
@@ -918,6 +937,10 @@
 
     stopInstantBtn.addEventListener('click', () => {
       instantAbort = true;
+      if (activeTicTac) {
+        activeTicTac.pause();
+        activeTicTac = null;
+      }
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       instantAudioBtn.style.display = 'inline-flex';
       stopInstantBtn.style.display = 'none';

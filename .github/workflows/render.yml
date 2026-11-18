@@ -56,6 +56,12 @@ jobs:
       - name: Instalar dependências
         run: npm install
 
+      - name: Cache do Chromium (Playwright / Hyperframes)
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-hyperframes-v1
+
       - name: Injetar dados customizados (se fornecido)
         run: |
           node -e '

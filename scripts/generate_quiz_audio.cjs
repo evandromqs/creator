@@ -259,13 +259,29 @@ async function main() {
     );
   }
   const hasSwoosh = fs.existsSync(swooshSfx);
+  const bgMusicFile = path.join(ROOT, "assets", "music", "quiz-102bpm-dry.mp3");
+  const hasBgMusic = fs.existsSync(bgMusicFile);
 
   if (hasTick && hasTrim) {
     const inputs = ["-i", voiceMp3, "-i", tickSfx, "-i", trimSfx];
+    let nextInputIdx = 3;
+    const swooshInputIdx = hasSwoosh ? nextInputIdx++ : -1;
     if (hasSwoosh) inputs.push("-i", swooshSfx);
+    const bgInputIdx = hasBgMusic ? nextInputIdx++ : -1;
+    if (hasBgMusic) inputs.push("-i", bgMusicFile);
+
     const filterParts = ["[0:a]aformat=sample_rates=44100:channel_layouts=stereo[voice]"];
     const mixInputsLabels = ["[voice]"];
     let mixInputsCount = 1;
+
+    if (hasBgMusic) {
+      const fadeOutSt = Number(Math.max(0, totalDur - 1.5).toFixed(3));
+      filterParts.push(
+        `[${bgInputIdx}:a]aformat=sample_rates=44100:channel_layouts=stereo,aloop=loop=-1:size=2097152,atrim=0:${totalDur},asetpts=PTS-STARTPTS,afade=t=out:st=${fadeOutSt}:d=1.5,volume=0.14[bgm]`
+      );
+      mixInputsLabels.push("[bgm]");
+      mixInputsCount++;
+    }
 
     // tic-tac contínuo durante a contagem (de cues[0] até reveal)
     roundsData.forEach((r, rIdx) => {
@@ -299,7 +315,7 @@ async function main() {
         const delayMs = Math.max(0, Math.round((r.start - 0.15) * 1000));
         const label = `swoosh_${rIdx}`;
         filterParts.push(
-          `[3:a]aformat=sample_rates=44100:channel_layouts=stereo,volume=0.75,adelay=${delayMs}|${delayMs}[${label}]`
+          `[${swooshInputIdx}:a]aformat=sample_rates=44100:channel_layouts=stereo,volume=0.75,adelay=${delayMs}|${delayMs}[${label}]`
         );
         mixInputsLabels.push(`[${label}]`);
         mixInputsCount++;

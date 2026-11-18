@@ -889,33 +889,42 @@
       const idx = Math.min(activeIdx, total - 1);
       const item = questions[idx] || { q: 'Adicione uma pergunta...', opts: ['A', 'B', 'C'], ans: 'A', category: 'QUIZ' };
       const progressPct = revealed ? 100 : ((5 - Math.min(5, Math.max(0, clockValue))) / 5) * 100;
+      const ROUND_COLORS = ['#facc15', '#22d3ee', '#fb7185', '#4ade80', '#a78bfa', '#fb923c'];
+      const roundBg = ROUND_COLORS[idx % ROUND_COLORS.length];
       return (
         <div className="sim-wrap">
-          <div className="phone-frame" style={{ background: theme.grad }}>
-            <div className="sim-header" style={{ border: `1.5px solid ${theme.accent}` }}>
-              <span>QUIZ MOBILE</span><span>RODADA {idx + 1}/{total}</span>
+          <div className="phone-frame" style={{ background: roundBg, padding: 0, justifyContent: 'flex-start' }}>
+            <div style={{ width: '100%', background: '#31105f', borderBottom: '4px solid #0f172a', borderRadius: '0 0 24px 24px', padding: '14px 16px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 4px 0 rgba(15,23,42,0.25)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '1.35rem', lineHeight: 1 }}>🎓</span>
+                <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                  <span style={{ fontWeight: 900, fontSize: '0.72rem', color: '#fff', letterSpacing: '0.5px' }}>{(item.category || 'CONHECIMENTOS GERAIS').toUpperCase()}</span>
+                  <span style={{ fontWeight: 800, fontSize: '0.58rem', color: '#fde047' }}>RODADA {idx + 1}/{total}</span>
+                </div>
+              </div>
+              <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: revealed ? '#4ade80' : '#fde047', border: '3px solid #0f172a', boxShadow: '0 3px 0 #0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '1rem', color: '#0f172a' }}>{revealed ? '0' : clockValue}</div>
             </div>
-            <div className="sim-dots" style={{ gridTemplateColumns: `repeat(${total}, 1fr)` }}>
-              {questions.map((_, i) => <span key={i} className="sim-dot" style={i === idx ? { background: theme.accent } : i < idx ? { background: theme.accent, opacity: 0.5 } : undefined} />)}
+            <div style={{ width: '100%', padding: '10px 14px 14px', display: 'flex', flexDirection: 'column', flex: 1 }}>
+              <div className="sim-dots" style={{ gridTemplateColumns: `repeat(${total}, 1fr)`, marginTop: '2px' }}>
+                {questions.map((_, i) => <span key={i} className="sim-dot" style={i === idx ? { background: '#fff', border: '1.5px solid #0f172a' } : i < idx ? { background: '#0f172a' } : { background: 'rgba(15,23,42,0.2)' }} />)}
+              </div>
+              <div className="sim-qbox" style={{ border: '3px solid #0f172a', boxShadow: '0 5px 0 #0f172a', borderRadius: '18px', marginTop: '12px' }}>{item.q || 'Pergunta sem texto'}</div>
+              <div className="sim-track" style={{ border: '2px solid #0f172a', background: 'rgba(15,23,42,0.2)', marginTop: '12px' }}><div className="sim-fill" style={{ width: `${progressPct}%`, background: '#fff' }} /></div>
+              <div className="sim-opts" style={{ marginTop: '12px', gap: '8px' }}>
+                {(item.opts || []).slice(0, 3).map((opt, oi) => {
+                  const isCorrect = opt === item.ans;
+                  const style = { border: '2.5px solid #0f172a', boxShadow: '0 4px 0 #0f172a', borderRadius: '999px', ...(revealed ? (isCorrect ? { background: '#4ade80' } : { opacity: 0.45 }) : {}) };
+                  return (
+                    <div key={oi} className="sim-opt" style={style}>
+                      <span className="sim-opt-let" style={{ borderRadius: '50%', background: '#31105f' }}>{['A', 'B', 'C'][oi]}</span>
+                      <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{opt}</span>
+                      {revealed && isCorrect && <span>✓</span>}
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="sim-footer" style={{ color: '#0f172a', opacity: 0.75, marginTop: 'auto' }}>@CREATORSTUDIO</div>
             </div>
-            <div className="sim-cat" style={{ color: theme.accent }}>{(item.category || 'QUIZ').toUpperCase()}</div>
-            <div className="sim-qbox" style={{ border: `2px solid ${theme.accent}` }}>{item.q || 'Pergunta sem texto'}</div>
-            <div className="sim-clock" style={{ background: revealed ? '#4ade80' : theme.clockBg }}>{revealed ? '0' : clockValue}</div>
-            <div className="sim-track"><div className="sim-fill" style={{ width: `${progressPct}%`, background: theme.accent }} /></div>
-            <div className="sim-opts">
-              {(item.opts || []).slice(0, 3).map((opt, oi) => {
-                const isCorrect = opt === item.ans;
-                const style = revealed ? (isCorrect ? { background: '#4ade80', borderColor: '#fff' } : { opacity: 0.45 }) : {};
-                return (
-                  <div key={oi} className="sim-opt" style={style}>
-                    <span className="sim-opt-let">{['A', 'B', 'C'][oi]}</span>
-                    <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{opt}</span>
-                    {revealed && isCorrect && <span>✓</span>}
-                  </div>
-                );
-              })}
-            </div>
-            <div className="sim-footer">@QUIZMOBILE</div>
           </div>
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
             <button className="btn-secondary" type="button" onClick={onPrev}>◀</button>

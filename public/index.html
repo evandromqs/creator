@@ -3,16 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Creator Studio — Esteira de Produção</title>
+  <title>Creator Studio — Esteira de Produção (React)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
+  <script crossorigin src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script crossorigin src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script crossorigin src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.26.4/babel.min.js"></script>
   <style>
     :root {
       --bg: #090d16;
       --card: #111827;
       --card-border: #1f2937;
       --accent: #6366f1;
-      --accent-hover: #4f46e5;
       --accent-light: rgba(99, 102, 241, 0.15);
       --success: #10b981;
       --warning: #f59e0b;
@@ -28,130 +30,146 @@
       background-color: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
     }
 
     header {
       border-bottom: 1px solid var(--card-border);
-      background: rgba(17, 24, 39, 0.85);
+      background: rgba(17, 24, 39, 0.88);
       backdrop-filter: blur(12px);
       position: sticky;
       top: 0;
       z-index: 50;
-      padding: 14px 28px;
+      padding: 12px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       font-weight: 800;
-      font-size: 1.2rem;
-      letter-spacing: -0.5px;
+      font-size: 1.15rem;
+      letter-spacing: -0.4px;
     }
-
     .brand-badge {
       background: linear-gradient(135deg, #6366f1, #a855f7);
-      color: white;
+      color: #fff;
       padding: 4px 10px;
       border-radius: 8px;
       font-size: 0.72rem;
       font-weight: 700;
     }
 
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .status-pill {
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 6px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--card-border);
+      background: #0b0f19;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: border-color 0.2s;
+    }
+    .status-pill.ok { border-color: rgba(16, 185, 129, 0.45); color: #34d399; }
+    .status-pill.warn { border-color: rgba(245, 158, 11, 0.45); color: #fbbf24; }
+    .status-pill:hover { border-color: var(--accent); }
+
     .repo-link {
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: color 0.2s;
     }
     .repo-link:hover { color: var(--text); }
 
     .container {
-      max-width: 1260px;
+      max-width: 1320px;
       width: 100%;
       margin: 0 auto;
-      padding: 24px 20px;
+      padding: 22px 18px 40px;
     }
 
-    /* KPIs do Gestor */
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 14px;
-      margin-bottom: 24px;
+      margin-bottom: 22px;
     }
-    @media (max-width: 820px) {
-      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-    }
+    @media (max-width: 820px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+
     .kpi-card {
       background: var(--card);
       border: 1px solid var(--card-border);
       border-radius: var(--radius);
-      padding: 16px 20px;
+      padding: 15px 18px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
     }
     .kpi-label {
-      font-size: 0.78rem;
+      font-size: 0.74rem;
       color: var(--text-muted);
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-    .kpi-value {
-      font-size: 1.8rem;
-      font-weight: 800;
-    }
+    .kpi-value { font-size: 1.75rem; font-weight: 800; }
     .kpi-value.accent { color: #818cf8; }
     .kpi-value.warning { color: var(--warning); }
     .kpi-value.success { color: var(--success); }
     .kpi-value.danger { color: var(--danger); }
 
-    main {
+    .main-grid {
       display: grid;
-      grid-template-columns: 1fr 420px;
-      gap: 24px;
+      grid-template-columns: 1fr 430px;
+      gap: 22px;
+      align-items: start;
     }
-    @media (max-width: 980px) {
-      main { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 1040px) { .main-grid { grid-template-columns: 1fr; } }
 
     .card {
       background: var(--card);
       border: 1px solid var(--card-border);
       border-radius: var(--radius);
-      padding: 22px;
-      margin-bottom: 22px;
+      padding: 20px;
+      margin-bottom: 20px;
     }
-
-    .card-title {
-      font-size: 1.08rem;
-      font-weight: 700;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
     .token-box {
       background: rgba(99, 102, 241, 0.05);
       border: 1px solid rgba(99, 102, 241, 0.25);
     }
 
-    .form-group { margin-bottom: 16px; }
+    .card-title {
+      font-size: 1.04rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
 
+    .form-group { margin-bottom: 14px; }
     label {
       display: block;
-      font-size: 0.83rem;
+      font-size: 0.8rem;
       font-weight: 600;
       color: var(--text-muted);
       margin-bottom: 6px;
@@ -162,23 +180,21 @@
       background: #0b0f19;
       border: 1px solid var(--card-border);
       border-radius: 8px;
-      padding: 10px 12px;
+      padding: 9px 12px;
       color: var(--text);
       font-family: inherit;
-      font-size: 0.9rem;
-      transition: all 0.2s;
+      font-size: 0.88rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-
     input:focus, select:focus, textarea:focus {
       outline: none;
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
     }
-
     textarea {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.82rem;
-      min-height: 170px;
+      font-size: 0.8rem;
+      min-height: 220px;
       resize: vertical;
     }
 
@@ -187,22 +203,18 @@
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
-    @media (max-width: 600px) {
-      .row-2 { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 620px) { .row-2 { grid-template-columns: 1fr; } }
 
     .templates-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
       gap: 10px;
-      margin-bottom: 16px;
     }
-
     .tpl-btn {
       background: #0b0f19;
       border: 2px solid var(--card-border);
       border-radius: 10px;
-      padding: 11px 8px;
+      padding: 10px 8px;
       cursor: pointer;
       text-align: center;
       transition: all 0.2s;
@@ -210,38 +222,39 @@
     }
     .tpl-btn:hover { border-color: #4b5563; transform: translateY(-1px); }
     .tpl-btn.active { border-color: var(--accent); background: var(--accent-light); }
-    .tpl-btn .icon { font-size: 1.3rem; display: block; margin-bottom: 4px; }
-    .tpl-btn .name { font-size: 0.78rem; font-weight: 700; }
+    .tpl-btn .icon { font-size: 1.25rem; display: block; margin-bottom: 4px; }
+    .tpl-btn .name { font-size: 0.76rem; font-weight: 700; }
 
     .btn-primary {
       width: 100%;
       background: linear-gradient(135deg, var(--accent), #7c3aed);
-      color: white;
+      color: #fff;
       border: none;
       border-radius: 10px;
       padding: 13px 18px;
-      font-size: 0.96rem;
+      font-size: 0.95rem;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 8px;
-      transition: opacity 0.2s, transform 0.1s;
     }
-    .btn-primary:hover { opacity: 0.95; transform: translateY(-1px); }
-    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-primary:hover { opacity: 0.95; }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
 
     .btn-secondary {
       background: #1f2937;
       color: var(--text);
       border: 1px solid #374151;
       border-radius: 8px;
-      padding: 9px 14px;
-      font-size: 0.82rem;
+      padding: 8px 13px;
+      font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
       white-space: nowrap;
     }
     .btn-secondary:hover { background: #374151; }
@@ -249,17 +262,17 @@
 
     .btn-ai {
       background: linear-gradient(135deg, #059669, #10b981);
-      color: white;
+      color: #fff;
       border: none;
       border-radius: 8px;
-      padding: 10px 16px;
-      font-size: 0.86rem;
+      padding: 9px 14px;
+      font-size: 0.82rem;
       font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: opacity 0.2s;
+      white-space: nowrap;
     }
     .btn-ai:hover { opacity: 0.92; }
     .btn-ai:disabled { opacity: 0.6; cursor: not-allowed; }
@@ -272,33 +285,251 @@
       margin-bottom: 16px;
     }
 
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 6px;
+      background: #0b0f19;
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 6px 11px;
+      border-radius: 7px;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* Editor Visual de Perguntas */
+    .q-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 540px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .q-card {
+      background: #0b0f19;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px;
+      transition: border-color 0.2s;
+    }
+    .q-card.selected { border-color: var(--accent); }
+    .q-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .q-badge {
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--accent-light);
+      color: #a5b4fc;
+      cursor: pointer;
+    }
+    .q-actions { display: flex; gap: 4px; }
+    .icon-btn {
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: var(--text-muted);
+      border-radius: 6px;
+      padding: 3px 7px;
+      font-size: 0.72rem;
+      cursor: pointer;
+    }
+    .icon-btn:hover { color: #fff; background: #374151; }
+    .icon-btn.del:hover { color: #fca5a5; border-color: #ef4444; }
+
+    .opt-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .opt-pick {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid #374151;
+      background: #1f2937;
+      color: var(--text-muted);
+      font-weight: 800;
+      font-size: 0.78rem;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .opt-pick.correct {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: #10b981;
+      color: #34d399;
+    }
+
+    /* Simulador 9:16 do Quiz */
+    .sim-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .phone-frame {
+      width: 280px;
+      height: 498px;
+      border-radius: 22px;
+      border: 3px solid #334155;
+      overflow: hidden;
+      position: relative;
+      font-family: 'Poppins', sans-serif;
+      padding: 18px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.55);
+    }
+    .sim-header {
+      width: 100%;
+      padding: 7px 12px;
+      border-radius: 9px;
+      background: rgba(15, 23, 42, 0.75);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      font-weight: 900;
+      color: #fff;
+    }
+    .sim-dots {
+      width: 100%;
+      display: grid;
+      gap: 5px;
+      margin-top: 10px;
+    }
+    .sim-dot { height: 4px; border-radius: 99px; background: rgba(255,255,255,0.28); }
+    .sim-cat {
+      margin-top: 14px;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+    .sim-qbox {
+      width: 100%;
+      margin-top: 8px;
+      padding: 14px 12px;
+      border-radius: 12px;
+      background: #fff;
+      color: #0f172a;
+      font-weight: 900;
+      font-size: 13.5px;
+      line-height: 1.25;
+      text-align: center;
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sim-clock {
+      margin-top: 14px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 2.5px solid #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 20px;
+      color: #0f172a;
+    }
+    .sim-track {
+      width: 94%;
+      height: 5px;
+      border-radius: 99px;
+      background: rgba(255,255,255,0.25);
+      margin-top: 12px;
+      overflow: hidden;
+    }
+    .sim-fill { height: 100%; transition: width 0.25s linear; }
+    .sim-opts {
+      width: 100%;
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .sim-opt {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: #fff;
+      border: 2px solid #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #0f172a;
+      transition: all 0.2s;
+    }
+    .sim-opt-let {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background: #0f172a;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .sim-footer {
+      margin-top: auto;
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: #fff;
+    }
+
     /* Esteira de Produção */
     .runs-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      max-height: 760px;
+      gap: 10px;
+      max-height: 560px;
       overflow-y: auto;
       padding-right: 4px;
     }
-
     .run-item {
       background: #0b0f19;
       border: 1px solid var(--card-border);
       border-radius: 10px;
-      padding: 14px;
+      padding: 13px;
     }
-
     .run-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
-
     .badge-status {
-      font-size: 0.72rem;
-      font-weight: 700;
+      font-size: 0.68rem;
+      font-weight: 800;
       padding: 3px 8px;
       border-radius: 6px;
       text-transform: uppercase;
@@ -308,43 +539,21 @@
     .status-completed { background: rgba(16, 185, 129, 0.15); color: var(--success); }
     .status-failed { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
 
-    .run-title {
-      font-weight: 700;
-      font-size: 0.92rem;
-      margin-bottom: 4px;
-    }
-    .run-meta {
-      font-size: 0.76rem;
-      color: var(--text-muted);
-      margin-bottom: 10px;
-    }
+    .run-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 3px; }
+    .run-meta { font-size: 0.74rem; color: var(--text-muted); margin-bottom: 8px; }
 
-    .pipeline-steps {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 10px;
-    }
-    .step-bar {
-      flex: 1;
-      height: 4px;
-      border-radius: 2px;
-      background: #1f2937;
-    }
+    .pipeline-steps { display: flex; gap: 4px; margin-bottom: 10px; }
+    .step-bar { flex: 1; height: 4px; border-radius: 2px; background: #1f2937; }
     .step-bar.done { background: var(--success); }
     .step-bar.active { background: #818cf8; animation: pulse 1.2s infinite; }
     .step-bar.fail { background: var(--danger); }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-    .run-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
+    .run-actions { display: flex; gap: 6px; flex-wrap: wrap; }
     .run-btn {
-      font-size: 0.76rem;
+      font-size: 0.74rem;
       font-weight: 600;
-      padding: 6px 10px;
+      padding: 5px 9px;
       border-radius: 6px;
       text-decoration: none;
       background: #1f2937;
@@ -361,19 +570,17 @@
       border-color: rgba(16, 185, 129, 0.4);
       color: var(--success);
     }
-    .run-btn.download:hover { background: rgba(16, 185, 129, 0.25); }
 
     .empty-state {
       text-align: center;
-      padding: 30px 10px;
+      padding: 26px 10px;
       color: var(--text-muted);
-      font-size: 0.88rem;
+      font-size: 0.85rem;
     }
-
     .spinner {
       width: 15px;
       height: 15px;
-      border: 2px solid white;
+      border: 2px solid #fff;
       border-top-color: transparent;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
@@ -382,295 +589,49 @@
   </style>
 </head>
 <body>
+  <div id="root"></div>
 
-  <header>
-    <div class="brand">
-      <span>🎬</span>
-      <span>Creator Studio</span>
-      <span class="brand-badge">Esteira de Produção</span>
-    </div>
-    <a href="https://github.com/evandromqs/creator" target="_blank" class="repo-link">
-      <span>GitHub Repo</span>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-    </a>
-  </header>
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useMemo } = React;
 
-  <div class="container">
-    <!-- KPIs de Gestão -->
-    <div class="kpi-grid">
-      <div class="kpi-card">
-        <span class="kpi-label">Total na Esteira</span>
-        <span class="kpi-value accent" id="kpiTotal">—</span>
-      </div>
-      <div class="kpi-card">
-        <span class="kpi-label">Em Produção</span>
-        <span class="kpi-value warning" id="kpiActive">—</span>
-      </div>
-      <div class="kpi-card">
-        <span class="kpi-label">Concluídos</span>
-        <span class="kpi-value success" id="kpiSuccess">—</span>
-      </div>
-      <div class="kpi-card">
-        <span class="kpi-label">Falhas</span>
-        <span class="kpi-value danger" id="kpiFail">—</span>
-      </div>
-    </div>
-
-    <main>
-      <!-- Coluna Esquerda: Credenciais + Fábrica de Vídeos -->
-      <div>
-        <!-- Credenciais Seguras -->
-        <div class="card token-box">
-          <div class="card-title">
-            <span>🔐</span>
-            <span>Credenciais Locais (Salvas apenas no seu navegador)</span>
-          </div>
-          <div class="row-2">
-            <div class="form-group" style="margin-bottom:0;">
-              <label for="ghToken">GitHub Token (escopo <code>workflow</code>)</label>
-              <div style="display:flex; gap:6px;">
-                <input type="password" id="ghToken" placeholder="ghp_..." autocomplete="off">
-                <button class="btn-secondary" id="saveTokenBtn">Salvar</button>
-              </div>
-            </div>
-            <div class="form-group" style="margin-bottom:0;">
-              <label for="groqKey">Groq API Key (IA para Roteiros)</label>
-              <div style="display:flex; gap:6px;">
-                <input type="password" id="groqKey" placeholder="gsk_..." autocomplete="off">
-                <button class="btn-secondary" id="saveGroqBtn">Salvar</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Configuração do Vídeo -->
-        <div class="card">
-          <div class="card-title">
-            <span>🏭</span>
-            <span>Linha de Produção</span>
-          </div>
-
-          <div class="form-group">
-            <label>1. Template</label>
-            <div class="templates-grid" id="templatesGrid">
-              <div class="tpl-btn active" data-tpl="quiz-mobile">
-                <span class="icon">❓</span>
-                <span class="name">Quiz Mobile</span>
-              </div>
-              <div class="tpl-btn" data-tpl="kinetic-shorts">
-                <span class="icon">⚡</span>
-                <span class="name">Kinetic Shorts</span>
-              </div>
-              <div class="tpl-btn" data-tpl="story-loop">
-                <span class="icon">🔄</span>
-                <span class="name">Story Loop</span>
-              </div>
-              <div class="tpl-btn" data-tpl="tech-viral">
-                <span class="icon">💻</span>
-                <span class="name">Tech Viral</span>
-              </div>
-              <div class="tpl-btn" data-tpl="commercial-ad">
-                <span class="icon">📢</span>
-                <span class="name">Comercial Ad</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Automação IA para Quiz Mobile -->
-          <div id="quizSettings">
-            <div class="ai-box">
-              <div style="font-weight:700; font-size:0.88rem; margin-bottom:10px; color:#34d399;">
-                ✨ Gerador Automático de Roteiro (Groq IA)
-              </div>
-              <div class="row-2" style="margin-bottom:10px;">
-                <div>
-                  <label for="quizTheme">Tema (ou vários separados por vírgula para Lote)</label>
-                  <input type="text" id="quizTheme" placeholder="Ex: Curiosidades do Brasil" value="Curiosidades do Brasil">
-                </div>
-                <div>
-                  <label for="groqModel">Modelo Groq</label>
-                  <select id="groqModel">
-                    <option value="openai/gpt-oss-120b" selected>openai/gpt-oss-120b (Melhor qualidade)</option>
-                    <option value="openai/gpt-oss-20b">openai/gpt-oss-20b (Mais rápido)</option>
-                  </select>
-                </div>
-              </div>
-              <div style="display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap;">
-                <div style="width:110px;">
-                  <label for="quizCount">Perguntas</label>
-                  <input type="number" id="quizCount" value="6" min="1" max="10">
-                </div>
-                <button class="btn-ai" id="generateQuizBtn">✨ Gerar Roteiro</button>
-                <button class="btn-secondary" id="batchDispatchBtn" title="Gera e dispara 1 vídeo para cada tema separado por vírgula">🚀 Disparar Lote</button>
-              </div>
-            </div>
-
-            <div class="row-2">
-              <div class="form-group">
-                <label for="videoTitle">2. Título / Identificador do Vídeo</label>
-                <input type="text" id="videoTitle" placeholder="Ex: quiz-brasil-01">
-              </div>
-              <div class="form-group">
-                <label for="quizVisualTheme">Tema Visual do Quiz</label>
-                <select id="quizVisualTheme">
-                  <option value="roxo" selected>🟣 Roxo & Ciano (Padrão)</option>
-                  <option value="neon">🟢 Dark Neon</option>
-                  <option value="cyberpunk">🩷 Cyberpunk</option>
-                  <option value="esmeralda">💚 Esmeralda</option>
-                  <option value="solar">🟠 Solar</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label style="display:flex; justify-content:space-between; align-items:center;">
-                <span>3. Roteiro Estruturado (JSON)</span>
-                <button class="btn-secondary" id="loadExampleQuiz" style="padding:2px 8px; font-size:0.74rem;">Carregar Exemplo</button>
-              </label>
-              <textarea id="quizJson" spellcheck="false"></textarea>
-              <span style="font-size:0.75rem; color:var(--text-muted); margin-top:4px; display:block;">
-                🎙️ Pipeline: Voz <strong>Francisca (0.9x)</strong> + pausas calculadas + SFX de relógio e alarme.
-              </span>
-              <div style="margin-top:10px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-                <button class="btn-ai" id="cloudAudioBtn" type="button">☁️ Gerar Áudio Online (Francisca + SFX)</button>
-                <button class="btn-secondary" id="instantAudioBtn" type="button">⚡ Prévia Instantânea (0s)</button>
-                <button class="btn-secondary" id="stopInstantBtn" type="button" style="display:none; color:#f87171;">⏹ Parar</button>
-                <button class="btn-secondary" id="previewVideoBtn" type="button">🎬 Preview Vídeo (Local)</button>
-              </div>
-              <span id="audioPreviewStatus" style="font-size:0.78rem; color:var(--text-muted); display:block; margin-top:6px;"></span>
-              <audio id="audioPreviewPlayer" controls style="display:none; width:100%; margin-top:10px;"></audio>
-              <div id="videoPreviewWrap" style="display:none; margin-top:14px; text-align:center;">
-                <iframe id="videoPreviewFrame" style="width:300px; height:533px; border:2px solid var(--accent); border-radius:14px; background:#000;"></iframe>
-              </div>
-            </div>
-          </div>
-
-          <!-- Outros templates -->
-          <div id="genericScriptSettings" style="display:none;">
-            <div class="form-group">
-              <label for="genericTitle">2. Título / Identificador do Vídeo</label>
-              <input type="text" id="genericTitle" placeholder="Ex: video-01">
-            </div>
-            <div class="form-group">
-              <label for="scriptText">3. Roteiro / Texto da Narração</label>
-              <textarea id="scriptText" placeholder="Digite o roteiro completo aqui..." spellcheck="false"></textarea>
-            </div>
-          </div>
-
-          <button class="btn-primary" id="startRenderBtn">
-            <span id="btnIcon">🚀</span>
-            <span id="btnText">Disparar Renderização na Esteira</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Coluna Direita: Esteira de Produção -->
-      <div>
-        <div class="card">
-          <div class="card-title" style="justify-content:space-between;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span>📊</span>
-              <span>Esteira em Tempo Real</span>
-            </div>
-            <button class="btn-secondary" id="refreshRunsBtn" style="padding:4px 10px; font-size:0.75rem;">🔄 Atualizar</button>
-          </div>
-
-          <div id="runsContainer" class="runs-list">
-            <div class="empty-state">Insira seu GitHub Token para acompanhar a esteira.</div>
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <script>
     const OWNER = 'evandromqs';
     const REPO = 'creator';
     const WORKFLOW_ID = 'render.yml';
 
-    let currentTemplate = 'quiz-mobile';
-
-    const defaultQuizExample = [
-      { "q": "Qual país tem mais ilhas no mundo?", "opts": ["Indonésia", "Filipinas", "Suécia"], "ans": "Suécia" },
-      { "q": "Qual é a capital da Austrália?", "opts": ["Sydney", "Melbourne", "Canberra"], "ans": "Canberra" },
-      { "q": "Qual país é conhecido como a Terra do Sol Nascente?", "opts": ["China", "Japão", "Coreia do Sul"], "ans": "Japão" },
-      { "q": "Qual é o rio mais longo do mundo?", "opts": ["Rio Amazonas", "Rio Nilo", "Rio Yangtzé"], "ans": "Rio Nilo" },
-      { "q": "Qual país possui a maior extensão de costa marítima do mundo?", "opts": ["Rússia", "Austrália", "Canadá"], "ans": "Canadá" },
-      { "q": "Qual é o menor país do mundo em território?", "opts": ["Mônaco", "Vaticano", "San Marino"], "ans": "Vaticano" }
+    const TEMPLATES = [
+      { id: 'quiz-mobile', icon: '❓', name: 'Quiz Mobile' },
+      { id: 'kinetic-shorts', icon: '⚡', name: 'Kinetic Shorts' },
+      { id: 'story-loop', icon: '🔄', name: 'Story Loop' },
+      { id: 'tech-viral', icon: '💻', name: 'Tech Viral' },
+      { id: 'commercial-ad', icon: '📢', name: 'Comercial Ad' },
     ];
 
-    const tokenInput = document.getElementById('ghToken');
-    const groqInput = document.getElementById('groqKey');
-    const saveTokenBtn = document.getElementById('saveTokenBtn');
-    const saveGroqBtn = document.getElementById('saveGroqBtn');
-    const quizJson = document.getElementById('quizJson');
-    const loadExampleBtn = document.getElementById('loadExampleQuiz');
-    const templatesGrid = document.getElementById('templatesGrid');
-    const startRenderBtn = document.getElementById('startRenderBtn');
-    const runsContainer = document.getElementById('runsContainer');
-    const refreshRunsBtn = document.getElementById('refreshRunsBtn');
-    const videoTitle = document.getElementById('videoTitle');
-    const genericTitle = document.getElementById('genericTitle');
-    const quizSettings = document.getElementById('quizSettings');
-    const genericScriptSettings = document.getElementById('genericScriptSettings');
-    const generateQuizBtn = document.getElementById('generateQuizBtn');
-    const batchDispatchBtn = document.getElementById('batchDispatchBtn');
-    const cloudAudioBtn = document.getElementById('cloudAudioBtn');
-    const instantAudioBtn = document.getElementById('instantAudioBtn');
-    const stopInstantBtn = document.getElementById('stopInstantBtn');
-    const previewVideoBtn = document.getElementById('previewVideoBtn');
-    const audioPreviewPlayer = document.getElementById('audioPreviewPlayer');
-    const audioPreviewStatus = document.getElementById('audioPreviewStatus');
-    const videoPreviewWrap = document.getElementById('videoPreviewWrap');
-    const videoPreviewFrame = document.getElementById('videoPreviewFrame');
-    const quizVisualTheme = document.getElementById('quizVisualTheme');
-    let currentAudioObjectUrl = null;
-    let instantAbort = false;
-    let activeTicTac = null;
+    const THEMES = {
+      roxo: { label: '🟣 Roxo & Ciano', bg: '#3b0764', grad: 'linear-gradient(155deg,#4c1d95 0%,#6d28d9 45%,#3b0764 100%)', accent: '#22d3ee', clockBg: '#fde047' },
+      neon: { label: '🟢 Dark Neon', bg: '#090d16', grad: 'linear-gradient(155deg,#0f172a 0%,#1e1b4b 50%,#030712 100%)', accent: '#10b981', clockBg: '#34d399' },
+      cyberpunk: { label: '🩷 Cyberpunk', bg: '#18062c', grad: 'linear-gradient(155deg,#2e1065 0%,#701a75 50%,#0f0720 100%)', accent: '#f43f5e', clockBg: '#facc15' },
+      esmeralda: { label: '💚 Esmeralda', bg: '#022c22', grad: 'linear-gradient(155deg,#064e3b 0%,#047857 45%,#022c22 100%)', accent: '#34d399', clockBg: '#fde047' },
+      solar: { label: '🟠 Solar', bg: '#451a03', grad: 'linear-gradient(155deg,#7c2d12 0%,#9a3412 45%,#451a03 100%)', accent: '#fb923c', clockBg: '#fde047' },
+    };
 
-    // Carregar credenciais do localStorage
-    const savedToken = localStorage.getItem('creator_gh_token') || '';
-    const savedGroq = localStorage.getItem('creator_groq_key') || '';
-    if (savedToken) tokenInput.value = savedToken;
-    if (savedGroq) groqInput.value = savedGroq;
+    const DEFAULT_QUIZ = [
+      { q: 'Qual país tem mais ilhas no mundo?', opts: ['Indonésia', 'Filipinas', 'Suécia'], ans: 'Suécia', category: 'GEOGRAFIA' },
+      { q: 'Qual é a capital da Austrália?', opts: ['Sydney', 'Melbourne', 'Canberra'], ans: 'Canberra', category: 'GEOGRAFIA' },
+      { q: 'Qual país é conhecido como a Terra do Sol Nascente?', opts: ['China', 'Japão', 'Coreia do Sul'], ans: 'Japão', category: 'GEOGRAFIA' },
+      { q: 'Qual é o rio mais longo do mundo?', opts: ['Rio Amazonas', 'Rio Nilo', 'Rio Yangtzé'], ans: 'Rio Nilo', category: 'GEOGRAFIA' },
+      { q: 'Qual país possui a maior extensão de costa marítima do mundo?', opts: ['Rússia', 'Austrália', 'Canadá'], ans: 'Canadá', category: 'GEOGRAFIA' },
+      { q: 'Qual é o menor país do mundo em território?', opts: ['Mônaco', 'Vaticano', 'San Marino'], ans: 'Vaticano', category: 'GEOGRAFIA' },
+    ];
 
-    quizJson.value = JSON.stringify(defaultQuizExample, null, 2);
-    videoTitle.value = 'quiz-geografia-' + Math.floor(Math.random() * 900 + 100);
+    function slugify(str) {
+      return String(str || '')
+        .toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    }
 
-    saveTokenBtn.addEventListener('click', () => {
-      const val = tokenInput.value.trim();
-      if (val) {
-        localStorage.setItem('creator_gh_token', val);
-        alert('GitHub Token salvo localmente!');
-        fetchRuns();
-      } else {
-        localStorage.removeItem('creator_gh_token');
-        alert('GitHub Token removido.');
-      }
-    });
-
-    saveGroqBtn.addEventListener('click', () => {
-      const val = groqInput.value.trim();
-      if (val) {
-        localStorage.setItem('creator_groq_key', val);
-        alert('Groq API Key salva localmente!');
-      } else {
-        localStorage.removeItem('creator_groq_key');
-        alert('Groq API Key removida.');
-      }
-    });
-
-    loadExampleBtn.addEventListener('click', () => {
-      quizJson.value = JSON.stringify(defaultQuizExample, null, 2);
-    });
-
-    function setAudioPlayerBlob(blob, statusMsg) {
-      if (currentAudioObjectUrl) URL.revokeObjectURL(currentAudioObjectUrl);
-      currentAudioObjectUrl = URL.createObjectURL(blob);
-      audioPreviewPlayer.src = currentAudioObjectUrl;
-      audioPreviewPlayer.style.display = 'block';
-      audioPreviewPlayer.play().catch(() => {});
-      audioPreviewStatus.textContent = statusMsg;
+    function sleepMs(ms) {
+      return new Promise(r => setTimeout(r, ms));
     }
 
     async function extractFirstFileFromZip(arrayBuffer, mimeType = 'application/octet-stream') {
@@ -714,375 +675,17 @@
       throw new Error(`Método de compressão ZIP não suportado: ${compressionMethod}`);
     }
 
-    cloudAudioBtn.addEventListener('click', async () => {
-      let parsed;
-      try {
-        parsed = JSON.parse(quizJson.value.trim());
-      } catch (e) {
-        alert('JSON do Quiz inválido! Verifique a formatação antes de gerar o áudio.');
-        return;
-      }
-
-      const isLocal = location.hostname === '127.0.0.1' || location.hostname === 'localhost';
-      const visualTheme = quizVisualTheme.value;
-      const category = document.getElementById('quizTheme').value.split(',')[0].trim();
-
-      cloudAudioBtn.disabled = true;
-      cloudAudioBtn.textContent = '⏳ Gerando áudio...';
-
-      if (isLocal) {
-        audioPreviewStatus.textContent = 'Sintetizando Francisca 0.9x + SFX localmente...';
-        try {
-          const res = await fetch('/api/preview-audio', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ questions: parsed, theme: visualTheme, category })
-          });
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.error || `Erro HTTP ${res.status}`);
-
-          audioPreviewPlayer.src = data.audioUrl;
-          audioPreviewPlayer.style.display = 'block';
-          audioPreviewPlayer.play().catch(() => {});
-          if (data.videoPreviewUrl) {
-            videoPreviewFrame.src = data.videoPreviewUrl;
-            videoPreviewWrap.style.display = 'block';
-          }
-          audioPreviewStatus.textContent = '✅ Áudio e preview visual prontos!';
-        } catch (err) {
-          audioPreviewStatus.textContent = '';
-          alert(`❌ Erro ao gerar áudio: ${err.message}`);
-        } finally {
-          cloudAudioBtn.disabled = false;
-          cloudAudioBtn.textContent = '☁️ Gerar Áudio Online (Francisca + SFX)';
-        }
-        return;
-      }
-
-      // Modo 100% Online via GitHub Actions (audio_only)
-      const token = tokenInput.value.trim() || localStorage.getItem('creator_gh_token');
-      if (!token) {
-        cloudAudioBtn.disabled = false;
-        cloudAudioBtn.textContent = '☁️ Gerar Áudio Online (Francisca + SFX)';
-        alert('Insira e salve seu GitHub Token no topo para gerar áudio oficial na nuvem (ou use "⚡ Prévia Instantânea").');
-        tokenInput.focus();
-        return;
-      }
-
-      const title = (videoTitle.value.trim() || 'quiz-audio') + '-preview';
-      try {
-        audioPreviewStatus.textContent = '1/3 Enviando roteiro para sintetização online (Francisca 0.9x + SFX)...';
-        const prevRunsData = await ghApi(`actions/workflows/${WORKFLOW_ID}/runs?per_page=1`);
-        const prevLatestId = prevRunsData.workflow_runs?.[0]?.id || 0;
-
-        await dispatchRender('quiz-mobile', title, JSON.stringify(parsed), visualTheme, 'audio_only');
-        fetchRuns();
-
-        let targetRun = null;
-        for (let attempt = 0; attempt < 45; attempt++) {
-          await new Promise(r => setTimeout(r, 4000));
-          const runsData = await ghApi(`actions/workflows/${WORKFLOW_ID}/runs?per_page=5`);
-          const runs = runsData.workflow_runs || [];
-          const found = runs.find(r => r.id > prevLatestId);
-          if (found) {
-            targetRun = found;
-            if (found.status === 'queued') {
-              audioPreviewStatus.textContent = `2/3 Na fila do GitHub Actions (#${found.run_number})...`;
-            } else if (found.status === 'in_progress') {
-              audioPreviewStatus.textContent = `2/3 Sintetizando voz Francisca + mixando SFX (#${found.run_number})...`;
-            } else if (found.status === 'completed') {
-              break;
-            }
-          }
-        }
-
-        if (!targetRun || targetRun.status !== 'completed') {
-          throw new Error('Tempo limite aguardando o áudio na nuvem. Acompanhe na Esteira ao lado.');
-        }
-        if (targetRun.conclusion !== 'success') {
-          throw new Error(`Falha na geração do áudio na nuvem (${targetRun.conclusion}). Veja o log na Esteira.`);
-        }
-
-        audioPreviewStatus.textContent = '3/3 Baixando e extraindo MP3 oficial no navegador...';
-        const artData = await ghApi(`actions/runs/${targetRun.id}/artifacts`);
-        const audioArtifact = (artData.artifacts || []).find(a => a.name.endsWith('-audio')) || (artData.artifacts || [])[0];
-        if (!audioArtifact) throw new Error('Artefato de áudio não encontrado.');
-
-        const zipRes = await fetch(audioArtifact.archive_download_url, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (!zipRes.ok) throw new Error(`Erro ao baixar artefato (${zipRes.status})`);
-        const zipBuf = await zipRes.arrayBuffer();
-        const mp3Blob = await extractFirstFileFromZip(zipBuf, 'audio/mpeg');
-        setAudioPlayerBlob(mp3Blob, '✅ Áudio oficial (Francisca 0.9x + SFX) pronto! Ouça abaixo.');
-        fetchRuns();
-      } catch (err) {
-        audioPreviewStatus.textContent = `❌ ${err.message}`;
-        alert(`❌ ${err.message}`);
-      } finally {
-        cloudAudioBtn.disabled = false;
-        cloudAudioBtn.textContent = '☁️ Gerar Áudio Online (Francisca + SFX)';
-      }
-    });
-
-    function sleepMs(ms) {
-      return new Promise(r => setTimeout(r, ms));
-    }
-
-    function speakTextPt(text) {
-      return new Promise((resolve) => {
-        if (instantAbort) return resolve();
-        const utt = new SpeechSynthesisUtterance(text);
-        const voices = window.speechSynthesis.getVoices();
-        const ptVoice =
-          voices.find(v => /francisca/i.test(v.name)) ||
-          voices.find(v => /pt[-_]BR/i.test(v.lang)) ||
-          voices.find(v => /^pt/i.test(v.lang));
-        if (ptVoice) utt.voice = ptVoice;
-        utt.lang = 'pt-BR';
-        utt.rate = 0.9;
-        utt.onend = () => resolve();
-        utt.onerror = () => resolve();
-        window.speechSynthesis.speak(utt);
-      });
-    }
-
-    instantAudioBtn.addEventListener('click', async () => {
-      if (!('speechSynthesis' in window)) {
-        alert('Seu navegador não suporta Web Speech API.');
-        return;
-      }
-      let parsed;
-      try {
-        parsed = JSON.parse(quizJson.value.trim());
-        if (!Array.isArray(parsed) || parsed.length === 0) throw new Error('Lista vazia');
-      } catch (e) {
-        alert('JSON do Quiz inválido!');
-        return;
-      }
-
-      instantAbort = false;
-      window.speechSynthesis.cancel();
-      instantAudioBtn.style.display = 'none';
-      stopInstantBtn.style.display = 'inline-flex';
-      audioPreviewStatus.textContent = '⚡ Reproduzindo prévia instantânea (ritmo + SFX)...';
-
-      const playSfx = (path) => {
-        if (instantAbort) return;
-        const a = new Audio(path);
-        a.volume = 0.9;
-        a.play().catch(() => {});
-      };
-
-      try {
-        for (let i = 0; i < parsed.length && !instantAbort; i++) {
-          const q = parsed[i];
-          audioPreviewStatus.textContent = `⚡ Rodada ${i + 1}/${parsed.length}: Pergunta...`;
-          await speakTextPt(q.q);
-          if (instantAbort) break;
-          await sleepMs(350);
-
-          const letters = ['A', 'B', 'C'];
-          for (let oi = 0; oi < 3 && !instantAbort; oi++) {
-            await speakTextPt(`${letters[oi]}:`);
-            if (instantAbort) break;
-            await sleepMs(200);
-            await speakTextPt(`${q.opts[oi]}?`);
-            if (instantAbort) break;
-            await sleepMs(oi < 2 ? 300 : 450);
-          }
-
-          if (activeTicTac) {
-            activeTicTac.pause();
-            activeTicTac = null;
-          }
-          activeTicTac = new Audio('sfx/tic-tac.mp3');
-          activeTicTac.loop = true;
-          activeTicTac.volume = 0.45;
-          activeTicTac.play().catch(() => {});
-
-          for (const n of ['5', '4', '3', '2', '1']) {
-            if (instantAbort) break;
-            audioPreviewStatus.textContent = `⚡ Rodada ${i + 1}/${parsed.length}: Contagem ${n}...`;
-            await speakTextPt(n);
-            if (instantAbort) break;
-            await sleepMs(700);
-          }
-
-          if (activeTicTac) {
-            activeTicTac.pause();
-            activeTicTac.currentTime = 0;
-            activeTicTac = null;
-          }
-
-          if (instantAbort) break;
-          audioPreviewStatus.textContent = `⚡ Rodada ${i + 1}/${parsed.length}: Resposta!`;
-          playSfx('sfx/trim_alarm.mp3');
-          await speakTextPt(`Resposta certa: ${q.ans}!`);
-          if (instantAbort) break;
-          await sleepMs(900);
-        }
-        if (!instantAbort) {
-          audioPreviewStatus.textContent = '✅ Prévia instantânea concluída!';
-        }
-      } finally {
-        if (activeTicTac) {
-          activeTicTac.pause();
-          activeTicTac = null;
-        }
-        instantAudioBtn.style.display = 'inline-flex';
-        stopInstantBtn.style.display = 'none';
-      }
-    });
-
-    stopInstantBtn.addEventListener('click', () => {
-      instantAbort = true;
-      if (activeTicTac) {
-        activeTicTac.pause();
-        activeTicTac = null;
-      }
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-      instantAudioBtn.style.display = 'inline-flex';
-      stopInstantBtn.style.display = 'none';
-      audioPreviewStatus.textContent = '⏹ Prévia interrompida.';
-    });
-
-    previewVideoBtn.addEventListener('click', async () => {
-      const isLocal = location.hostname === '127.0.0.1' || location.hostname === 'localhost';
-      if (!isLocal) {
-        alert('O preview visual local requer rodar "npm run studio" no seu PC.');
-        return;
-      }
-
-      let parsed = null;
-      try {
-        parsed = JSON.parse(quizJson.value.trim());
-      } catch (e) {
-        alert('JSON do Quiz inválido!');
-        return;
-      }
-
-      previewVideoBtn.disabled = true;
-      previewVideoBtn.textContent = '⏳ Compilando...';
-      try {
-        const res = await fetch('/api/compile', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            template: 'quiz-mobile',
-            theme: quizVisualTheme.value,
-            category: document.getElementById('quizTheme').value.split(',')[0].trim(),
-            questions: parsed
-          })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || `Erro HTTP ${res.status}`);
-        videoPreviewFrame.src = data.videoPreviewUrl;
-        videoPreviewWrap.style.display = 'block';
-        audioPreviewStatus.textContent = '✅ Vídeo compilado! Clique em Play dentro do preview.';
-      } catch (err) {
-        alert(`❌ Erro ao compilar preview: ${err.message}`);
-      } finally {
-        previewVideoBtn.disabled = false;
-        previewVideoBtn.textContent = '🎬 Compilar & Visualizar Vídeo (Local)';
-      }
-    });
-
-    templatesGrid.querySelectorAll('.tpl-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        templatesGrid.querySelectorAll('.tpl-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentTemplate = btn.dataset.tpl;
-        if (currentTemplate === 'quiz-mobile') {
-          quizSettings.style.display = 'block';
-          genericScriptSettings.style.display = 'none';
-        } else {
-          quizSettings.style.display = 'none';
-          genericScriptSettings.style.display = 'block';
-        }
-      });
-    });
-
-    function slugify(str) {
-      return str.toLowerCase()
-        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-    }
-
-    async function generateQuizWithGroq(theme, count, model) {
-      const key = groqInput.value.trim() || localStorage.getItem('creator_groq_key');
-      if (!key) throw new Error('Insira e salve sua Groq API Key no topo para gerar roteiros com IA.');
-
-      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${key}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model,
-          temperature: 0.7,
-          messages: [
-            {
-              role: 'system',
-              content: 'Retorne APENAS um JSON válido no formato {"questions":[{"q":"pergunta curta","opts":["op1","op2","op3"],"ans":"op_correta"}]} sem markdown e sem texto extra. Cada pergunta deve ter EXATAMENTE 3 opções em opts, e ans deve ser exatamente igual a uma delas.'
-            },
-            {
-              role: 'user',
-              content: `Gere ${count} perguntas de quiz sobre "${theme}" em português do Brasil, curtas, corretas e envolventes para TikTok/Reels.`
-            }
-          ]
-        })
-      });
-
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error?.message || `Erro Groq HTTP ${res.status}`);
-      }
-
-      const data = await res.json();
-      let content = data.choices[0].message.content.trim();
-      content = content.replace(/^```json\s*/i, '').replace(/```$/i, '').trim();
-      const parsed = JSON.parse(content);
-      const list = Array.isArray(parsed) ? parsed : parsed.questions;
-      if (!Array.isArray(list) || list.length === 0) throw new Error('Formato inesperado retornado pela IA.');
-      const catLabel = theme.toUpperCase();
-      return list.map(item => ({ ...item, category: item.category || catLabel }));
-    }
-
-    generateQuizBtn.addEventListener('click', async () => {
-      const theme = document.getElementById('quizTheme').value.split(',')[0].trim() || 'Curiosidades Gerais';
-      const count = parseInt(document.getElementById('quizCount').value, 10) || 6;
-      const model = document.getElementById('groqModel').value;
-
-      generateQuizBtn.disabled = true;
-      generateQuizBtn.textContent = '⏳ Gerando...';
-      try {
-        const questions = await generateQuizWithGroq(theme, count, model);
-        quizJson.value = JSON.stringify(questions, null, 2);
-        videoTitle.value = `quiz-${slugify(theme)}-${Math.floor(Math.random() * 900 + 100)}`;
-      } catch (err) {
-        alert(`❌ ${err.message}`);
-      } finally {
-        generateQuizBtn.disabled = false;
-        generateQuizBtn.textContent = '✨ Gerar Roteiro';
-      }
-    });
-
-    async function ghApi(endpoint, options = {}) {
-      const token = tokenInput.value.trim() || localStorage.getItem('creator_gh_token');
-      if (!token) throw new Error('Insira seu GitHub Token no topo para continuar.');
-
+    async function ghApi(token, endpoint, options = {}) {
+      if (!token) throw new Error('Insira seu GitHub Token para continuar.');
       const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/${endpoint}`, {
         ...options,
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Accept': 'application/vnd.github+json',
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/vnd.github+json',
           'Content-Type': 'application/json',
-          ...(options.headers || {})
-        }
+          ...(options.headers || {}),
+        },
       });
-
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
         throw new Error(errorData.message || `Erro HTTP ${res.status}`);
@@ -1091,258 +694,1057 @@
       return res.json();
     }
 
-    async function dispatchRender(template, title, customData, theme = 'roxo', mode = 'full') {
+    async function dispatchRender(token, { template, title, customData, theme = 'roxo', mode = 'full' }) {
       try {
-        return await ghApi(`actions/workflows/${WORKFLOW_ID}/dispatches`, {
+        return await ghApi(token, `actions/workflows/${WORKFLOW_ID}/dispatches`, {
           method: 'POST',
           body: JSON.stringify({
             ref: 'main',
-            inputs: {
-              template,
-              video_title: title,
-              custom_data: customData,
-              theme,
-              mode
-            }
-          })
+            inputs: { template, video_title: title, custom_data: customData, theme, mode },
+          }),
         });
       } catch (err) {
         if (String(err.message).includes('Unexpected inputs')) {
-          return ghApi(`actions/workflows/${WORKFLOW_ID}/dispatches`, {
+          return ghApi(token, `actions/workflows/${WORKFLOW_ID}/dispatches`, {
             method: 'POST',
             body: JSON.stringify({
               ref: 'main',
-              inputs: {
-                template,
-                video_title: title,
-                custom_data: customData
-              }
-            })
+              inputs: { template, video_title: title, custom_data: customData },
+            }),
           });
         }
         throw err;
       }
     }
 
-    batchDispatchBtn.addEventListener('click', async () => {
-      const rawThemes = document.getElementById('quizTheme').value;
-      const themes = rawThemes.split(',').map(t => t.trim()).filter(Boolean);
-      if (themes.length === 0) {
-        alert('Informe ao menos um tema.');
-        return;
+    async function generateQuizWithGroq(groqKey, theme, count, model) {
+      if (!groqKey) throw new Error('Insira sua Groq API Key nas credenciais para gerar roteiros com IA.');
+      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${groqKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model,
+          temperature: 0.7,
+          messages: [
+            {
+              role: 'system',
+              content: 'Retorne APENAS um JSON válido no formato {"questions":[{"q":"pergunta curta","opts":["op1","op2","op3"],"ans":"op_correta"}]} sem markdown e sem texto extra. Cada pergunta deve ter EXATAMENTE 3 opções em opts, e ans deve ser exatamente igual a uma delas.',
+            },
+            {
+              role: 'user',
+              content: `Gere ${count} perguntas de quiz sobre "${theme}" em português do Brasil, curtas, corretas e envolventes para TikTok/Reels.`,
+            },
+          ],
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error?.message || `Erro Groq HTTP ${res.status}`);
       }
-      if (!confirm(`Deseja gerar e disparar ${themes.length} vídeo(s) em lote na esteira?\nTemas: ${themes.join(', ')}`)) return;
+      const data = await res.json();
+      let content = data.choices[0].message.content.trim();
+      content = content.replace(/^```json\s*/i, '').replace(/```$/i, '').trim();
+      const parsed = JSON.parse(content);
+      const list = Array.isArray(parsed) ? parsed : parsed.questions;
+      if (!Array.isArray(list) || list.length === 0) throw new Error('Formato inesperado retornado pela IA.');
+      const catLabel = theme.toUpperCase();
+      return list.map(item => ({
+        q: String(item.q || ''),
+        opts: Array.isArray(item.opts) ? item.opts.slice(0, 3) : ['A', 'B', 'C'],
+        ans: String(item.ans || (item.opts && item.opts[0]) || ''),
+        category: item.category || catLabel,
+      }));
+    }
 
-      const count = parseInt(document.getElementById('quizCount').value, 10) || 6;
-      const model = document.getElementById('groqModel').value;
+    function QuizPhonePreview({ questions, activeIdx, themeKey, clockValue, revealed, onPrev, onNext, onToggleReveal }) {
+      const theme = THEMES[themeKey] || THEMES.roxo;
+      const total = questions.length || 1;
+      const idx = Math.min(activeIdx, total - 1);
+      const item = questions[idx] || { q: 'Adicione uma pergunta...', opts: ['A', 'B', 'C'], ans: 'A', category: 'QUIZ' };
+      const progressPct = revealed ? 100 : ((5 - Math.min(5, Math.max(0, clockValue))) / 5) * 100;
 
-      batchDispatchBtn.disabled = true;
-      batchDispatchBtn.textContent = '⏳ Processando lote...';
-      try {
-        const selectedTheme = quizVisualTheme.value;
-        for (const theme of themes) {
-          const questions = await generateQuizWithGroq(theme, count, model);
-          const title = `quiz-${slugify(theme)}-${Math.floor(Math.random() * 900 + 100)}`;
-          await dispatchRender('quiz-mobile', title, JSON.stringify(questions), selectedTheme);
+      return (
+        <div className="sim-wrap">
+          <div className="phone-frame" style={{ background: theme.grad }}>
+            <div className="sim-header" style={{ border: `1.5px solid ${theme.accent}`, boxShadow: `0 0 12px ${theme.accent}44` }}>
+              <span>QUIZ MOBILE</span>
+              <span>RODADA {idx + 1}/{total}</span>
+            </div>
+            <div className="sim-dots" style={{ gridTemplateColumns: `repeat(${total}, 1fr)` }}>
+              {questions.map((_, i) => (
+                <span
+                  key={i}
+                  className="sim-dot"
+                  style={
+                    i === idx
+                      ? { background: theme.accent, boxShadow: `0 0 8px ${theme.accent}` }
+                      : i < idx
+                        ? { background: theme.accent, opacity: 0.55 }
+                        : undefined
+                  }
+                />
+              ))}
+            </div>
+            <div className="sim-cat" style={{ color: theme.accent }}>
+              {(item.category || 'QUIZ').toUpperCase()}
+            </div>
+            <div className="sim-qbox" style={{ border: `2.5px solid ${theme.accent}` }}>
+              {item.q || 'Pergunta sem texto'}
+            </div>
+            <div className="sim-clock" style={{ background: revealed ? '#4ade80' : theme.clockBg }}>
+              {revealed ? '0' : clockValue}
+            </div>
+            <div className="sim-track">
+              <div className="sim-fill" style={{ width: `${progressPct}%`, background: theme.accent }} />
+            </div>
+            <div className="sim-opts">
+              {(item.opts || []).slice(0, 3).map((opt, oi) => {
+                const isCorrect = opt === item.ans;
+                const style = revealed
+                  ? isCorrect
+                    ? { background: '#4ade80', borderColor: '#fff', transform: 'scale(1.03)' }
+                    : { opacity: 0.45 }
+                  : {};
+                return (
+                  <div key={oi} className="sim-opt" style={style}>
+                    <span className="sim-opt-let">{['A', 'B', 'C'][oi]}</span>
+                    <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{opt}</span>
+                    {revealed && isCorrect && <span>✓</span>}
+                  </div>
+                );
+              })}
+            </div>
+            <div className="sim-footer">@QUIZMOBILE</div>
+          </div>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <button className="btn-secondary" type="button" onClick={onPrev}>◀</button>
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: 700 }}>
+              Rodada {idx + 1} / {total}
+            </span>
+            <button className="btn-secondary" type="button" onClick={onNext}>▶</button>
+            <button className="btn-secondary" type="button" onClick={onToggleReveal}>
+              {revealed ? '🙈 Ocultar Resposta' : '👁️ Ver Resposta'}
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    function App() {
+      const [ghToken, setGhToken] = useState(() => localStorage.getItem('creator_gh_token') || '');
+      const [groqKey, setGroqKey] = useState(() => localStorage.getItem('creator_groq_key') || '');
+      const [ghDraft, setGhDraft] = useState(() => localStorage.getItem('creator_gh_token') || '');
+      const [groqDraft, setGroqDraft] = useState(() => localStorage.getItem('creator_groq_key') || '');
+      const [showKeys, setShowKeys] = useState(() => !localStorage.getItem('creator_gh_token'));
+
+      const [template, setTemplate] = useState('quiz-mobile');
+      const [videoTitle, setVideoTitle] = useState(() => 'quiz-geografia-' + Math.floor(Math.random() * 900 + 100));
+      const [visualTheme, setVisualTheme] = useState('roxo');
+
+      const [quizTheme, setQuizTheme] = useState('Curiosidades do Brasil');
+      const [groqModel, setGroqModel] = useState('openai/gpt-oss-120b');
+      const [quizCount, setQuizCount] = useState(6);
+      const [questions, setQuestions] = useState(DEFAULT_QUIZ);
+      const [jsonText, setJsonText] = useState(() => JSON.stringify(DEFAULT_QUIZ, null, 2));
+      const [jsonError, setJsonError] = useState('');
+      const [editorTab, setEditorTab] = useState('visual'); // 'visual' | 'json'
+      const [scriptText, setScriptText] = useState('');
+
+      const [activeIdx, setActiveIdx] = useState(0);
+      const [simClock, setSimClock] = useState(5);
+      const [simRevealed, setSimRevealed] = useState(false);
+
+      const [aiLoading, setAiLoading] = useState(false);
+      const [batchLoading, setBatchLoading] = useState(false);
+      const [dispatchLoading, setDispatchLoading] = useState(false);
+      const [cloudAudioLoading, setCloudAudioLoading] = useState(false);
+      const [instantPlaying, setInstantPlaying] = useState(false);
+      const [localVideoLoading, setLocalVideoLoading] = useState(false);
+      const [localVideoUrl, setLocalVideoUrl] = useState('');
+
+      const [audioStatus, setAudioStatus] = useState('');
+      const [audioSrc, setAudioSrc] = useState('');
+      const audioRef = useRef(null);
+      const audioObjUrlRef = useRef(null);
+      const instantAbortRef = useRef(false);
+      const activeTicTacRef = useRef(null);
+
+      const [runs, setRuns] = useState([]);
+      const [runsError, setRunsError] = useState('');
+      const [runFilter, setRunFilter] = useState('all'); // 'all' | 'active' | 'success' | 'fail'
+
+      const isLocal = location.hostname === '127.0.0.1' || location.hostname === 'localhost';
+
+      function syncQuestions(nextList) {
+        setQuestions(nextList);
+        setJsonText(JSON.stringify(nextList, null, 2));
+        setJsonError('');
+        if (activeIdx >= nextList.length) {
+          setActiveIdx(Math.max(0, nextList.length - 1));
         }
-        alert(`✅ Lote de ${themes.length} vídeo(s) enviado para a esteira!`);
-        setTimeout(fetchRuns, 2500);
-      } catch (err) {
-        alert(`❌ Erro no lote: ${err.message}`);
-      } finally {
-        batchDispatchBtn.disabled = false;
-        batchDispatchBtn.textContent = '🚀 Disparar Lote';
       }
-    });
 
-    window.playArtifactAudio = async function(runId, btnEl) {
-      const token = tokenInput.value.trim() || localStorage.getItem('creator_gh_token');
-      if (!token) return alert('Token GitHub necessário.');
-      const originalText = btnEl.textContent;
-      btnEl.disabled = true;
-      btnEl.textContent = '⏳ Carregando MP3...';
-      try {
-        const data = await ghApi(`actions/runs/${runId}/artifacts`);
-        const audioArtifact = (data.artifacts || []).find(a => a.name.endsWith('-audio'));
-        if (!audioArtifact) {
-          throw new Error('Artefato de áudio (-audio) não encontrado para esta execução.');
+      function handleJsonChange(val) {
+        setJsonText(val);
+        try {
+          const parsed = JSON.parse(val);
+          const arr = Array.isArray(parsed) ? parsed : parsed.questions;
+          if (!Array.isArray(arr) || arr.length === 0) throw new Error('Informe um array com ao menos 1 pergunta.');
+          setQuestions(arr);
+          setJsonError('');
+        } catch (err) {
+          setJsonError(err.message);
         }
-
-        const res = await fetch(audioArtifact.archive_download_url, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (!res.ok) throw new Error(`Erro ao baixar (${res.status})`);
-        const buf = await res.arrayBuffer();
-        const mp3Blob = await extractFirstFileFromZip(buf, 'audio/mpeg');
-        setAudioPlayerBlob(mp3Blob, `✅ Reproduzindo áudio da execução (artefato ${audioArtifact.name}).`);
-        audioPreviewPlayer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      } catch (err) {
-        alert(`❌ ${err.message}`);
-      } finally {
-        btnEl.disabled = false;
-        btnEl.textContent = originalText;
-      }
-    };
-
-    window.downloadArtifact = async function(runId, btnEl) {
-      const token = tokenInput.value.trim() || localStorage.getItem('creator_gh_token');
-      if (!token) return alert('Token GitHub necessário.');
-      const originalText = btnEl.textContent;
-      btnEl.disabled = true;
-      btnEl.textContent = '⏳ Baixando...';
-      try {
-        const data = await ghApi(`actions/runs/${runId}/artifacts`);
-        const artifacts = data.artifacts || [];
-        const artifact = artifacts.find(a => !a.name.endsWith('-audio')) || artifacts[0];
-        if (!artifact) throw new Error('Artefato não encontrado ou expirado.');
-
-        const res = await fetch(artifact.archive_download_url, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (!res.ok) throw new Error(`Erro ao baixar (${res.status})`);
-        const blob = await res.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${artifact.name || 'video'}.zip`;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        URL.revokeObjectURL(url);
-      } catch (err) {
-        alert(`❌ ${err.message}`);
-      } finally {
-        btnEl.disabled = false;
-        btnEl.textContent = originalText;
-      }
-    };
-
-    async function fetchRuns() {
-      const token = tokenInput.value.trim() || localStorage.getItem('creator_gh_token');
-      if (!token) {
-        runsContainer.innerHTML = '<div class="empty-state">Insira seu Token GitHub acima para ver a esteira.</div>';
-        return;
       }
 
-      try {
-        const data = await ghApi(`actions/workflows/${WORKFLOW_ID}/runs?per_page=12`);
-        const runs = data.workflow_runs || [];
+      function saveToken() {
+        const val = ghDraft.trim();
+        if (val) {
+          localStorage.setItem('creator_gh_token', val);
+          setGhToken(val);
+          fetchRuns(val);
+        } else {
+          localStorage.removeItem('creator_gh_token');
+          setGhToken('');
+          setRuns([]);
+        }
+      }
 
-        // Atualizar KPIs
+      function saveGroq() {
+        const val = groqDraft.trim();
+        if (val) {
+          localStorage.setItem('creator_groq_key', val);
+          setGroqKey(val);
+        } else {
+          localStorage.removeItem('creator_groq_key');
+          setGroqKey('');
+        }
+      }
+
+      async function fetchRuns(overrideToken) {
+        const tk = overrideToken !== undefined ? overrideToken : ghToken;
+        if (!tk) return;
+        try {
+          const data = await ghApi(tk, `actions/workflows/${WORKFLOW_ID}/runs?per_page=15`);
+          setRuns(data.workflow_runs || []);
+          setRunsError('');
+        } catch (err) {
+          setRunsError(err.message);
+        }
+      }
+
+      useEffect(() => {
+        if (!ghToken) return;
+        fetchRuns(ghToken);
+        const id = setInterval(() => fetchRuns(ghToken), 20000);
+        return () => clearInterval(id);
+      }, [ghToken]);
+
+      const kpis = useMemo(() => {
         const active = runs.filter(r => r.status === 'queued' || r.status === 'in_progress').length;
         const success = runs.filter(r => r.status === 'completed' && r.conclusion === 'success').length;
         const fail = runs.filter(r => r.status === 'completed' && r.conclusion !== 'success').length;
-        document.getElementById('kpiTotal').textContent = runs.length;
-        document.getElementById('kpiActive').textContent = active;
-        document.getElementById('kpiSuccess').textContent = success;
-        document.getElementById('kpiFail').textContent = fail;
+        return { total: runs.length, active, success, fail };
+      }, [runs]);
 
-        if (runs.length === 0) {
-          runsContainer.innerHTML = '<div class="empty-state">Nenhum vídeo na esteira ainda.</div>';
+      const filteredRuns = useMemo(() => {
+        if (runFilter === 'active') return runs.filter(r => r.status === 'queued' || r.status === 'in_progress');
+        if (runFilter === 'success') return runs.filter(r => r.status === 'completed' && r.conclusion === 'success');
+        if (runFilter === 'fail') return runs.filter(r => r.status === 'completed' && r.conclusion !== 'success');
+        return runs;
+      }, [runs, runFilter]);
+
+      function setAudioUrlAndPlay(url, statusMsg) {
+        setAudioSrc(url);
+        setAudioStatus(statusMsg);
+        setTimeout(() => {
+          if (audioRef.current) {
+            audioRef.current.load();
+            audioRef.current.play().catch(() => {});
+          }
+        }, 60);
+      }
+
+      function setAudioBlob(blob, statusMsg) {
+        if (audioObjUrlRef.current) URL.revokeObjectURL(audioObjUrlRef.current);
+        const objUrl = URL.createObjectURL(blob);
+        audioObjUrlRef.current = objUrl;
+        setAudioUrlAndPlay(objUrl, statusMsg);
+      }
+
+      async function handleGenerateAi() {
+        const firstTheme = quizTheme.split(',')[0].trim() || 'Curiosidades Gerais';
+        setAiLoading(true);
+        try {
+          const generated = await generateQuizWithGroq(groqKey || groqDraft.trim(), firstTheme, Number(quizCount) || 6, groqModel);
+          syncQuestions(generated);
+          setActiveIdx(0);
+          setSimRevealed(false);
+          setSimClock(5);
+          setVideoTitle(`quiz-${slugify(firstTheme)}-${Math.floor(Math.random() * 900 + 100)}`);
+        } catch (err) {
+          alert(`❌ ${err.message}`);
+        } finally {
+          setAiLoading(false);
+        }
+      }
+
+      async function handleBatchDispatch() {
+        const themes = quizTheme.split(',').map(t => t.trim()).filter(Boolean);
+        if (themes.length === 0) return alert('Informe ao menos um tema.');
+        if (!ghToken) { setShowKeys(true); return alert('Salve seu GitHub Token primeiro.'); }
+        if (!confirm(`Gerar e disparar ${themes.length} vídeo(s) em lote?\nTemas: ${themes.join(', ')}`)) return;
+
+        setBatchLoading(true);
+        try {
+          for (const th of themes) {
+            const list = await generateQuizWithGroq(groqKey || groqDraft.trim(), th, Number(quizCount) || 6, groqModel);
+            const title = `quiz-${slugify(th)}-${Math.floor(Math.random() * 900 + 100)}`;
+            await dispatchRender(ghToken, { template: 'quiz-mobile', title, customData: JSON.stringify(list), theme: visualTheme, mode: 'full' });
+          }
+          alert(`✅ Lote de ${themes.length} vídeo(s) enviado para a esteira!`);
+          setTimeout(() => fetchRuns(), 2500);
+        } catch (err) {
+          alert(`❌ Erro no lote: ${err.message}`);
+        } finally {
+          setBatchLoading(false);
+        }
+      }
+
+      async function handleCloudAudio() {
+        if (jsonError) return alert('Corrija o JSON antes de gerar o áudio.');
+        const category = quizTheme.split(',')[0].trim();
+
+        setCloudAudioLoading(true);
+        if (isLocal) {
+          setAudioStatus('Sintetizando Francisca 0.9x + tic-tac contínuo localmente...');
+          try {
+            const res = await fetch('/api/preview-audio', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ questions, theme: visualTheme, category }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || `Erro HTTP ${res.status}`);
+            setAudioUrlAndPlay(data.audioUrl, '✅ Áudio oficial (Francisca + tic-tac) pronto!');
+            if (data.videoPreviewUrl) setLocalVideoUrl(data.videoPreviewUrl);
+          } catch (err) {
+            setAudioStatus('');
+            alert(`❌ Erro ao gerar áudio: ${err.message}`);
+          } finally {
+            setCloudAudioLoading(false);
+          }
           return;
         }
 
-        runsContainer.innerHTML = runs.map(run => {
-          let statusClass = 'status-queued';
-          let statusLabel = 'Na Fila';
-          let s1 = 'done', s2 = 'active', s3 = '';
+        if (!ghToken) {
+          setCloudAudioLoading(false);
+          setShowKeys(true);
+          return alert('Salve seu GitHub Token nas credenciais para gerar áudio oficial na nuvem (ou use "⚡ Prévia Instantânea").');
+        }
 
-          if (run.status === 'in_progress') {
-            statusClass = 'status-in_progress';
-            statusLabel = 'Em Produção...';
-            s1 = 'done'; s2 = 'done'; s3 = 'active';
-          } else if (run.status === 'completed') {
-            if (run.conclusion === 'success') {
-              statusClass = 'status-completed';
-              statusLabel = 'Pronto!';
-              s1 = 'done'; s2 = 'done'; s3 = 'done';
-            } else {
-              statusClass = 'status-failed';
-              statusLabel = 'Falhou';
-              s1 = 'done'; s2 = 'done'; s3 = 'fail';
+        const title = (videoTitle.trim() || 'quiz-audio') + '-preview';
+        try {
+          setAudioStatus('1/3 Enviando roteiro para sintetização online (Francisca 0.9x + tic-tac)...');
+          const prevRunsData = await ghApi(ghToken, `actions/workflows/${WORKFLOW_ID}/runs?per_page=1`);
+          const prevLatestId = prevRunsData.workflow_runs?.[0]?.id || 0;
+
+          await dispatchRender(ghToken, {
+            template: 'quiz-mobile',
+            title,
+            customData: JSON.stringify(questions),
+            theme: visualTheme,
+            mode: 'audio_only',
+          });
+          fetchRuns();
+
+          let targetRun = null;
+          for (let attempt = 0; attempt < 45; attempt++) {
+            await sleepMs(4000);
+            const runsData = await ghApi(ghToken, `actions/workflows/${WORKFLOW_ID}/runs?per_page=5`);
+            const found = (runsData.workflow_runs || []).find(r => r.id > prevLatestId);
+            if (found) {
+              targetRun = found;
+              if (found.status === 'queued') {
+                setAudioStatus(`2/3 Na fila do GitHub Actions (#${found.run_number})...`);
+              } else if (found.status === 'in_progress') {
+                setAudioStatus(`2/3 Sintetizando voz Francisca + mixando tic-tac (#${found.run_number})...`);
+              } else if (found.status === 'completed') {
+                break;
+              }
             }
           }
 
-          const created = new Date(run.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-          const audioBtn = (run.status === 'completed' && run.conclusion === 'success')
-            ? `<button class="run-btn" onclick="playArtifactAudio(${run.id}, this)">🔊 Ouvir MP3</button>`
-            : '';
-          const downloadBtn = (run.status === 'completed' && run.conclusion === 'success')
-            ? `<button class="run-btn download" onclick="downloadArtifact(${run.id}, this)">⬇️ Baixar (.zip)</button>`
-            : '';
+          if (!targetRun || targetRun.status !== 'completed') {
+            throw new Error('Tempo limite aguardando o áudio na nuvem. Acompanhe na Esteira.');
+          }
+          if (targetRun.conclusion !== 'success') {
+            throw new Error(`Falha na geração online (${targetRun.conclusion}). Confira o log na Esteira.`);
+          }
 
-          return `
-            <div class="run-item">
-              <div class="run-header">
-                <span class="badge-status ${statusClass}">${statusLabel}</span>
-                <span style="font-size:0.75rem; color:var(--text-muted);">${created}</span>
+          setAudioStatus('3/3 Baixando e extraindo MP3 oficial no navegador...');
+          const artData = await ghApi(ghToken, `actions/runs/${targetRun.id}/artifacts`);
+          const audioArt = (artData.artifacts || []).find(a => a.name.endsWith('-audio')) || (artData.artifacts || [])[0];
+          if (!audioArt) throw new Error('Artefato de áudio não encontrado.');
+
+          const zipRes = await fetch(audioArt.archive_download_url, {
+            headers: { Authorization: `Bearer ${ghToken}` },
+          });
+          if (!zipRes.ok) throw new Error(`Erro ao baixar artefato (${zipRes.status})`);
+          const mp3Blob = await extractFirstFileFromZip(await zipRes.arrayBuffer(), 'audio/mpeg');
+          setAudioBlob(mp3Blob, '✅ Áudio oficial (Francisca 0.9x + tic-tac) pronto! Ouça abaixo.');
+          fetchRuns();
+        } catch (err) {
+          setAudioStatus(`❌ ${err.message}`);
+          alert(`❌ ${err.message}`);
+        } finally {
+          setCloudAudioLoading(false);
+        }
+      }
+
+      function speakTextPt(text) {
+        return new Promise((resolve) => {
+          if (instantAbortRef.current) return resolve();
+          const utt = new SpeechSynthesisUtterance(text);
+          const voices = window.speechSynthesis.getVoices();
+          const ptVoice =
+            voices.find(v => /francisca/i.test(v.name)) ||
+            voices.find(v => /pt[-_]BR/i.test(v.lang)) ||
+            voices.find(v => /^pt/i.test(v.lang));
+          if (ptVoice) utt.voice = ptVoice;
+          utt.lang = 'pt-BR';
+          utt.rate = 0.9;
+          utt.onend = () => resolve();
+          utt.onerror = () => resolve();
+          window.speechSynthesis.speak(utt);
+        });
+      }
+
+      async function handleInstantPreview() {
+        if (!('speechSynthesis' in window)) return alert('Seu navegador não suporta Web Speech API.');
+        if (!questions.length) return alert('Adicione ao menos 1 pergunta.');
+
+        instantAbortRef.current = false;
+        window.speechSynthesis.cancel();
+        setInstantPlaying(true);
+
+        const playOneSfx = (path) => {
+          if (instantAbortRef.current) return;
+          const a = new Audio(path);
+          a.volume = 0.85;
+          a.play().catch(() => {});
+        };
+
+        try {
+          for (let i = 0; i < questions.length && !instantAbortRef.current; i++) {
+            const q = questions[i];
+            setActiveIdx(i);
+            setSimRevealed(false);
+            setSimClock(5);
+            setAudioStatus(`⚡ Rodada ${i + 1}/${questions.length}: Pergunta...`);
+            await speakTextPt(q.q);
+            if (instantAbortRef.current) break;
+            await sleepMs(350);
+
+            const letters = ['A', 'B', 'C'];
+            for (let oi = 0; oi < 3 && !instantAbortRef.current; oi++) {
+              await speakTextPt(`${letters[oi]}:`);
+              if (instantAbortRef.current) break;
+              await sleepMs(200);
+              await speakTextPt(`${(q.opts || [])[oi] || ''}?`);
+              if (instantAbortRef.current) break;
+              await sleepMs(oi < 2 ? 300 : 450);
+            }
+
+            if (activeTicTacRef.current) {
+              activeTicTacRef.current.pause();
+              activeTicTacRef.current = null;
+            }
+            const tictac = new Audio('sfx/tic-tac.mp3');
+            tictac.loop = true;
+            tictac.volume = 0.45;
+            tictac.play().catch(() => {});
+            activeTicTacRef.current = tictac;
+
+            for (const n of [5, 4, 3, 2, 1]) {
+              if (instantAbortRef.current) break;
+              setSimClock(n);
+              setAudioStatus(`⚡ Rodada ${i + 1}/${questions.length}: Contagem ${n}...`);
+              await speakTextPt(String(n));
+              if (instantAbortRef.current) break;
+              await sleepMs(700);
+            }
+
+            if (activeTicTacRef.current) {
+              activeTicTacRef.current.pause();
+              activeTicTacRef.current.currentTime = 0;
+              activeTicTacRef.current = null;
+            }
+            if (instantAbortRef.current) break;
+
+            setSimClock(0);
+            setSimRevealed(true);
+            setAudioStatus(`⚡ Rodada ${i + 1}/${questions.length}: Resposta!`);
+            playOneSfx('sfx/trim_alarm.mp3');
+            await speakTextPt(`Resposta certa: ${q.ans}!`);
+            if (instantAbortRef.current) break;
+            await sleepMs(900);
+          }
+          if (!instantAbortRef.current) setAudioStatus('✅ Prévia instantânea concluída!');
+        } finally {
+          if (activeTicTacRef.current) {
+            activeTicTacRef.current.pause();
+            activeTicTacRef.current = null;
+          }
+          setInstantPlaying(false);
+        }
+      }
+
+      function stopInstantPreview() {
+        instantAbortRef.current = true;
+        if (activeTicTacRef.current) {
+          activeTicTacRef.current.pause();
+          activeTicTacRef.current = null;
+        }
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        setInstantPlaying(false);
+        setAudioStatus('⏹ Prévia interrompida.');
+      }
+
+      async function handleLocalVideoCompile() {
+        if (!isLocal) return alert('Rode "npm run studio" no PC para usar o compilador local.');
+        if (jsonError) return alert('JSON inválido!');
+        setLocalVideoLoading(true);
+        try {
+          const res = await fetch('/api/compile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              template: 'quiz-mobile',
+              theme: visualTheme,
+              category: quizTheme.split(',')[0].trim(),
+              questions,
+            }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || `Erro HTTP ${res.status}`);
+          setLocalVideoUrl(data.videoPreviewUrl);
+          setAudioStatus('✅ Vídeo GSAP compilado! Dê Play no frame abaixo.');
+        } catch (err) {
+          alert(`❌ ${err.message}`);
+        } finally {
+          setLocalVideoLoading(false);
+        }
+      }
+
+      async function handleDispatchRender() {
+        if (!ghToken) { setShowKeys(true); return alert('Salve seu GitHub Token primeiro.'); }
+        if (template === 'quiz-mobile' && jsonError) return alert('JSON do Quiz inválido!');
+        const title = videoTitle.trim() || 'video';
+        const customData = template === 'quiz-mobile' ? JSON.stringify(questions) : scriptText.trim();
+
+        setDispatchLoading(true);
+        try {
+          await dispatchRender(ghToken, { template, title, customData, theme: visualTheme, mode: 'full' });
+          alert(`✅ "${title}" entrou na esteira de produção!`);
+          setTimeout(() => fetchRuns(), 2500);
+        } catch (err) {
+          alert(`❌ Erro ao acionar renderização: ${err.message}`);
+        } finally {
+          setDispatchLoading(false);
+        }
+      }
+
+      async function handlePlayRunAudio(runId) {
+        try {
+          const data = await ghApi(ghToken, `actions/runs/${runId}/artifacts`);
+          const audioArt = (data.artifacts || []).find(a => a.name.endsWith('-audio'));
+          if (!audioArt) throw new Error('Artefato de áudio (-audio) não encontrado nesta execução.');
+          const res = await fetch(audioArt.archive_download_url, { headers: { Authorization: `Bearer ${ghToken}` } });
+          if (!res.ok) throw new Error(`Erro ao baixar (${res.status})`);
+          const mp3Blob = await extractFirstFileFromZip(await res.arrayBuffer(), 'audio/mpeg');
+          setAudioBlob(mp3Blob, `✅ Reproduzindo áudio: ${audioArt.name}`);
+          audioRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } catch (err) {
+          alert(`❌ ${err.message}`);
+        }
+      }
+
+      async function handleDownloadRun(runId) {
+        try {
+          const data = await ghApi(ghToken, `actions/runs/${runId}/artifacts`);
+          const artifacts = data.artifacts || [];
+          const artifact = artifacts.find(a => !a.name.endsWith('-audio')) || artifacts[0];
+          if (!artifact) throw new Error('Artefato não encontrado ou expirado.');
+          const res = await fetch(artifact.archive_download_url, { headers: { Authorization: `Bearer ${ghToken}` } });
+          if (!res.ok) throw new Error(`Erro ao baixar (${res.status})`);
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${artifact.name || 'video'}.zip`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        } catch (err) {
+          alert(`❌ ${err.message}`);
+        }
+      }
+
+      // Funções de edição visual de perguntas
+      function updateQuestion(idx, patch) {
+        const next = questions.map((item, i) => (i === idx ? { ...item, ...patch } : item));
+        syncQuestions(next);
+      }
+
+      function updateOption(qIdx, optIdx, newText) {
+        const q = questions[qIdx];
+        const prevText = q.opts[optIdx];
+        const newOpts = q.opts.map((o, i) => (i === optIdx ? newText : o));
+        const newAns = q.ans === prevText ? newText : q.ans;
+        updateQuestion(qIdx, { opts: newOpts, ans: newAns });
+      }
+
+      function moveQuestion(idx, delta) {
+        const target = idx + delta;
+        if (target < 0 || target >= questions.length) return;
+        const copy = [...questions];
+        const [item] = copy.splice(idx, 1);
+        copy.splice(target, 0, item);
+        syncQuestions(copy);
+        setActiveIdx(target);
+      }
+
+      function duplicateQuestion(idx) {
+        const copy = [...questions];
+        const item = questions[idx];
+        copy.splice(idx + 1, 0, { ...item, opts: [...item.opts] });
+        syncQuestions(copy);
+        setActiveIdx(idx + 1);
+      }
+
+      function deleteQuestion(idx) {
+        if (questions.length <= 1) return alert('Mantenha pelo menos 1 pergunta.');
+        const next = questions.filter((_, i) => i !== idx);
+        syncQuestions(next);
+      }
+
+      function shuffleOptions(idx) {
+        const q = questions[idx];
+        const opts = [...q.opts];
+        for (let i = opts.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [opts[i], opts[j]] = [opts[j], opts[i]];
+        }
+        updateQuestion(idx, { opts });
+      }
+
+      function addQuestion() {
+        const cat = (quizTheme.split(',')[0].trim() || 'QUIZ').toUpperCase();
+        const next = [...questions, { q: 'Nova pergunta aqui?', opts: ['Opção A', 'Opção B', 'Opção C'], ans: 'Opção A', category: cat }];
+        syncQuestions(next);
+        setActiveIdx(next.length - 1);
+      }
+
+      return (
+        <div>
+          <header>
+            <div className="brand">
+              <span>🎬</span>
+              <span>Creator Studio</span>
+              <span className="brand-badge">React SPA · GitHub Cloud</span>
+            </div>
+            <div className="header-right">
+              <button
+                type="button"
+                className={`status-pill ${ghToken ? 'ok' : 'warn'}`}
+                onClick={() => setShowKeys(v => !v)}
+              >
+                <span>{ghToken ? '🟢 GitHub Conectado' : '🟡 Configurar GitHub Token'}</span>
+              </button>
+              <button
+                type="button"
+                className={`status-pill ${groqKey ? 'ok' : 'warn'}`}
+                onClick={() => setShowKeys(v => !v)}
+              >
+                <span>{groqKey ? '🟢 Groq IA Ativo' : '⚪ Groq API Key'}</span>
+              </button>
+              <a href="https://github.com/evandromqs/creator" target="_blank" rel="noreferrer" className="repo-link">
+                <span>GitHub Repo</span>
+              </a>
+            </div>
+          </header>
+
+          <div className="container">
+            {/* KPIs */}
+            <div className="kpi-grid">
+              <div className="kpi-card">
+                <span className="kpi-label">Total na Esteira</span>
+                <span className="kpi-value accent">{ghToken ? kpis.total : '—'}</span>
               </div>
-              <div class="run-title">${run.display_title || 'Render Video'}</div>
-              <div class="run-meta">Execução #${run.run_number}</div>
-              <div class="pipeline-steps" title="Etapas: Fila → Áudio/Compilação → Render MP4">
-                <div class="step-bar ${s1}"></div>
-                <div class="step-bar ${s2}"></div>
-                <div class="step-bar ${s3}"></div>
+              <div className="kpi-card">
+                <span className="kpi-label">Em Produção</span>
+                <span className="kpi-value warning">{ghToken ? kpis.active : '—'}</span>
               </div>
-              <div class="run-actions">
-                ${audioBtn}
-                ${downloadBtn}
-                <a href="${run.html_url}" target="_blank" class="run-btn">Acompanhar Log</a>
+              <div className="kpi-card">
+                <span className="kpi-label">Prontos</span>
+                <span className="kpi-value success">{ghToken ? kpis.success : '—'}</span>
+              </div>
+              <div className="kpi-card">
+                <span className="kpi-label">Falhas</span>
+                <span className="kpi-value danger">{ghToken ? kpis.fail : '—'}</span>
               </div>
             </div>
-          `;
-        }).join('');
-      } catch (err) {
-        runsContainer.innerHTML = `<div class="empty-state" style="color:var(--danger)">${err.message}</div>`;
-      }
+
+            {/* Credenciais Seguras */}
+            {showKeys && (
+              <div className="card token-box">
+                <div className="card-title">
+                  <span>🔐 Credenciais Locais (Salvas apenas no navegador via LocalStorage)</span>
+                  <button className="btn-secondary" type="button" onClick={() => setShowKeys(false)} style={{ padding: '4px 10px' }}>Fechar</button>
+                </div>
+                <div className="row-2">
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label>GitHub Token (escopo <code>workflow</code>)</label>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      <input type="password" value={ghDraft} onChange={e => setGhDraft(e.target.value)} placeholder="ghp_... ou gho_..." autoComplete="off" />
+                      <button className="btn-secondary" type="button" onClick={saveToken}>Salvar</button>
+                    </div>
+                  </div>
+                  <div className="form-group" style={{ marginBottom: 0 }}>
+                    <label>Groq API Key (IA para Roteiros)</label>
+                    <div style={{ display: 'flex', gap: '6px' }}>
+                      <input type="password" value={groqDraft} onChange={e => setGroqDraft(e.target.value)} placeholder="gsk_..." autoComplete="off" />
+                      <button className="btn-secondary" type="button" onClick={saveGroq}>Salvar</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="main-grid">
+              {/* Coluna Principal: Criação e Editor */}
+              <div>
+                <div className="card">
+                  <div className="card-title">
+                    <span>🏭 Linha de Produção</span>
+                  </div>
+
+                  <div className="form-group">
+                    <label>1. Escolha o Template</label>
+                    <div className="templates-grid">
+                      {TEMPLATES.map(t => (
+                        <div
+                          key={t.id}
+                          className={`tpl-btn ${template === t.id ? 'active' : ''}`}
+                          onClick={() => setTemplate(t.id)}
+                        >
+                          <span className="icon">{t.icon}</span>
+                          <span className="name">{t.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {template === 'quiz-mobile' ? (
+                    <>
+                      <div className="ai-box">
+                        <div style={{ fontWeight: 700, fontSize: '0.86rem', marginBottom: '10px', color: '#34d399' }}>
+                          ✨ Gerador Automático de Roteiro (Groq IA)
+                        </div>
+                        <div className="row-2" style={{ marginBottom: '10px' }}>
+                          <div>
+                            <label>Tema (ou vários separados por vírgula para Lote)</label>
+                            <input type="text" value={quizTheme} onChange={e => setQuizTheme(e.target.value)} placeholder="Ex: Curiosidades do Brasil" />
+                          </div>
+                          <div>
+                            <label>Modelo Groq</label>
+                            <select value={groqModel} onChange={e => setGroqModel(e.target.value)}>
+                              <option value="openai/gpt-oss-120b">openai/gpt-oss-120b (Melhor qualidade)</option>
+                              <option value="openai/gpt-oss-20b">openai/gpt-oss-20b (Mais rápido)</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+                          <div style={{ width: '96px' }}>
+                            <label>Perguntas</label>
+                            <input type="number" min="1" max="10" value={quizCount} onChange={e => setQuizCount(e.target.value)} />
+                          </div>
+                          <button className="btn-ai" type="button" onClick={handleGenerateAi} disabled={aiLoading}>
+                            {aiLoading ? '⏳ Gerando...' : '✨ Gerar Roteiro'}
+                          </button>
+                          <button className="btn-secondary" type="button" onClick={handleBatchDispatch} disabled={batchLoading}>
+                            {batchLoading ? '⏳ Enviando lote...' : '🚀 Disparar Lote'}
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="row-2">
+                        <div className="form-group">
+                          <label>2. Título / Identificador do Vídeo</label>
+                          <input type="text" value={videoTitle} onChange={e => setVideoTitle(e.target.value)} />
+                        </div>
+                        <div className="form-group">
+                          <label>Tema Visual do Quiz</label>
+                          <select value={visualTheme} onChange={e => setVisualTheme(e.target.value)}>
+                            {Object.entries(THEMES).map(([k, v]) => (
+                              <option key={k} value={k}>{v.label}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="form-group">
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
+                          <div className="tabs">
+                            <button type="button" className={`tab-btn ${editorTab === 'visual' ? 'active' : ''}`} onClick={() => setEditorTab('visual')}>
+                              ✨ Editor Visual ({questions.length})
+                            </button>
+                            <button type="button" className={`tab-btn ${editorTab === 'json' ? 'active' : ''}`} onClick={() => setEditorTab('json')}>
+                              💻 Código JSON
+                            </button>
+                          </div>
+                          <div style={{ display: 'flex', gap: '6px' }}>
+                            {editorTab === 'visual' && (
+                              <button className="btn-secondary" type="button" onClick={addQuestion} style={{ padding: '4px 10px', fontSize: '0.75rem' }}>
+                                + Pergunta
+                              </button>
+                            )}
+                            <button className="btn-secondary" type="button" onClick={() => syncQuestions(DEFAULT_QUIZ)} style={{ padding: '4px 10px', fontSize: '0.75rem' }}>
+                              Exemplo
+                            </button>
+                          </div>
+                        </div>
+
+                        {editorTab === 'visual' ? (
+                          <div className="q-list">
+                            {questions.map((item, qIdx) => (
+                              <div key={qIdx} className={`q-card ${activeIdx === qIdx ? 'selected' : ''}`} onClick={() => setActiveIdx(qIdx)}>
+                                <div className="q-card-top">
+                                  <span className="q-badge">Rodada {qIdx + 1}</span>
+                                  <div className="q-actions" onClick={e => e.stopPropagation()}>
+                                    <button type="button" className="icon-btn" title="Mover acima" onClick={() => moveQuestion(qIdx, -1)}>↑</button>
+                                    <button type="button" className="icon-btn" title="Mover abaixo" onClick={() => moveQuestion(qIdx, 1)}>↓</button>
+                                    <button type="button" className="icon-btn" title="Embaralhar opções" onClick={() => shuffleOptions(qIdx)}>🔀</button>
+                                    <button type="button" className="icon-btn" title="Duplicar" onClick={() => duplicateQuestion(qIdx)}>📄</button>
+                                    <button type="button" className="icon-btn del" title="Excluir" onClick={() => deleteQuestion(qIdx)}>🗑️</button>
+                                  </div>
+                                </div>
+                                <div className="row-2" style={{ marginBottom: '6px' }}>
+                                  <input
+                                    type="text"
+                                    value={item.q}
+                                    onChange={e => updateQuestion(qIdx, { q: e.target.value })}
+                                    placeholder="Texto da pergunta"
+                                    style={{ fontWeight: 600 }}
+                                  />
+                                  <input
+                                    type="text"
+                                    value={item.category || ''}
+                                    onChange={e => updateQuestion(qIdx, { category: e.target.value })}
+                                    placeholder="Categoria (ex: GEOGRAFIA)"
+                                  />
+                                </div>
+                                {(item.opts || []).slice(0, 3).map((opt, oi) => {
+                                  const isAns = opt === item.ans;
+                                  return (
+                                    <div key={oi} className="opt-row">
+                                      <button
+                                        type="button"
+                                        className={`opt-pick ${isAns ? 'correct' : ''}`}
+                                        title="Clique para marcar como resposta correta"
+                                        onClick={() => updateQuestion(qIdx, { ans: opt })}
+                                      >
+                                        {['A', 'B', 'C'][oi]}
+                                      </button>
+                                      <input
+                                        type="text"
+                                        value={opt}
+                                        onChange={e => updateOption(qIdx, oi, e.target.value)}
+                                      />
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <>
+                            <textarea value={jsonText} onChange={e => handleJsonChange(e.target.value)} spellCheck="false" />
+                            {jsonError && <div style={{ color: 'var(--danger)', fontSize: '0.76rem', marginTop: '4px' }}>⚠️ {jsonError}</div>}
+                          </>
+                        )}
+
+                        <div style={{ marginTop: '12px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                          <button className="btn-ai" type="button" onClick={handleCloudAudio} disabled={cloudAudioLoading}>
+                            {cloudAudioLoading ? '⏳ Gerando Áudio...' : '☁️ Gerar Áudio Online (Francisca + SFX)'}
+                          </button>
+                          {!instantPlaying ? (
+                            <button className="btn-secondary" type="button" onClick={handleInstantPreview}>
+                              ⚡ Prévia Instantânea (0s)
+                            </button>
+                          ) : (
+                            <button className="btn-secondary" type="button" onClick={stopInstantPreview} style={{ color: '#f87171' }}>
+                              ⏹ Parar Prévia
+                            </button>
+                          )}
+                          {isLocal && (
+                            <button className="btn-secondary" type="button" onClick={handleLocalVideoCompile} disabled={localVideoLoading}>
+                              {localVideoLoading ? '⏳ Compilando...' : '🎬 Preview GSAP (Local)'}
+                            </button>
+                          )}
+                        </div>
+                        {audioStatus && (
+                          <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginTop: '8px' }}>{audioStatus}</div>
+                        )}
+                        {audioSrc && (
+                          <audio ref={audioRef} src={audioSrc} controls style={{ width: '100%', marginTop: '10px' }} />
+                        )}
+                        {localVideoUrl && (
+                          <div style={{ marginTop: '12px', textAlign: 'center' }}>
+                            <iframe src={localVideoUrl} style={{ width: '300px', height: '533px', border: '2px solid var(--accent)', borderRadius: '14px', background: '#000' }} />
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="form-group">
+                        <label>2. Título / Identificador do Vídeo</label>
+                        <input type="text" value={videoTitle} onChange={e => setVideoTitle(e.target.value)} placeholder="Ex: video-01" />
+                      </div>
+                      <div className="form-group">
+                        <label>3. Roteiro / Texto da Narração</label>
+                        <textarea value={scriptText} onChange={e => setScriptText(e.target.value)} placeholder="Digite o roteiro completo aqui..." spellCheck="false" />
+                      </div>
+                    </>
+                  )}
+
+                  <button className="btn-primary" type="button" onClick={handleDispatchRender} disabled={dispatchLoading}>
+                    {dispatchLoading ? <div className="spinner" /> : <span>🚀</span>}
+                    <span>{dispatchLoading ? 'Enviando para Esteira...' : 'Disparar Renderização na Esteira'}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Coluna Direita: Simulador 9:16 + Esteira */}
+              <div>
+                {template === 'quiz-mobile' && (
+                  <div className="card">
+                    <div className="card-title">
+                      <span>📱 Simulador 9:16 Ao Vivo</span>
+                      <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>{THEMES[visualTheme]?.label}</span>
+                    </div>
+                    <QuizPhonePreview
+                      questions={questions}
+                      activeIdx={activeIdx}
+                      themeKey={visualTheme}
+                      clockValue={simClock}
+                      revealed={simRevealed}
+                      onPrev={() => { setSimRevealed(false); setSimClock(5); setActiveIdx(i => (i - 1 + questions.length) % questions.length); }}
+                      onNext={() => { setSimRevealed(false); setSimClock(5); setActiveIdx(i => (i + 1) % questions.length); }}
+                      onToggleReveal={() => { setSimRevealed(v => !v); setSimClock(v => (simRevealed ? 5 : 0)); }}
+                    />
+                  </div>
+                )}
+
+                <div className="card">
+                  <div className="card-title">
+                    <span>📊 Esteira em Tempo Real</span>
+                    <button className="btn-secondary" type="button" onClick={() => fetchRuns()} style={{ padding: '4px 10px', fontSize: '0.74rem' }}>
+                      🔄 Atualizar
+                    </button>
+                  </div>
+
+                  <div className="tabs" style={{ marginBottom: '12px' }}>
+                    {[
+                      ['all', `Todos (${kpis.total})`],
+                      ['active', `Produção (${kpis.active})`],
+                      ['success', `Prontos (${kpis.success})`],
+                      ['fail', `Falhas (${kpis.fail})`],
+                    ].map(([key, lbl]) => (
+                      <button
+                        key={key}
+                        type="button"
+                        className={`tab-btn ${runFilter === key ? 'active' : ''}`}
+                        onClick={() => setRunFilter(key)}
+                        style={{ flex: 1, fontSize: '0.7rem', padding: '5px 4px' }}
+                      >
+                        {lbl}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="runs-list">
+                    {!ghToken ? (
+                      <div className="empty-state">Configure seu GitHub Token para acompanhar a esteira.</div>
+                    ) : runsError ? (
+                      <div className="empty-state" style={{ color: 'var(--danger)' }}>{runsError}</div>
+                    ) : filteredRuns.length === 0 ? (
+                      <div className="empty-state">Nenhuma execução nesta aba.</div>
+                    ) : (
+                      filteredRuns.map(run => {
+                        let statusClass = 'status-queued';
+                        let statusLabel = 'Na Fila';
+                        let s1 = 'done', s2 = 'active', s3 = '';
+                        if (run.status === 'in_progress') {
+                          statusClass = 'status-in_progress';
+                          statusLabel = 'Em Produção...';
+                          s1 = 'done'; s2 = 'done'; s3 = 'active';
+                        } else if (run.status === 'completed') {
+                          if (run.conclusion === 'success') {
+                            statusClass = 'status-completed';
+                            statusLabel = 'Pronto!';
+                            s1 = 'done'; s2 = 'done'; s3 = 'done';
+                          } else {
+                            statusClass = 'status-failed';
+                            statusLabel = 'Falhou';
+                            s1 = 'done'; s2 = 'done'; s3 = 'fail';
+                          }
+                        }
+                        const created = new Date(run.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        const isDone = run.status === 'completed' && run.conclusion === 'success';
+                        return (
+                          <div key={run.id} className="run-item">
+                            <div className="run-header">
+                              <span className={`badge-status ${statusClass}`}>{statusLabel}</span>
+                              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{created}</span>
+                            </div>
+                            <div className="run-title">{run.display_title || 'Render Video'}</div>
+                            <div className="run-meta">Execução #{run.run_number}</div>
+                            <div className="pipeline-steps">
+                              <div className={`step-bar ${s1}`} />
+                              <div className={`step-bar ${s2}`} />
+                              <div className={`step-bar ${s3}`} />
+                            </div>
+                            <div className="run-actions">
+                              {isDone && (
+                                <>
+                                  <button type="button" className="run-btn" onClick={() => handlePlayRunAudio(run.id)}>🔊 Ouvir MP3</button>
+                                  <button type="button" className="run-btn download" onClick={() => handleDownloadRun(run.id)}>⬇️ Baixar (.zip)</button>
+                                </>
+                              )}
+                              <a href={run.html_url} target="_blank" rel="noreferrer" className="run-btn">Acompanhar Log</a>
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
     }
 
-    refreshRunsBtn.addEventListener('click', fetchRuns);
-
-    startRenderBtn.addEventListener('click', async () => {
-      const token = tokenInput.value.trim() || localStorage.getItem('creator_gh_token');
-      if (!token) {
-        alert('Por favor, insira e salve seu GitHub Token primeiro.');
-        tokenInput.focus();
-        return;
-      }
-
-      const title = (currentTemplate === 'quiz-mobile' ? videoTitle.value : genericTitle.value).trim() || 'video';
-      let payloadCustom = '';
-
-      if (currentTemplate === 'quiz-mobile') {
-        try {
-          const parsed = JSON.parse(quizJson.value.trim());
-          payloadCustom = JSON.stringify(parsed);
-        } catch (e) {
-          alert('JSON do Quiz inválido! Verifique a formatação.');
-          return;
-        }
-      } else {
-        payloadCustom = (document.getElementById('scriptText').value || '').trim();
-      }
-
-      startRenderBtn.disabled = true;
-      document.getElementById('btnIcon').innerHTML = '<div class="spinner"></div>';
-      document.getElementById('btnText').textContent = 'Enviando para Esteira...';
-
-      try {
-        await dispatchRender(currentTemplate, title, payloadCustom, quizVisualTheme.value);
-        alert(`✅ "${title}" entrou na esteira de produção!`);
-        setTimeout(fetchRuns, 2500);
-      } catch (err) {
-        alert(`❌ Erro ao acionar renderização: ${err.message}`);
-      } finally {
-        startRenderBtn.disabled = false;
-        document.getElementById('btnIcon').textContent = '🚀';
-        document.getElementById('btnText').textContent = 'Disparar Renderização na Esteira';
-      }
-    });
-
-    if (savedToken) {
-      fetchRuns();
-      setInterval(fetchRuns, 20000);
-    }
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
   </script>
 </body>
 </html>

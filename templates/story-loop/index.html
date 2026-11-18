@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="pt-BR" data-resolution="portrait">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>O Mistério do Tempo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@800;900&family=Playfair+Display:ital,wght@1,900&family=Frank+Ruhl+Libre:wght@900&display=block" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<style>
+
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#02060c;color:#fff;font-family:'Montserrat',system-ui,sans-serif}
+#root{position:relative;width:1080px;height:1920px;overflow:hidden;background:#030a14}
+.bg{position:absolute;inset:0;overflow:hidden}
+.blob{position:absolute;border-radius:50%;opacity:.45;filter:blur(40px)}
+.tint{position:absolute;inset:0;opacity:0}
+.dust{position:absolute;border-radius:50%;background:#e0f2fe;box-shadow:0 0 8px #bae6fd}
+.scene{position:absolute;inset:0;overflow:hidden}
+.cam{position:absolute;inset:0;transform-origin:50% 45%}
+.center{position:absolute;left:0;right:0;text-align:center;white-space:nowrap}
+.anton{font-family:'Anton',sans-serif;line-height:1;text-transform:uppercase}
+.huge{line-height:.95;text-shadow:0 12px 60px rgba(0,0,0,.6)}
+.ch{display:inline-block}
+.eyebrow{position:absolute;left:0;right:0;text-align:center;font-weight:900;font-size:40px;letter-spacing:14px;color:#e0f2fe;opacity:.95}
+#subs{position:absolute;left:0;right:0;top:1360px;height:300px;z-index:50}
+.chunk{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.chunk-in{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 18px;max-width:980px;padding:0 30px}
+.sw{position:relative;display:inline-block;padding:4px 16px}
+.sw .hl{position:absolute;inset:0;border-radius:16px;transform-origin:0 50%;box-shadow:0 8px 24px rgba(0,0,0,.45)}
+.sw b{position:relative;display:block;font-family:'Montserrat',system-ui,sans-serif;font-weight:900;font-size:78px;line-height:1.08;color:#fff;letter-spacing:-1px;-webkit-text-stroke:2px rgba(0,0,0,.35);text-shadow:0 6px 20px rgba(0,0,0,.85)}
+#grain{position:absolute;inset:-50px;z-index:80;opacity:.09;pointer-events:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+#vignette{position:absolute;inset:0;z-index:81;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 50%,rgba(0,0,0,.7) 100%)}
+#flash{position:absolute;inset:0;z-index:90;background:#fff;opacity:0;pointer-events:none}
+#fade{position:absolute;inset:0;z-index:95;background:#000;opacity:0;pointer-events:none}
+
+
+    .title { top: 480px; font-size: 130px; color: #facc15; }
+    .story-card { position: absolute; left: 80px; right: 80px; top: 760px; padding: 48px; border-radius: 32px; background: rgba(15, 23, 42, 0.78); border: 2px solid rgba(129, 140, 248, 0.4); font-size: 46px; line-height: 1.4; font-weight: 800; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+  
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-duration="20" data-width="1080" data-height="1920">
+  
+  
+  <div class="bg" id="bg">
+    <div class="blob" id="blob-0" style="width:940px;height:940px;left:148px;top:1249px;background:radial-gradient(circle, #4f46e5 0%, transparent 65%);"></div><div class="blob" id="blob-1" style="width:950px;height:950px;left:565px;top:603px;background:radial-gradient(circle, #7c3aed 0%, transparent 65%);"></div><div class="blob" id="blob-2" style="width:779px;height:779px;left:201px;top:967px;background:radial-gradient(circle, #2563eb 0%, transparent 65%);"></div><div class="blob" id="blob-3" style="width:720px;height:720px;left:292px;top:-146px;background:radial-gradient(circle, #db2777 0%, transparent 65%);"></div>
+<div class="tint" id="tint-0" style="background:rgba(15, 23, 42, 0.85)"></div><div class="tint" id="tint-1" style="background:rgba(30, 27, 75, 0.85)"></div><div class="tint" id="tint-2" style="background:rgba(88, 28, 135, 0.85)"></div>
+<i class="dust" id="dust-0" style="left:29px;top:332px;width:4.1px;height:4.1px;opacity:0.53"></i><i class="dust" id="dust-1" style="left:486px;top:72px;width:3.3px;height:3.3px;opacity:0.17"></i><i class="dust" id="dust-2" style="left:697px;top:402px;width:3px;height:3px;opacity:0.29"></i><i class="dust" id="dust-3" style="left:221px;top:546px;width:4px;height:4px;opacity:0.28"></i><i class="dust" id="dust-4" style="left:749px;top:1781px;width:4.7px;height:4.7px;opacity:0.19"></i><i class="dust" id="dust-5" style="left:148px;top:213px;width:5.8px;height:5.8px;opacity:0.16"></i><i class="dust" id="dust-6" style="left:972px;top:149px;width:4.4px;height:4.4px;opacity:0.47"></i><i class="dust" id="dust-7" style="left:194px;top:999px;width:4.8px;height:4.8px;opacity:0.52"></i><i class="dust" id="dust-8" style="left:989px;top:833px;width:4.3px;height:4.3px;opacity:0.41"></i><i class="dust" id="dust-9" style="left:788px;top:567px;width:3.3px;height:3.3px;opacity:0.35"></i><i class="dust" id="dust-10" style="left:961px;top:829px;width:6px;height:6px;opacity:0.4"></i><i class="dust" id="dust-11" style="left:338px;top:1509px;width:4.8px;height:4.8px;opacity:0.56"></i><i class="dust" id="dust-12" style="left:140px;top:1868px;width:5.3px;height:5.3px;opacity:0.23"></i><i class="dust" id="dust-13" style="left:446px;top:314px;width:2.9px;height:2.9px;opacity:0.44"></i><i class="dust" id="dust-14" style="left:958px;top:627px;width:4.5px;height:4.5px;opacity:0.51"></i><i class="dust" id="dust-15" style="left:399px;top:18px;width:5.5px;height:5.5px;opacity:0.48"></i><i class="dust" id="dust-16" style="left:226px;top:1160px;width:5.6px;height:5.6px;opacity:0.37"></i><i class="dust" id="dust-17" style="left:765px;top:560px;width:4.8px;height:4.8px;opacity:0.27"></i><i class="dust" id="dust-18" style="left:1073px;top:1099px;width:2.9px;height:2.9px;opacity:0.59"></i><i class="dust" id="dust-19" style="left:316px;top:758px;width:4.2px;height:4.2px;opacity:0.35"></i><i class="dust" id="dust-20" style="left:363px;top:1720px;width:3.6px;height:3.6px;opacity:0.3"></i><i class="dust" id="dust-21" style="left:636px;top:452px;width:4.2px;height:4.2px;opacity:0.3"></i><i class="dust" id="dust-22" style="left:239px;top:325px;width:4.7px;height:4.7px;opacity:0.46"></i><i class="dust" id="dust-23" style="left:46px;top:1109px;width:3.3px;height:3.3px;opacity:0.24"></i><i class="dust" id="dust-24" style="left:986px;top:1558px;width:4.8px;height:4.8px;opacity:0.35"></i><i class="dust" id="dust-25" style="left:908px;top:1717px;width:4.1px;height:4.1px;opacity:0.35"></i><i class="dust" id="dust-26" style="left:225px;top:748px;width:5.2px;height:5.2px;opacity:0.4"></i><i class="dust" id="dust-27" style="left:911px;top:1428px;width:5.4px;height:5.4px;opacity:0.17"></i><i class="dust" id="dust-28" style="left:731px;top:1461px;width:4px;height:4px;opacity:0.6"></i><i class="dust" id="dust-29" style="left:921px;top:1151px;width:5.3px;height:5.3px;opacity:0.31"></i><i class="dust" id="dust-30" style="left:377px;top:1800px;width:4.7px;height:4.7px;opacity:0.43"></i><i class="dust" id="dust-31" style="left:395px;top:38px;width:2.6px;height:2.6px;opacity:0.19"></i><i class="dust" id="dust-32" style="left:950px;top:895px;width:5.8px;height:5.8px;opacity:0.47"></i><i class="dust" id="dust-33" style="left:51px;top:559px;width:2.6px;height:2.6px;opacity:0.35"></i><i class="dust" id="dust-34" style="left:848px;top:376px;width:5.2px;height:5.2px;opacity:0.45"></i><i class="dust" id="dust-35" style="left:496px;top:816px;width:3.9px;height:3.9px;opacity:0.3"></i><i class="dust" id="dust-36" style="left:289px;top:1019px;width:4px;height:4px;opacity:0.4"></i><i class="dust" id="dust-37" style="left:4px;top:285px;width:2.5px;height:2.5px;opacity:0.57"></i><i class="dust" id="dust-38" style="left:543px;top:190px;width:3.7px;height:3.7px;opacity:0.52"></i><i class="dust" id="dust-39" style="left:759px;top:1083px;width:2.9px;height:2.9px;opacity:0.19"></i><i class="dust" id="dust-40" style="left:860px;top:1054px;width:4.6px;height:4.6px;opacity:0.51"></i><i class="dust" id="dust-41" style="left:104px;top:114px;width:2.3px;height:2.3px;opacity:0.27"></i><i class="dust" id="dust-42" style="left:1055px;top:42px;width:4.2px;height:4.2px;opacity:0.33"></i><i class="dust" id="dust-43" style="left:580px;top:394px;width:5.3px;height:5.3px;opacity:0.57"></i>
+  </div>
+
+  <div id="scene-1" class="scene clip" data-start="0" data-duration="6">
+    <div class="cam" id="cam-scene-1">
+      <div class="eyebrow">Capítulo 1</div>
+      <div class="huge anton center title">O Silêncio Absoluto</div>
+      <div class="story-card">
+        <p>Às 3 da manhã, cada som da cidade simplesmente desapareceu.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="scene-2" class="scene clip" data-start="6" data-duration="7">
+    <div class="cam" id="cam-scene-2">
+      <div class="eyebrow">Capítulo 2</div>
+      <div class="huge anton center title">A Anomalia</div>
+      <div class="story-card">
+        <p>Os ponteiros não andavam para frente. Eles giravam ao contrário.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="scene-3" class="scene clip" data-start="13" data-duration="7">
+    <div class="cam" id="cam-scene-3">
+      <div class="eyebrow">Capítulo 3</div>
+      <div class="huge anton center title">O Ciclo Infinito</div>
+      <div class="story-card">
+        <p>Ao abrir a porta para escapar, a mesma noite se repetia.</p>
+      </div>
+    </div>
+  </div>
+  <div id="subs">
+  </div>
+  <div id="grain" data-layout-allow-occlusion></div>
+  <div id="vignette" data-layout-allow-occlusion></div>
+  <div id="flash" data-layout-allow-occlusion></div>
+  <div id="fade" data-layout-allow-occlusion></div>
+</div>
+<script>
+gsap.set("#scene-2", { opacity: 0, scale: 0.95 });
+gsap.set("#scene-3", { opacity: 0, scale: 0.95 });
+const tl = gsap.timeline({ paused: true });
+tl.to("#grain", { x: 30, y: -20, duration: 0.1, repeat: 199, yoyo: true, ease: "steps(1)" }, 0);
+tl.to("#blob-0", { x: -169, y: 16, scale: 0.94, duration: 7.01, ease: "sine.inOut", yoyo: true, repeat: 2 }, 0);
+tl.to("#blob-1", { x: 199, y: 147, scale: 0.95, duration: 5.75, ease: "sine.inOut", yoyo: true, repeat: 3 }, 0);
+tl.to("#blob-2", { x: -258, y: -18, scale: 1.22, duration: 6.83, ease: "sine.inOut", yoyo: true, repeat: 2 }, 0);
+tl.to("#blob-3", { x: -228, y: -189, scale: 1.19, duration: 5.8, ease: "sine.inOut", yoyo: true, repeat: 3 }, 0);
+tl.to("#dust-0", { y: -469, x: 49, duration: 20, ease: "none" }, 0);
+tl.to("#dust-1", { y: -500, x: 15, duration: 20, ease: "none" }, 0);
+tl.to("#dust-2", { y: -582, x: 57, duration: 20, ease: "none" }, 0);
+tl.to("#dust-3", { y: -284, x: 26, duration: 20, ease: "none" }, 0);
+tl.to("#dust-4", { y: -675, x: -11, duration: 20, ease: "none" }, 0);
+tl.to("#dust-5", { y: -412, x: -3, duration: 20, ease: "none" }, 0);
+tl.to("#dust-6", { y: -671, x: -35, duration: 20, ease: "none" }, 0);
+tl.to("#dust-7", { y: -304, x: 79, duration: 20, ease: "none" }, 0);
+tl.to("#dust-8", { y: -402, x: 15, duration: 20, ease: "none" }, 0);
+tl.to("#dust-9", { y: -629, x: 31, duration: 20, ease: "none" }, 0);
+tl.to("#dust-10", { y: -383, x: -64, duration: 20, ease: "none" }, 0);
+tl.to("#dust-11", { y: -292, x: -4, duration: 20, ease: "none" }, 0);
+tl.to("#dust-12", { y: -569, x: 32, duration: 20, ease: "none" }, 0);
+tl.to("#dust-13", { y: -401, x: -47, duration: 20, ease: "none" }, 0);
+tl.to("#dust-14", { y: -427, x: -59, duration: 20, ease: "none" }, 0);
+tl.to("#dust-15", { y: -536, x: 60, duration: 20, ease: "none" }, 0);
+tl.to("#dust-16", { y: -333, x: -72, duration: 20, ease: "none" }, 0);
+tl.to("#dust-17", { y: -401, x: -75, duration: 20, ease: "none" }, 0);
+tl.to("#dust-18", { y: -324, x: -53, duration: 20, ease: "none" }, 0);
+tl.to("#dust-19", { y: -438, x: 30, duration: 20, ease: "none" }, 0);
+tl.to("#dust-20", { y: -473, x: 18, duration: 20, ease: "none" }, 0);
+tl.to("#dust-21", { y: -384, x: -29, duration: 20, ease: "none" }, 0);
+tl.to("#dust-22", { y: -391, x: -60, duration: 20, ease: "none" }, 0);
+tl.to("#dust-23", { y: -467, x: -19, duration: 20, ease: "none" }, 0);
+tl.to("#dust-24", { y: -319, x: 59, duration: 20, ease: "none" }, 0);
+tl.to("#dust-25", { y: -316, x: 19, duration: 20, ease: "none" }, 0);
+tl.to("#dust-26", { y: -693, x: -1, duration: 20, ease: "none" }, 0);
+tl.to("#dust-27", { y: -281, x: -53, duration: 20, ease: "none" }, 0);
+tl.to("#dust-28", { y: -617, x: 21, duration: 20, ease: "none" }, 0);
+tl.to("#dust-29", { y: -451, x: 61, duration: 20, ease: "none" }, 0);
+tl.to("#dust-30", { y: -398, x: 55, duration: 20, ease: "none" }, 0);
+tl.to("#dust-31", { y: -541, x: 36, duration: 20, ease: "none" }, 0);
+tl.to("#dust-32", { y: -315, x: -36, duration: 20, ease: "none" }, 0);
+tl.to("#dust-33", { y: -506, x: 35, duration: 20, ease: "none" }, 0);
+tl.to("#dust-34", { y: -483, x: -9, duration: 20, ease: "none" }, 0);
+tl.to("#dust-35", { y: -388, x: -56, duration: 20, ease: "none" }, 0);
+tl.to("#dust-36", { y: -541, x: -10, duration: 20, ease: "none" }, 0);
+tl.to("#dust-37", { y: -281, x: 59, duration: 20, ease: "none" }, 0);
+tl.to("#dust-38", { y: -276, x: -21, duration: 20, ease: "none" }, 0);
+tl.to("#dust-39", { y: -685, x: 40, duration: 20, ease: "none" }, 0);
+tl.to("#dust-40", { y: -487, x: -52, duration: 20, ease: "none" }, 0);
+tl.to("#dust-41", { y: -552, x: 27, duration: 20, ease: "none" }, 0);
+tl.to("#dust-42", { y: -402, x: -35, duration: 20, ease: "none" }, 0);
+tl.to("#dust-43", { y: -678, x: -37, duration: 20, ease: "none" }, 0);
+tl.to("#tint-0", { opacity: 1, duration: 0.5, ease: "power2.out" }, 0);
+tl.to("#tint-0", { opacity: 0, duration: 0.5, ease: "power2.in" }, 6);
+tl.to("#tint-1", { opacity: 1, duration: 0.5, ease: "power2.out" }, 6);
+tl.to("#tint-1", { opacity: 0, duration: 0.5, ease: "power2.in" }, 13);
+tl.to("#tint-2", { opacity: 1, duration: 0.5, ease: "power2.out" }, 13);
+tl.to("#tint-2", { opacity: 0, duration: 0.5, ease: "power2.in" }, 20);
+tl.to("#scene-1", { opacity: 0, scale: 1.05, duration: 0.5, ease: "power2.in" }, 5.5);
+tl.to("#scene-2", { opacity: 1, scale: 1, duration: 0.6, ease: "power2.out" }, 6);
+tl.to("#scene-2", { opacity: 0, scale: 1.05, duration: 0.5, ease: "power2.in" }, 12.5);
+tl.to("#scene-3", { opacity: 1, scale: 1, duration: 0.6, ease: "power2.out" }, 13);
+tl.to("#scene-3", { opacity: 0, scale: 1.05, duration: 0.5, ease: "power2.in" }, 19.5);
+tl.set({}, {}, 20);
+window.__timelines = window.__timelines || {};
+window.__timelines["main"] = tl;
+</script>
+</body>
+</html>

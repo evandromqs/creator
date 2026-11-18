@@ -3,6 +3,27 @@ const fs = require("fs");
 const path = require("path");
 
 const ROOT = __dirname;
+const PROJECT_ROOT = path.resolve(__dirname, "..", "..");
+const adJsonPath = path.join(ROOT, "ad.json");
+const customAd = fs.existsSync(adJsonPath) ? JSON.parse(fs.readFileSync(adJsonPath, "utf-8")) : {};
+const tag = customAd.tag || "PRODUTIVIDADE REAL";
+const headline = customAd.headline || "CHEGA DE";
+const highlight = customAd.highlight || "DESPERDIÇAR";
+const headlineEnd = customAd.headlineEnd !== undefined ? customAd.headlineEnd : "TEMPO";
+const sub = customAd.sub || "Conheça o Caneto e organize tudo em segundos.";
+const cards = Array.isArray(customAd.cards) && customAd.cards.length >= 3
+  ? customAd.cards
+  : [
+      "✓ Tarefas e rotina em um só painel",
+      "✓ Lembretes automáticos inteligentes",
+      "✓ Mais foco, menos estresse diário",
+    ];
+const ctaTitle = customAd.ctaTitle || "COMECE";
+const ctaHighlight = customAd.ctaHighlight || "AGORA";
+const ctaButton = customAd.ctaButton || "TESTAR GRÁTIS";
+const narrationSrc = fs.existsSync(path.join(PROJECT_ROOT, "audio", "narracao.mp3"))
+  ? "audio/narracao.mp3"
+  : "templates/commercial-ad/assets/narracao.mp3";
 const TOTAL = 19.0;
 
 const html = `<!doctype html>
@@ -29,23 +50,23 @@ h1{font-weight:900;font-size:128px;line-height:1.02;color:#111827;letter-spacing
 </head>
 <body>
 <div id="root" data-composition-id="main" data-start="0" data-duration="${TOTAL}" data-width="1080" data-height="1920">
-  <audio id="audio-narration" src="templates/commercial-ad/assets/narracao.mp3" data-start="0" data-duration="18.91" data-volume="1.0"></audio>
+  <audio id="audio-narration" src="${narrationSrc}" data-start="0" data-duration="18.91" data-volume="1.0"></audio>
   <div id="s1" class="scene clip" data-start="0" data-duration="5.2">
-    <div class="tag">PRODUTIVIDADE REAL</div>
-    <h1>CHEGA DE <span class="accent">DESPERDIÇAR</span> TEMPO</h1>
-    <div class="sub" id="s1-sub">Conheça o Caneto e organize tudo em segundos.</div>
+    <div class="tag">${tag}</div>
+    <h1>${headline} <span class="accent">${highlight}</span> ${headlineEnd}</h1>
+    <div class="sub" id="s1-sub">${sub}</div>
   </div>
   <div id="s2" class="scene clip" data-start="5.2" data-duration="8.3">
     <div class="tag">POR QUE USAR?</div>
     <div class="cards">
-      <div class="card" id="c1">✓ Tarefas e rotina em um só painel</div>
-      <div class="card" id="c2">✓ Lembretes automáticos inteligentes</div>
-      <div class="card" id="c3">✓ Mais foco, menos estresse diário</div>
+      <div class="card" id="c1">${cards[0]}</div>
+      <div class="card" id="c2">${cards[1]}</div>
+      <div class="card" id="c3">${cards[2]}</div>
     </div>
   </div>
   <div id="s3" class="scene clip" data-start="13.5" data-duration="5.5">
-    <h1>COMECE <span class="accent">AGORA</span></h1>
-    <div class="btn" id="btn">TESTAR GRÁTIS</div>
+    <h1>${ctaTitle} <span class="accent">${ctaHighlight}</span></h1>
+    <div class="btn" id="btn">${ctaButton}</div>
   </div>
 </div>
 <script>

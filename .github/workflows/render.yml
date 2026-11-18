@@ -62,9 +62,37 @@ jobs:
             const tpl = "${{ inputs.template }}";
             const customData = process.env.CUSTOM_DATA;
             if (customData && customData.trim()) {
+              fs.mkdirSync("audio", { recursive: true });
               if (tpl === "quiz-mobile") {
                 fs.writeFileSync("templates/quiz-mobile/quiz3-francisca.json", customData, "utf-8");
                 console.log("Perguntas customizadas salvas em templates/quiz-mobile/quiz3-francisca.json");
+              } else if (tpl === "story-loop") {
+                try {
+                  const obj = JSON.parse(customData);
+                  if (obj && Array.isArray(obj.scenes)) {
+                    fs.writeFileSync("templates/story-loop/story.json", JSON.stringify(obj, null, 2), "utf-8");
+                    const text = obj.scenes.map(s => s.text).filter(Boolean).join(" ");
+                    if (text) fs.writeFileSync("audio/roteiro.txt", text, "utf-8");
+                    console.log("Story JSON salvo em templates/story-loop/story.json");
+                  } else {
+                    fs.writeFileSync("audio/roteiro.txt", customData, "utf-8");
+                  }
+                } catch {
+                  fs.writeFileSync("audio/roteiro.txt", customData, "utf-8");
+                }
+              } else if (tpl === "commercial-ad") {
+                try {
+                  const obj = JSON.parse(customData);
+                  if (obj && obj.narrationText) {
+                    fs.writeFileSync("templates/commercial-ad/ad.json", JSON.stringify(obj, null, 2), "utf-8");
+                    fs.writeFileSync("audio/roteiro.txt", String(obj.narrationText), "utf-8");
+                    console.log("Ad JSON salvo em templates/commercial-ad/ad.json");
+                  } else {
+                    fs.writeFileSync("audio/roteiro.txt", customData, "utf-8");
+                  }
+                } catch {
+                  fs.writeFileSync("audio/roteiro.txt", customData, "utf-8");
+                }
               } else {
                 fs.writeFileSync("audio/roteiro.txt", customData, "utf-8");
                 console.log("Roteiro customizado salvo em audio/roteiro.txt");

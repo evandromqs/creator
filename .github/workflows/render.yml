@@ -94,6 +94,19 @@ jobs:
                 } catch {
                   fs.writeFileSync("audio/roteiro.txt", customData, "utf-8");
                 }
+              } else if (tpl === "kinetic-shorts") {
+                try {
+                  const obj = JSON.parse(customData);
+                  if (Array.isArray(obj) || (obj && Array.isArray(obj.scenes))) {
+                    const normalized = Array.isArray(obj) ? { title: "Documentário", scenes: obj } : obj;
+                    fs.writeFileSync("templates/kinetic-shorts/scenes.json", JSON.stringify(normalized, null, 2), "utf-8");
+                    console.log("Cenas customizadas salvas em templates/kinetic-shorts/scenes.json");
+                  } else {
+                    fs.writeFileSync("audio/roteiro.txt", customData, "utf-8");
+                  }
+                } catch {
+                  fs.writeFileSync("audio/roteiro.txt", customData, "utf-8");
+                }
               } else {
                 fs.writeFileSync("audio/roteiro.txt", customData, "utf-8");
                 console.log("Roteiro customizado salvo em audio/roteiro.txt");
@@ -116,8 +129,21 @@ jobs:
           path: audio/quiz-mix.mp3
           retention-days: 14
 
+      - name: Gerar áudio do Documentário (kinetic-shorts)
+        if: ${{ inputs.template == 'kinetic-shorts' }}
+        run: |
+          node scripts/generate_kinetic_audio.cjs templates/kinetic-shorts/scenes.json audio/narracao.mp3 transcript/kinetic-timings.json
+
+      - name: Salvar áudio do Documentário como artefato
+        if: ${{ inputs.template == 'kinetic-shorts' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.video_title || 'kinetic' }}-audio
+          path: audio/narracao.mp3
+          retention-days: 14
+
       - name: Gerar áudio genérico via Edge TTS (se roteiro.txt fornecido)
-        if: ${{ inputs.template != 'quiz-mobile' }}
+        if: ${{ inputs.template != 'quiz-mobile' && inputs.template != 'kinetic-shorts' }}
         run: |
           if [ -f "audio/roteiro.txt" ]; then
             node scripts/generate_audio_edgetts.cjs pt-BR-AntonioNeural audio/roteiro.txt audio/narracao.mp3 transcript/words.json

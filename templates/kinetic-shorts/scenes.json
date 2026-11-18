@@ -1,0 +1,104 @@
+{
+  "title": "O Mistério do Mar Vermelho",
+  "voice": "pt-BR-AntonioNeural",
+  "scenes": [
+    {
+      "id": "c1",
+      "layout": "impact",
+      "accent": "crimson",
+      "eyebrow": "VOCÊ SABIA?",
+      "headline": "MAR VERMELHO",
+      "subheadline": "DE MOISÉS PODE NÃO SER VERMELHO",
+      "narration": "Você sabia que o Mar Vermelho de Moisés pode nem ter sido vermelho?"
+    },
+    {
+      "id": "c2",
+      "layout": "timeline",
+      "accent": "gold",
+      "eyebrow": "TEXTO ORIGINAL",
+      "headline": "YAM SUPH",
+      "subheadline": "A EXPRESSÃO HEBRAICA ANTIGA",
+      "badge": "HEBRAICO",
+      "narration": "No texto hebraico original, o nome usado é Yam Suph."
+    },
+    {
+      "id": "c3",
+      "layout": "stamp",
+      "accent": "emerald",
+      "eyebrow": "TRADUÇÃO REAL",
+      "headline": "MAR DE JUNCOS",
+      "subheadline": "VEGETAÇÃO DE ÁGUAS RASAS",
+      "badge": "COMPROVADO",
+      "narration": "Muitos estudiosos traduzem essa expressão literalmente como Mar de Juncos."
+    },
+    {
+      "id": "c4",
+      "layout": "mystery",
+      "accent": "cyan",
+      "eyebrow": "GEOGRAFIA DO ÊXODO",
+      "headline": "DELTA DO NILO",
+      "subheadline": "PÂNTANOS E CANAIS ANTIGOS",
+      "narration": "Isso levanta uma dúvida: a travessia aconteceu perto do Delta do Nilo?"
+    },
+    {
+      "id": "c5",
+      "layout": "impact",
+      "accent": "cyan",
+      "eyebrow": "HIPÓTESE CIENTÍFICA",
+      "headline": "VENTO ORIENTAL",
+      "subheadline": "RECUOU AS ÁGUAS DURANTE A NOITE",
+      "narration": "Pesquisadores sugerem que um forte vento oriental poderia ter recuado a água."
+    },
+    {
+      "id": "c6",
+      "layout": "quote",
+      "accent": "gold",
+      "eyebrow": "RELATO ANTIGO",
+      "headline": "ÊXODO 14:21",
+      "subheadline": "...por um forte vento oriental fez retirar-se o mar.",
+      "badge": "TEXTO SAGRADO",
+      "narration": "Como descreve o próprio relato bíblico registrado em Êxodo catorze."
+    },
+    {
+      "id": "c7",
+      "layout": "stamp",
+      "accent": "violet",
+      "eyebrow": "OUTRA VISÃO",
+      "headline": "MILAGRE SOBERANO",
+      "subheadline": "ALÉM DAS LEIS NATURAIS",
+      "badge": "INEXPLICÁVEL",
+      "narration": "Por outro lado, milhões defendem um milagre soberano e inexplicável."
+    },
+    {
+      "id": "c8",
+      "layout": "stat",
+      "accent": "violet",
+      "eyebrow": "SEM PROVAS DEFINITIVAS",
+      "headline": "ANOS DE MISTÉRIO",
+      "statNumber": 3000,
+      "statLabel": "ANOS ATRAVÉS DOS SÉCULOS",
+      "narration": "Sem provas definitivas, esse mistério atravessa mais de três mil anos de história."
+    },
+    {
+      "id": "c9",
+      "layout": "split_vs",
+      "accent": "gold",
+      "eyebrow": "DUAS EXPLICAÇÕES",
+      "headline": "QUAL É A REAL?",
+      "vsLeft": "VENTO NATURAL",
+      "vsRight": "MILAGRE DIVINO",
+      "narration": "De um lado a força extrema da natureza, do outro o poder de um milagre."
+    },
+    {
+      "id": "c10",
+      "layout": "cta",
+      "accent": "gold",
+      "eyebrow": "PARTICIPE DO DEBATE",
+      "headline": "EM QUAL VOCÊ ACREDITA?",
+      "vsLeft": "A · VENTO",
+      "vsRight": "B · MILAGRE",
+      "subheadline": "COMENTA AÍ E SEGUE O CANAL",
+      "narration": "Em qual explicação você acredita? Comenta aí e segue para mais fatos da história!"
+    }
+  ]
+}

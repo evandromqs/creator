@@ -593,6 +593,37 @@
       'tech-viral': 'Você usa o Wi-Fi todo dia, mas conhece a origem secreta desse sinal? Em 1941, a estrela de cinema Hedy Lamarr criou o salto de frequência inspirado num piano. Décadas depois, físicos juntaram essa matemática com sinais de buracos negros, e assim nasceu a rede sem fio!',
     };
 
+    const KINETIC_LAYOUTS = [
+      { id: 'impact', label: '💥 Impacto 3D' },
+      { id: 'timeline', label: '🕰️ Linha do Tempo' },
+      { id: 'stat', label: '🔢 Contador Numérico' },
+      { id: 'quote', label: '📜 Citação / Fonte' },
+      { id: 'stamp', label: '🔴 Carimbo / Revelação' },
+      { id: 'mystery', label: '🌫️ Mistério / Névoa' },
+      { id: 'split_vs', label: '⚔️ Comparativo VS' },
+      { id: 'cta', label: '📣 CTA Final' },
+    ];
+    const KINETIC_ACCENTS = {
+      gold: { label: '🟡 Dourado', main: '#facc15', soft: '#fde68a' },
+      crimson: { label: '🔴 Carmesim', main: '#f43f5e', soft: '#fda4af' },
+      cyan: { label: '🔵 Ciano', main: '#38bdf8', soft: '#bae6fd' },
+      emerald: { label: '🟢 Esmeralda', main: '#34d399', soft: '#a7f3d0' },
+      violet: { label: '🟣 Violeta', main: '#a78bfa', soft: '#ddd6fe' },
+    };
+
+    const DEFAULT_KINETIC = [
+      { id: 'c1', layout: 'impact', accent: 'crimson', eyebrow: 'VOCÊ SABIA?', headline: 'MAR VERMELHO', subheadline: 'DE MOISÉS PODE NÃO SER VERMELHO', narration: 'Você sabia que o Mar Vermelho de Moisés pode nem ter sido vermelho?' },
+      { id: 'c2', layout: 'timeline', accent: 'gold', eyebrow: 'TEXTO ORIGINAL', headline: 'YAM SUPH', subheadline: 'A EXPRESSÃO HEBRAICA ANTIGA', badge: 'HEBRAICO', narration: 'No texto hebraico original, o nome usado é Yam Suph.' },
+      { id: 'c3', layout: 'stamp', accent: 'emerald', eyebrow: 'TRADUÇÃO REAL', headline: 'MAR DE JUNCOS', subheadline: 'VEGETAÇÃO DE ÁGUAS RASAS', badge: 'COMPROVADO', narration: 'Muitos estudiosos traduzem essa expressão literalmente como Mar de Juncos.' },
+      { id: 'c4', layout: 'mystery', accent: 'cyan', eyebrow: 'GEOGRAFIA DO ÊXODO', headline: 'DELTA DO NILO', subheadline: 'PÂNTANOS E CANAIS ANTIGOS', narration: 'Isso levanta uma dúvida: a travessia aconteceu perto do Delta do Nilo?' },
+      { id: 'c5', layout: 'impact', accent: 'cyan', eyebrow: 'HIPÓTESE CIENTÍFICA', headline: 'VENTO ORIENTAL', subheadline: 'RECUOU AS ÁGUAS DURANTE A NOITE', narration: 'Pesquisadores sugerem que um forte vento oriental poderia ter recuado a água.' },
+      { id: 'c6', layout: 'quote', accent: 'gold', eyebrow: 'RELATO ANTIGO', headline: 'ÊXODO 14:21', subheadline: '...por um forte vento oriental fez retirar-se o mar.', badge: 'TEXTO SAGRADO', narration: 'Como descreve o próprio relato bíblico registrado em Êxodo catorze.' },
+      { id: 'c7', layout: 'stamp', accent: 'violet', eyebrow: 'OUTRA VISÃO', headline: 'MILAGRE SOBERANO', subheadline: 'ALÉM DAS LEIS NATURAIS', badge: 'INEXPLICÁVEL', narration: 'Por outro lado, milhões defendem um milagre soberano e inexplicável.' },
+      { id: 'c8', layout: 'stat', accent: 'violet', eyebrow: 'SEM PROVAS DEFINITIVAS', headline: 'ANOS DE MISTÉRIO', statNumber: 3000, statLabel: 'ANOS ATRAVÉS DOS SÉCULOS', narration: 'Sem provas definitivas, esse mistério atravessa mais de três mil anos de história.' },
+      { id: 'c9', layout: 'split_vs', accent: 'gold', eyebrow: 'DUAS EXPLICAÇÕES', headline: 'QUAL É A REAL?', vsLeft: 'VENTO NATURAL', vsRight: 'MILAGRE DIVINO', narration: 'De um lado a força extrema da natureza, do outro o poder de um milagre.' },
+      { id: 'c10', layout: 'cta', accent: 'gold', eyebrow: 'PARTICIPE DO DEBATE', headline: 'EM QUAL VOCÊ ACREDITA?', vsLeft: 'A · VENTO', vsRight: 'B · MILAGRE', subheadline: 'COMENTA AÍ E SEGUE O CANAL', narration: 'Em qual explicação você acredita? Comenta aí e segue para mais fatos da história!' },
+    ];
+
     const SECTION_META = {
       studio: { title: 'Estúdio de Criação', sub: 'Configure o formato, gere roteiros com IA, ouça o áudio e dispare para a nuvem' },
       batch: { title: 'Produção em Lote (Batch)', sub: 'Enfileire dezenas de vídeos automáticos por lista de temas' },
@@ -874,6 +905,64 @@
       );
     }
 
+    function KineticPhonePreview({ scenes, activeIdx, onPrev, onNext }) {
+      const total = scenes.length || 1;
+      const idx = Math.min(activeIdx, total - 1);
+      const sc = scenes[idx] || DEFAULT_KINETIC[0];
+      const pal = KINETIC_ACCENTS[sc.accent] || KINETIC_ACCENTS.gold;
+      const layout = sc.layout || 'impact';
+      return (
+        <div className="sim-wrap">
+          <div className="phone-frame" style={{ background: `radial-gradient(circle at 50% 38%, ${pal.main}33, #030a14 78%)` }}>
+            <div className="sim-header" style={{ border: `1.5px solid ${pal.main}` }}>
+              <span>DOCUMENTÁRIO</span><span>CENA {idx + 1}/{total}</span>
+            </div>
+            <div className="sim-dots" style={{ gridTemplateColumns: `repeat(${total}, 1fr)` }}>
+              {scenes.map((_, i) => <span key={i} className="sim-dot" style={i === idx ? { background: pal.main } : i < idx ? { background: pal.main, opacity: 0.5 } : undefined} />)}
+            </div>
+            <div className="sim-cat" style={{ color: pal.soft, textAlign: 'center', marginTop: '14px' }}>{(sc.eyebrow || '').toUpperCase()}</div>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', padding: '0 6px', textAlign: 'center' }}>
+              {layout === 'stat' ? (
+                <>
+                  <div style={{ fontSize: '36px', fontWeight: 900, color: pal.main, lineHeight: 1 }}>+{Number(sc.statNumber || 1000).toLocaleString('pt-BR')}</div>
+                  <div style={{ fontSize: '14px', fontWeight: 900, color: '#fff', marginTop: '6px' }}>{sc.headline}</div>
+                  <div style={{ fontSize: '10px', color: pal.soft, marginTop: '4px' }}>{sc.statLabel || sc.subheadline}</div>
+                </>
+              ) : layout === 'quote' ? (
+                <div style={{ background: 'rgba(10,15,30,0.85)', border: `2px solid ${pal.main}`, borderRadius: '12px', padding: '14px 10px', width: '100%' }}>
+                  <div style={{ fontSize: '12px', fontWeight: 900, color: pal.main, marginBottom: '6px' }}>{sc.headline}</div>
+                  <div style={{ fontSize: '11px', fontStyle: 'italic', color: '#f8fafc', lineHeight: 1.35 }}>“{sc.subheadline}”</div>
+                </div>
+              ) : (layout === 'split_vs' || layout === 'cta') ? (
+                <>
+                  <div style={{ fontSize: '14px', fontWeight: 900, color: '#fff', marginBottom: '10px' }}>{sc.headline}</div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', width: '100%' }}>
+                    <div style={{ background: '#082f49', border: '1.5px solid #38bdf8', borderRadius: '8px', padding: '12px 6px', fontSize: '10px', fontWeight: 900 }}>{sc.vsLeft || 'OPÇÃO A'}</div>
+                    <div style={{ background: '#422006', border: '1.5px solid #facc15', borderRadius: '8px', padding: '12px 6px', fontSize: '10px', fontWeight: 900 }}>{sc.vsRight || 'OPÇÃO B'}</div>
+                  </div>
+                  {layout === 'cta' && <div style={{ marginTop: '10px', padding: '4px 12px', borderRadius: '99px', background: '#facc15', color: '#0b1220', fontSize: '9px', fontWeight: 900 }}>COMENTA AÍ</div>}
+                </>
+              ) : (
+                <>
+                  <div style={{ fontSize: '20px', fontWeight: 900, color: pal.soft, lineHeight: 1.08, textTransform: 'uppercase', textShadow: `0 0 18px ${pal.main}66` }}>{sc.headline}</div>
+                  {layout === 'stamp' && sc.badge && <div style={{ marginTop: '8px', padding: '3px 10px', border: `2px solid ${pal.main}`, color: pal.main, fontSize: '10px', fontWeight: 900, borderRadius: '6px', transform: 'rotate(-5deg)' }}>{sc.badge}</div>}
+                  {sc.subheadline && <div style={{ fontSize: '10.5px', fontWeight: 800, color: '#e2e8f0', marginTop: '10px', lineHeight: 1.25 }}>{sc.subheadline}</div>}
+                </>
+              )}
+            </div>
+            <div style={{ width: '100%', background: 'rgba(0,0,0,0.65)', borderRadius: '8px', padding: '7px 8px', fontSize: '9.5px', fontWeight: 800, color: '#fff', textAlign: 'center', lineHeight: 1.3 }}>
+              {sc.narration}
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'center' }}>
+            <button className="btn-secondary" type="button" onClick={onPrev}>◀</button>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700 }}>Cena {idx + 1} / {total}</span>
+            <button className="btn-secondary" type="button" onClick={onNext}>▶</button>
+          </div>
+        </div>
+      );
+    }
+
     function SecondaryPreviewCard({ template, storyData, adData, scriptText }) {
       if (template === 'story-loop') {
         return (
@@ -929,14 +1018,22 @@
       const [aiTone, setAiTone] = useState('Médio');
       const [groqModel, setGroqModel] = useState('openai/gpt-oss-120b');
       const [quizCount, setQuizCount] = useState(6);
+      const [kineticCount, setKineticCount] = useState(10);
 
       const [questions, setQuestions] = useState(DEFAULT_QUIZ);
       const [jsonText, setJsonText] = useState(() => JSON.stringify(DEFAULT_QUIZ, null, 2));
       const [jsonError, setJsonError] = useState('');
       const [editorTab, setEditorTab] = useState('visual');
+
+      const [kineticScenes, setKineticScenes] = useState(DEFAULT_KINETIC);
+      const [kineticJson, setKineticJson] = useState(() => JSON.stringify(DEFAULT_KINETIC, null, 2));
+      const [kineticJsonErr, setKineticJsonErr] = useState('');
+      const [kineticTab, setKineticTab] = useState('visual');
+      const [activeKineticIdx, setActiveKineticIdx] = useState(0);
+
       const [storyData, setStoryData] = useState(DEFAULT_STORY);
       const [adData, setAdData] = useState(DEFAULT_AD);
-      const [scriptText, setScriptText] = useState(DEFAULT_PROSE['kinetic-shorts']);
+      const [scriptText, setScriptText] = useState(DEFAULT_PROSE['tech-viral']);
 
       const [activeIdx, setActiveIdx] = useState(0);
       const [simClock, setSimClock] = useState(5);
@@ -999,8 +1096,26 @@
         setAiTopic(QUICK_SUGGESTIONS[tplId][0]);
         setAiTone(tplId === 'quiz-mobile' ? 'Médio' : tplId === 'commercial-ad' ? 'Alta Conversão' : 'Misterioso & Viral');
         setVoiceName(tplId === 'quiz-mobile' || tplId === 'commercial-ad' ? 'pt-BR-FranciscaNeural' : 'pt-BR-AntonioNeural');
-        if (tplId === 'kinetic-shorts' || tplId === 'tech-viral') setScriptText(DEFAULT_PROSE[tplId]);
+        if (tplId === 'tech-viral') setScriptText(DEFAULT_PROSE['tech-viral']);
         setVideoTitle(`${tplId.split('-')[0]}-${Math.floor(Math.random() * 900 + 100)}`);
+      }
+
+      function syncKineticScenes(nextList) {
+        setKineticScenes(nextList);
+        setKineticJson(JSON.stringify(nextList, null, 2));
+        setKineticJsonErr('');
+        if (activeKineticIdx >= nextList.length) setActiveKineticIdx(Math.max(0, nextList.length - 1));
+      }
+
+      function handleKineticJsonChange(val) {
+        setKineticJson(val);
+        try {
+          const parsed = JSON.parse(val);
+          const arr = Array.isArray(parsed) ? parsed : parsed.scenes;
+          if (!Array.isArray(arr) || !arr.length) throw new Error('Informe ao menos 1 cena.');
+          setKineticScenes(arr);
+          setKineticJsonErr('');
+        } catch (err) { setKineticJsonErr(err.message); }
       }
 
       function syncQuestions(nextList) {
@@ -1091,11 +1206,38 @@
           );
           return { title: `ad-${slugify(topic)}-${Math.floor(Math.random() * 900 + 100)}`, payload: JSON.parse(raw) };
         }
-        const wordsRange = tplId === 'kinetic-shorts' ? '85 a 110 palavras' : '110 a 140 palavras';
+        if (tplId === 'kinetic-shorts') {
+          const sceneNum = Math.min(12, Math.max(10, Number(count) || 10));
+          const raw = await callGroq(
+            key, groqModel,
+            'Retorne APENAS um JSON válido no formato {"title":"Título","scenes":[{"id":"c1","layout":"impact|timeline|stat|quote|stamp|mystery|split_vs|cta","accent":"gold|crimson|cyan|emerald|violet","eyebrow":"TEXTO CURTO","headline":"MANCHETE CURTA","subheadline":"SUBTÍTULO CURTO","statNumber":1000,"statLabel":"UNIDADE","badge":"SELO","vsLeft":"LADO A","vsRight":"LADO B","narration":"Frase narrada natural de 1 a 2 sentenças."}]} sem markdown. Varie os layouts entre as cenas e termine a última cena obrigatoriamente com layout "cta".',
+            `Crie um mini-documentário vertical dinâmico de EXATAMENTE ${sceneNum} cenas sobre "${topic}" com tom "${tone}" em português do Brasil.`
+          );
+          const parsed = JSON.parse(raw);
+          const list = Array.isArray(parsed) ? parsed : parsed.scenes || [];
+          const normalized = list.map((s, idx) => ({
+            id: s.id || `c${idx + 1}`,
+            layout: s.layout || 'impact',
+            accent: KINETIC_ACCENTS[s.accent] ? s.accent : 'gold',
+            eyebrow: String(s.eyebrow || `PARTE ${idx + 1}`),
+            headline: String(s.headline || ''),
+            subheadline: String(s.subheadline || ''),
+            statNumber: s.statNumber,
+            statLabel: s.statLabel,
+            badge: s.badge,
+            vsLeft: s.vsLeft,
+            vsRight: s.vsRight,
+            narration: String(s.narration || s.text || ''),
+          }));
+          return {
+            title: `doc-${slugify(topic)}-${Math.floor(Math.random() * 900 + 100)}`,
+            payload: { title: parsed.title || topic, voice: voiceName, scenes: normalized },
+          };
+        }
         const raw = await callGroq(
           key, groqModel,
           'Você é um roteirista viral para Shorts/Reels. Retorne APENAS o texto puro da narração, sem títulos nem marcações.',
-          `Escreva um roteiro narrado (${wordsRange}) sobre "${topic}" com tom "${tone}". Gancho forte no início e CTA no final.`
+          `Escreva um roteiro narrado (110 a 140 palavras) sobre "${topic}" com tom "${tone}". Gancho forte no início e CTA no final.`
         );
         return { title: `${tplId.split('-')[0]}-${slugify(topic)}-${Math.floor(Math.random() * 900 + 100)}`, payload: raw.replace(/^["']|["']$/g, '').trim() };
       }
@@ -1104,11 +1246,15 @@
         const topic = aiTopic.split(',')[0].trim() || 'Curiosidades';
         setAiLoading(true);
         try {
-          const res = await generateByTemplate(template, topic, aiTone, Number(quizCount) || 6);
+          const itemCount = template === 'quiz-mobile' ? (Number(quizCount) || 6) : (Number(kineticCount) || 10);
+          const res = await generateByTemplate(template, topic, aiTone, itemCount);
           setVideoTitle(res.title);
           if (template === 'quiz-mobile') {
             syncQuestions(res.payload);
             setActiveIdx(0); setSimRevealed(false); setSimClock(5);
+          } else if (template === 'kinetic-shorts') {
+            syncKineticScenes(res.payload.scenes || []);
+            setActiveKineticIdx(0);
           } else if (template === 'story-loop') setStoryData(res.payload);
           else if (template === 'commercial-ad') setAdData(res.payload);
           else setScriptText(res.payload);
@@ -1130,7 +1276,8 @@
           for (let i = 0; i < topics.length; i++) {
             const tp = topics[i];
             setBatchProgress({ cur: i + 1, total: topics.length, label: `Gerando "${tp}" (${i + 1}/${topics.length})...` });
-            const res = await generateByTemplate(batchTemplate, tp, batchTemplate === 'quiz-mobile' ? 'Médio' : 'Dinâmico & Curioso', Number(batchCount) || 6);
+            const batchItemCount = batchTemplate === 'kinetic-shorts' ? Math.min(12, Math.max(10, Number(batchCount) || 10)) : (Number(batchCount) || 6);
+            const res = await generateByTemplate(batchTemplate, tp, batchTemplate === 'quiz-mobile' ? 'Médio' : 'Dinâmico & Curioso', batchItemCount);
             persistScript({ id: Date.now() + i, template: batchTemplate, title: res.title, topic: tp, payload: res.payload, createdAt: new Date().toISOString() });
             const customData = typeof res.payload === 'string' ? res.payload : JSON.stringify(res.payload);
             await dispatchRender(ghToken, { template: batchTemplate, title: res.title, customData, theme: batchTheme, mode: 'full' });
@@ -1170,7 +1317,13 @@
             const blob = await buildFullQuizAudioViaWorker(questions, voiceName, (pct, msg) => { setAudioProgress(pct); setAudioStatus(msg); });
             setAudioBlob(blob, '✅ Áudio completo (Francisca 0.9x + tic-tac + trim_alarm) pronto!');
           } else {
-            const textToSpeak = template === 'story-loop' ? (storyData.scenes || []).map(s => s.text).join(' ') : template === 'commercial-ad' ? adData.narrationText : scriptText;
+            const textToSpeak = template === 'kinetic-shorts'
+              ? kineticScenes.map(s => s.narration).filter(Boolean).join(' ')
+              : template === 'story-loop'
+                ? (storyData.scenes || []).map(s => s.text).join(' ')
+                : template === 'commercial-ad'
+                  ? adData.narrationText
+                  : scriptText;
             const rate = voiceName === 'pt-BR-FranciscaNeural' ? '0.9' : '0.95';
             const blob = await buildProseNarrationViaWorker(textToSpeak, voiceName, rate, (pct, msg) => { setAudioProgress(pct); setAudioStatus(msg); });
             setAudioBlob(blob, '✅ Narração pronta!');
@@ -1199,6 +1352,32 @@
       }
 
       async function handleInstantPreview() {
+        if (template === 'kinetic-shorts') {
+          if (!kineticScenes.length) return notify('warning', 'Sem cenas', 'Adicione ao menos 1 cena.');
+          instantAbortRef.current = false;
+          setInstantPlaying(true);
+          const rate = voiceName === 'pt-BR-FranciscaNeural' ? '0.9' : '0.95';
+          try {
+            for (let i = 0; i < kineticScenes.length && !instantAbortRef.current; i++) {
+              const sc = kineticScenes[i];
+              setActiveKineticIdx(i);
+              setAudioStatus(`⚡ Cena ${i + 1}/${kineticScenes.length}: ${sc.headline || sc.eyebrow}...`);
+              if (i + 1 < kineticScenes.length) {
+                fetchEdgeTtsBytes(kineticScenes[i + 1].narration, voiceName, rate).catch(() => {});
+              }
+              const bytes = await fetchEdgeTtsBytes(sc.narration || sc.headline, voiceName, rate);
+              if (instantAbortRef.current) break;
+              await playMp3Bytes(bytes);
+              if (instantAbortRef.current) break;
+              await sleepMs(220);
+            }
+            if (!instantAbortRef.current) setAudioStatus('✅ Prévia do documentário concluída!');
+          } finally {
+            if (activeSpeechAudioRef.current) { activeSpeechAudioRef.current.pause(); activeSpeechAudioRef.current = null; }
+            setInstantPlaying(false);
+          }
+          return;
+        }
         if (!questions.length) return notify('warning', 'Sem perguntas', 'Adicione ao menos 1 rodada.');
         instantAbortRef.current = false;
         setInstantPlaying(true);
@@ -1248,9 +1427,11 @@
       async function handleDispatchRender() {
         if (!ghToken) { setActiveSection('settings'); return notify('warning', 'GitHub Token necessário', 'Salve seu token na seção Integrações.'); }
         if (template === 'quiz-mobile' && jsonError) return notify('error', 'JSON inválido', 'Corrija o roteiro antes de enviar.');
+        if (template === 'kinetic-shorts' && kineticJsonErr) return notify('error', 'JSON inválido', 'Corrija o JSON das cenas antes de enviar.');
         const title = videoTitle.trim() || template;
         let customData = '';
         if (template === 'quiz-mobile') customData = JSON.stringify(questions);
+        else if (template === 'kinetic-shorts') customData = JSON.stringify({ title, voice: voiceName, scenes: kineticScenes });
         else if (template === 'story-loop') customData = JSON.stringify(storyData);
         else if (template === 'commercial-ad') customData = JSON.stringify(adData);
         else customData = scriptText.trim();
@@ -1323,11 +1504,41 @@
         setVideoTitle(item.title);
         setAiTopic(item.topic || '');
         if (item.template === 'quiz-mobile') syncQuestions(item.payload);
+        else if (item.template === 'kinetic-shorts') {
+          if (Array.isArray(item.payload)) syncKineticScenes(item.payload);
+          else if (item.payload && Array.isArray(item.payload.scenes)) syncKineticScenes(item.payload.scenes);
+          else setScriptText(String(item.payload || ''));
+        }
         else if (item.template === 'story-loop') setStoryData(item.payload);
         else if (item.template === 'commercial-ad') setAdData(item.payload);
         else setScriptText(item.payload);
         setActiveSection('studio');
         notify('info', 'Roteiro carregado no Estúdio', item.title);
+      }
+
+      function updateKineticScene(idx, patch) {
+        syncKineticScenes(kineticScenes.map((s, i) => (i === idx ? { ...s, ...patch } : s)));
+      }
+      function moveKineticScene(idx, delta) {
+        const target = idx + delta;
+        if (target < 0 || target >= kineticScenes.length) return;
+        const copy = [...kineticScenes];
+        const [item] = copy.splice(idx, 1);
+        copy.splice(target, 0, item);
+        syncKineticScenes(copy);
+        setActiveKineticIdx(target);
+      }
+      function deleteKineticScene(idx) {
+        if (kineticScenes.length <= 1) return notify('warning', 'Mínimo 1 cena', 'O documentário precisa de ao menos 1 cena.');
+        syncKineticScenes(kineticScenes.filter((_, i) => i !== idx));
+      }
+      function addKineticScene() {
+        const next = [
+          ...kineticScenes,
+          { id: `c${kineticScenes.length + 1}`, layout: 'impact', accent: 'cyan', eyebrow: 'NOVO FATO', headline: 'MANCHETE', subheadline: 'DETALHE VISUAL', narration: 'Texto da narração desta cena.' },
+        ];
+        syncKineticScenes(next);
+        setActiveKineticIdx(next.length - 1);
       }
 
       function updateQuestion(idx, patch) { syncQuestions(questions.map((item, i) => (i === idx ? { ...item, ...patch } : item))); }
@@ -1508,10 +1719,11 @@
                       <div className="chips-row">
                         {(QUICK_SUGGESTIONS[template] || []).map(s => <button key={s} type="button" className="chip-btn" onClick={() => setAiTopic(s)}>+ {s}</button>)}
                       </div>
-                      <div className={template === 'quiz-mobile' ? 'row-3' : 'row-2'} style={{ marginBottom: '10px' }}>
+                      <div className={template === 'quiz-mobile' || template === 'kinetic-shorts' ? 'row-3' : 'row-2'} style={{ marginBottom: '10px' }}>
                         <div><label>Assunto / Tema</label><input type="text" value={aiTopic} onChange={e => setAiTopic(e.target.value)} /></div>
                         <div><label>{template === 'quiz-mobile' ? 'Dificuldade' : 'Tom'}</label><select value={aiTone} onChange={e => setAiTone(e.target.value)}>{toneOptions.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
                         {template === 'quiz-mobile' && <div><label>Perguntas</label><input type="number" min="1" max="10" value={quizCount} onChange={e => setQuizCount(e.target.value)} /></div>}
+                        {template === 'kinetic-shorts' && <div><label>Cenas (10–12)</label><input type="number" min="10" max="12" value={kineticCount} onChange={e => setKineticCount(e.target.value)} /></div>}
                       </div>
                       <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
                         <div style={{ minWidth: '230px', flex: '0 1 250px' }}>
@@ -1522,7 +1734,15 @@
                         </div>
                         <button className="btn-ai" type="button" onClick={handleGenerateAi} disabled={aiLoading}>{aiLoading ? '⏳ Gerando...' : '✨ Gerar Roteiro com IA'}</button>
                         <button className="btn-secondary" type="button" onClick={() => {
-                          const payload = template === 'quiz-mobile' ? questions : template === 'story-loop' ? storyData : template === 'commercial-ad' ? adData : scriptText;
+                          const payload = template === 'quiz-mobile'
+                            ? questions
+                            : template === 'kinetic-shorts'
+                              ? { title: videoTitle, voice: voiceName, scenes: kineticScenes }
+                              : template === 'story-loop'
+                                ? storyData
+                                : template === 'commercial-ad'
+                                  ? adData
+                                  : scriptText;
                           persistScript({ id: Date.now(), template, title: videoTitle, topic: aiTopic, payload, createdAt: new Date().toISOString() });
                           notify('success', 'Rascunho salvo!', 'Disponível em Roteiros Salvos.');
                         }}>💾 Salvar</button>
@@ -1539,6 +1759,15 @@
                               <button type="button" className={`tab-btn ${editorTab === 'json' ? 'active' : ''}`} onClick={() => setEditorTab('json')}>💻 JSON</button>
                             </div>
                             {editorTab === 'visual' && <button className="btn-secondary" type="button" onClick={addQuestion} style={{ padding: '4px 9px' }}>+ Pergunta</button>}
+                          </div>
+                        )}
+                        {template === 'kinetic-shorts' && (
+                          <div style={{ display: 'flex', gap: '6px' }}>
+                            <div className="tabs">
+                              <button type="button" className={`tab-btn ${kineticTab === 'visual' ? 'active' : ''}`} onClick={() => setKineticTab('visual')}>✨ Cenas ({kineticScenes.length})</button>
+                              <button type="button" className={`tab-btn ${kineticTab === 'json' ? 'active' : ''}`} onClick={() => setKineticTab('json')}>💻 JSON</button>
+                            </div>
+                            {kineticTab === 'visual' && <button className="btn-secondary" type="button" onClick={addKineticScene} style={{ padding: '4px 9px' }}>+ Cena</button>}
                           </div>
                         )}
                       </div>
@@ -1575,6 +1804,54 @@
                           <>
                             <textarea value={jsonText} onChange={e => handleJsonChange(e.target.value)} spellCheck="false" />
                             {jsonError && <div style={{ color: 'var(--danger)', fontSize: '0.75rem', marginTop: '4px' }}>⚠️ {jsonError}</div>}
+                          </>
+                        )
+                      ) : template === 'kinetic-shorts' ? (
+                        kineticTab === 'visual' ? (
+                          <div className="q-list">
+                            {kineticScenes.map((sc, sIdx) => (
+                              <div key={sIdx} className={`q-card ${activeKineticIdx === sIdx ? 'selected' : ''}`} onClick={() => setActiveKineticIdx(sIdx)}>
+                                <div className="q-card-top">
+                                  <span className="q-badge">Cena {sIdx + 1}</span>
+                                  <div className="q-actions" onClick={e => e.stopPropagation()}>
+                                    <button type="button" className="icon-btn" onClick={() => moveKineticScene(sIdx, -1)}>↑</button>
+                                    <button type="button" className="icon-btn" onClick={() => moveKineticScene(sIdx, 1)}>↓</button>
+                                    <button type="button" className="icon-btn del" onClick={() => deleteKineticScene(sIdx)}>🗑️</button>
+                                  </div>
+                                </div>
+                                <div className="row-2" style={{ marginBottom: '6px' }}>
+                                  <select value={sc.layout || 'impact'} onChange={e => updateKineticScene(sIdx, { layout: e.target.value })}>
+                                    {KINETIC_LAYOUTS.map(l => <option key={l.id} value={l.id}>{l.label}</option>)}
+                                  </select>
+                                  <select value={sc.accent || 'gold'} onChange={e => updateKineticScene(sIdx, { accent: e.target.value })}>
+                                    {Object.entries(KINETIC_ACCENTS).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+                                  </select>
+                                </div>
+                                <div className="row-2" style={{ marginBottom: '6px' }}>
+                                  <input type="text" value={sc.eyebrow || ''} onChange={e => updateKineticScene(sIdx, { eyebrow: e.target.value })} placeholder="Eyebrow (ex: VOCÊ SABIA?)" />
+                                  <input type="text" value={sc.headline || ''} onChange={e => updateKineticScene(sIdx, { headline: e.target.value })} placeholder="Manchete principal" style={{ fontWeight: 700 }} />
+                                </div>
+                                <div className="row-2" style={{ marginBottom: '6px' }}>
+                                  <input type="text" value={sc.subheadline || ''} onChange={e => updateKineticScene(sIdx, { subheadline: e.target.value })} placeholder="Subtítulo visual" />
+                                  {sc.layout === 'stat' ? (
+                                    <input type="number" value={sc.statNumber || ''} onChange={e => updateKineticScene(sIdx, { statNumber: Number(e.target.value) })} placeholder="Número animado (ex: 3000)" />
+                                  ) : (sc.layout === 'split_vs' || sc.layout === 'cta') ? (
+                                    <div style={{ display: 'flex', gap: '6px' }}>
+                                      <input type="text" value={sc.vsLeft || ''} onChange={e => updateKineticScene(sIdx, { vsLeft: e.target.value })} placeholder="Lado A" />
+                                      <input type="text" value={sc.vsRight || ''} onChange={e => updateKineticScene(sIdx, { vsRight: e.target.value })} placeholder="Lado B" />
+                                    </div>
+                                  ) : (
+                                    <input type="text" value={sc.badge || ''} onChange={e => updateKineticScene(sIdx, { badge: e.target.value })} placeholder="Selo / Badge opcional" />
+                                  )}
+                                </div>
+                                <input type="text" value={sc.narration || ''} onChange={e => updateKineticScene(sIdx, { narration: e.target.value })} placeholder="Texto da narração desta cena..." />
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <>
+                            <textarea value={kineticJson} onChange={e => handleKineticJsonChange(e.target.value)} spellCheck="false" />
+                            {kineticJsonErr && <div style={{ color: 'var(--danger)', fontSize: '0.75rem', marginTop: '4px' }}>⚠️ {kineticJsonErr}</div>}
                           </>
                         )
                       ) : template === 'story-loop' ? (
@@ -1615,7 +1892,7 @@
                           <button className="btn-ai" type="button" onClick={handleGenerateAudio} disabled={audioLoading}>
                             {audioLoading ? '⏳ Gerando Áudio...' : template === 'quiz-mobile' ? '🔊 Gerar Áudio Completo (~3s)' : '🔊 Gerar Narração com IA'}
                           </button>
-                          {template === 'quiz-mobile' && (!instantPlaying ? (
+                          {(template === 'quiz-mobile' || template === 'kinetic-shorts') && (!instantPlaying ? (
                             <button className="btn-secondary" type="button" onClick={handleInstantPreview}>⚡ Prévia Ao Vivo (Simulador)</button>
                           ) : (
                             <button className="btn-secondary" type="button" onClick={stopInstantPreview} style={{ color: '#f87171' }}>⏹ Parar Prévia</button>
@@ -1652,6 +1929,13 @@
                           onNext={() => { setSimRevealed(false); setSimClock(5); setActiveIdx(i => (i + 1) % questions.length); }}
                           onToggleReveal={() => { setSimRevealed(v => !v); setSimClock(simRevealed ? 5 : 0); }}
                         />
+                      ) : template === 'kinetic-shorts' ? (
+                        <KineticPhonePreview
+                          scenes={kineticScenes}
+                          activeIdx={activeKineticIdx}
+                          onPrev={() => setActiveKineticIdx(i => (i - 1 + kineticScenes.length) % kineticScenes.length)}
+                          onNext={() => setActiveKineticIdx(i => (i + 1) % kineticScenes.length)}
+                        />
                       ) : (
                         <SecondaryPreviewCard template={template} storyData={storyData} adData={adData} scriptText={scriptText} />
                       )}
@@ -1667,7 +1951,12 @@
                   <div className="row-3" style={{ marginBottom: '12px' }}>
                     <div>
                       <label>Template do Lote</label>
-                      <select value={batchTemplate} onChange={e => setBatchTemplate(e.target.value)}>
+                      <select value={batchTemplate} onChange={e => {
+                        const v = e.target.value;
+                        setBatchTemplate(v);
+                        if (v === 'kinetic-shorts' && Number(batchCount) < 10) setBatchCount(10);
+                        if (v === 'quiz-mobile' && Number(batchCount) > 10) setBatchCount(6);
+                      }}>
                         {TEMPLATES.map(t => <option key={t.id} value={t.id}>{t.icon} {t.name}</option>)}
                       </select>
                     </div>
@@ -1678,8 +1967,8 @@
                       </select>
                     </div>
                     <div>
-                      <label>Perguntas por Quiz</label>
-                      <input type="number" min="1" max="10" value={batchCount} onChange={e => setBatchCount(e.target.value)} disabled={batchTemplate !== 'quiz-mobile'} />
+                      <label>{batchTemplate === 'kinetic-shorts' ? 'Cenas (10–12)' : 'Perguntas por Quiz'}</label>
+                      <input type="number" min={batchTemplate === 'kinetic-shorts' ? 10 : 1} max={batchTemplate === 'kinetic-shorts' ? 12 : 10} value={batchCount} onChange={e => setBatchCount(e.target.value)} disabled={batchTemplate !== 'quiz-mobile' && batchTemplate !== 'kinetic-shorts'} />
                     </div>
                   </div>
                   <div className="form-group">

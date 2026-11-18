@@ -1011,12 +1011,24 @@
       }
     }
 
+    function buildSvgFromSpec(spec) {
+      if (!spec) return null;
+      if (typeof spec === 'string') return sanitizeInlineSvg(spec);
+      if (typeof spec === 'object' && spec.d && typeof spec.d === 'string') {
+        const bg = /^#[0-9a-fA-F]{3,8}$/.test(spec.bg || '') ? spec.bg : '#fde68a';
+        const fill = /^#[0-9a-fA-F]{3,8}$/.test(spec.fill || '') ? spec.fill : '#f59e0b';
+        const dClean = spec.d.replace(/["<>]/g, '');
+        return `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="${bg}" stroke="#0f172a" stroke-width="3.5"/><path d="${dClean}" fill="${fill}" stroke="#0f172a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      }
+      return null;
+    }
+
     async function callGroq(groqKey, model, systemPrompt, userPrompt) {
       if (!groqKey) throw new Error('Configure sua Groq API Key na seção Integrações.');
       const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: { Authorization: `Bearer ${groqKey}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model, temperature: 0.75, messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }] }),
+        body: JSON.stringify({ model, temperature: 0.65, max_tokens: 4096, messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }] }),
       });
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
@@ -1109,39 +1121,39 @@
               </div>
             </div>
 
-            <div key={`body-${idx}`} style={{ position: 'relative', zIndex: 2, width: '100%', padding: '9px 13px 12px', display: 'flex', flexDirection: 'column', flex: 1, animation: 'roundSwooshIn 0.3s ease-out' }}>
-              <div className="sim-dots" style={{ gridTemplateColumns: `repeat(${total}, 1fr)`, marginTop: '2px' }}>
+            <div key={`body-${idx}`} style={{ position: 'relative', zIndex: 2, width: '100%', padding: '7px 12px 10px', display: 'flex', flexDirection: 'column', flex: 1, animation: 'roundSwooshIn 0.3s ease-out' }}>
+              <div className="sim-dots" style={{ gridTemplateColumns: `repeat(${total}, 1fr)`, marginTop: '1px' }}>
                 {questions.map((_, i) => <span key={i} className="sim-dot" style={i === idx ? { background: '#fff', border: '1.5px solid #0f172a', height: '5px' } : i < idx ? { background: '#0f172a', height: '5px' } : { background: 'rgba(15,23,42,0.22)', border: '1px solid #0f172a', height: '5px' }} />)}
               </div>
 
-              <div className="sim-qbox" style={{ border: '3px solid #0f172a', boxShadow: '0 5px 0 #0f172a', borderRadius: '16px', marginTop: '10px', minHeight: '78px', padding: '10px 9px' }}>
+              <div className="sim-qbox" style={{ border: '3px solid #0f172a', boxShadow: '0 4px 0 #0f172a', borderRadius: '15px', marginTop: '7px', minHeight: '62px', padding: '8px 8px', fontSize: '11.5px' }}>
                 {item.q || 'Pergunta sem texto'}
               </div>
 
-              <div className="sim-track" style={{ border: '2px solid #0f172a', background: 'rgba(15,23,42,0.22)', marginTop: '10px', height: '7px' }}>
+              <div className="sim-track" style={{ border: '2px solid #0f172a', background: 'rgba(15,23,42,0.22)', marginTop: '8px', height: '6px' }}>
                 <div className="sim-fill" style={{ width: `${remainPct * 100}%`, background: '#fff' }} />
               </div>
 
-              <div className="sim-opts" style={{ marginTop: '11px', gap: '8px' }}>
+              <div className="sim-opts" style={{ marginTop: '8px', gap: '6px' }}>
                 {(item.opts || []).slice(0, 3).map((opt, oi) => {
                   const isCorrect = opt === item.ans;
                   const customSvg = Array.isArray(item.optSvgs) ? sanitizeInlineSvg(item.optSvgs[oi]) : null;
                   const iconSvg = customSvg || getContextualOptionSvg(opt, item.category, oi);
                   const style = {
                     border: '2.5px solid #0f172a',
-                    boxShadow: revealed && isCorrect ? '0 4px 0 #0f172a, 0 0 14px rgba(74,222,128,0.85)' : '0 4px 0 #0f172a',
+                    boxShadow: revealed && isCorrect ? '0 3px 0 #0f172a, 0 0 14px rgba(74,222,128,0.85)' : '0 3px 0 #0f172a',
                     borderRadius: '999px',
-                    padding: '5px 9px 5px 6px',
+                    padding: '4px 8px 4px 5px',
                     transition: 'all 0.25s ease',
                     ...(revealed ? (isCorrect ? { background: '#4ade80', transform: 'scale(1.03)' } : { opacity: 0.45, transform: 'scale(0.97)' }) : {}),
                   };
                   return (
                     <div key={oi} className="sim-opt" style={style}>
                       <div
-                        style={{ width: '26px', height: '26px', margin: '-4px 0 -4px -2px', flexShrink: 0, filter: 'drop-shadow(0 2px 0 rgba(15,23,42,0.3))' }}
+                        style={{ width: '24px', height: '24px', margin: '-3px 0 -3px -2px', flexShrink: 0, filter: 'drop-shadow(0 2px 0 rgba(15,23,42,0.3))' }}
                         dangerouslySetInnerHTML={{ __html: iconSvg }}
                       />
-                      <span className="sim-opt-let" style={{ borderRadius: '50%', background: theme.headerBg || '#31105f', border: '1.5px solid #0f172a', width: '18px', height: '18px', fontSize: '8.5px' }}>{['A', 'B', 'C'][oi]}</span>
+                      <span className="sim-opt-let" style={{ borderRadius: '50%', background: theme.headerBg || '#31105f', border: '1.5px solid #0f172a', width: '17px', height: '17px', fontSize: '8px' }}>{['A', 'B', 'C'][oi]}</span>
                       <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{opt}</span>
                       {revealed && isCorrect && <span style={{ fontWeight: 900 }}>✓</span>}
                     </div>
@@ -1542,8 +1554,8 @@
         if (tplId === 'quiz-mobile') {
           const raw = await callGroq(
             key, groqModel,
-            'Retorne APENAS um JSON válido no formato {"questions":[{"q":"pergunta curta","opts":["op1","op2","op3"],"ans":"op_correta","bgTheme":"school|geography|nature|science|history|pop","bgSvg":"<svg viewBox=\'0 0 64 64\'>...</svg>","optSvgs":["<svg viewBox=\'0 0 64 64\'>...</svg>","<svg viewBox=\'0 0 64 64\'>...</svg>","<svg viewBox=\'0 0 64 64\'>...</svg>"]}]} sem markdown. REGRA DE SVGs: Cada item de optSvgs deve ser um ícone SVG cartoon colorido e compacto (viewBox="0 0 64 64", usando apenas aspas simples nos atributos internos do SVG, com círculo de fundo colorido, stroke=\'#0f172a\' stroke-width=\'3\' e formas geométricas claras que ilustrem visualmente aquela opção específica). bgSvg deve ser um ícone SVG 64x64 que represente o tema da pergunta.',
-            `Gere ${count} perguntas de quiz sobre "${topic}" (nível ${tone}) em português do Brasil, curtas e envolventes, com ícones SVG contextuais para cada alternativa.`
+            'Retorne APENAS um JSON válido no formato {"questions":[{"q":"pergunta curta","opts":["op1","op2","op3"],"ans":"op_correta","bgTheme":"school|geography|nature|science|history|pop","bgIcon":{"bg":"#fde047","fill":"#22c55e","d":"M32 14 L48 46 L16 46 Z"},"optIcons":[{"bg":"#bae6fd","fill":"#0284c7","d":"M..."},{"bg":"#fde68a","fill":"#f59e0b","d":"M..."},{"bg":"#fecdd3","fill":"#fb7185","d":"M..."}]}]} sem markdown. Cada d deve ser um path SVG simples e curto (máx 90 caracteres, coordenadas de 14 a 50 dentro de viewBox 64x64) que represente visualmente a opção.',
+            `Gere ${count} perguntas de quiz sobre "${topic}" (nível ${tone}) em português do Brasil, curtas e envolventes.`
           );
           const parsed = JSON.parse(raw);
           const list = (Array.isArray(parsed) ? parsed : parsed.questions).map(i => ({
@@ -1552,8 +1564,8 @@
             ans: String(i.ans || i.opts?.[0] || ''),
             category: i.category || topic.toUpperCase(),
             bgTheme: i.bgTheme || detectBgTheme(topic, i.q),
-            bgSvg: sanitizeInlineSvg(i.bgSvg) || undefined,
-            optSvgs: Array.isArray(i.optSvgs) ? i.optSvgs.slice(0, 3).map(s => sanitizeInlineSvg(s)) : undefined,
+            bgSvg: buildSvgFromSpec(i.bgIcon || i.bgSvg) || undefined,
+            optSvgs: Array.isArray(i.optIcons || i.optSvgs) ? (i.optIcons || i.optSvgs).slice(0, 3).map(s => buildSvgFromSpec(s)) : undefined,
           }));
           return { title: `quiz-${slugify(topic)}-${Math.floor(Math.random() * 900 + 100)}`, payload: list };
         }
@@ -1821,8 +1833,8 @@
           const summary = questions.map((q, idx) => ({ idx, q: q.q, opts: q.opts, category: q.category || aiTopic }));
           const raw = await callGroq(
             key, groqModel,
-            'Você é um ilustrador vetorial SVG. Receba a lista de perguntas e retorne APENAS um JSON válido no formato {"items":[{"bgTheme":"school|geography|nature|science|history|pop","bgSvg":"<svg viewBox=\'0 0 64 64\'>...</svg>","optSvgs":["<svg viewBox=\'0 0 64 64\'>...</svg>","<svg viewBox=\'0 0 64 64\'>...</svg>","<svg viewBox=\'0 0 64 64\'>...</svg>"]}]} sem markdown. Use apenas aspas simples nos atributos internos do SVG, com círculo de fundo colorido, stroke=\'#0f172a\' stroke-width=\'3\' e desenho cartoon claro para cada opção.',
-            `Gere os SVGs contextuais para estas perguntas: ${JSON.stringify(summary)}`
+            'Você é um ilustrador vetorial SVG. Receba a lista de perguntas e retorne APENAS um JSON válido no formato {"items":[{"bgTheme":"school|geography|nature|science|history|pop","bgIcon":{"bg":"#fde047","fill":"#22c55e","d":"M32 14 L48 46 L16 46 Z"},"optIcons":[{"bg":"#bae6fd","fill":"#0284c7","d":"M..."},{"bg":"#fde68a","fill":"#f59e0b","d":"M..."},{"bg":"#fecdd3","fill":"#fb7185","d":"M..."}]}]} sem markdown. Cada d deve ser um path SVG simples e curto (máx 90 caracteres, coordenadas de 14 a 50 dentro de viewBox 64x64) que represente visualmente cada opção.',
+            `Gere os ícones SVG contextuais para estas perguntas: ${JSON.stringify(summary)}`
           );
           const parsed = JSON.parse(raw);
           const arr = Array.isArray(parsed) ? parsed : (parsed.items || []);
@@ -1831,8 +1843,8 @@
             return {
               ...q,
               bgTheme: gen.bgTheme || detectBgTheme(q.category, q.q, q.bgTheme),
-              bgSvg: sanitizeInlineSvg(gen.bgSvg) || q.bgSvg,
-              optSvgs: Array.isArray(gen.optSvgs) ? gen.optSvgs.slice(0, 3).map((s, oi) => sanitizeInlineSvg(s) || q.optSvgs?.[oi]) : q.optSvgs,
+              bgSvg: buildSvgFromSpec(gen.bgIcon || gen.bgSvg) || q.bgSvg,
+              optSvgs: Array.isArray(gen.optIcons || gen.optSvgs) ? (gen.optIcons || gen.optSvgs).slice(0, 3).map((s, oi) => buildSvgFromSpec(s) || q.optSvgs?.[oi]) : q.optSvgs,
             };
           });
           syncQuestions(next);

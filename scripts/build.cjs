@@ -306,7 +306,8 @@ const scenesHtml = questions.map((q, qi) => {
   jsLines.push(`tl.set("#${id}-num", { textContent: "0" }, ${revealSec});`);
   jsLines.push(`tl.to("#${id}-dial", { attr: { fill: "#4ade80" }, duration: 0.2 }, ${revealSec});`);
   jsLines.push(
-    `tl.fromTo("#${id}-clock", { scale: 1.28, rotation: -10 }, { scale: 1.05, rotation: 0, duration: 0.45, ease: "elastic.out(1.4, 0.3)", immediateRender: false }, ${revealSec});`
+    `tl.fromTo("#${id}-clock", { scale: 1.28, rotation: -10 }, { scale: 1.05, rotation: 0, duration: 0.35, ease: "back.out(1.5)", immediateRender: false }, ${revealSec});`,
+    `tl.set("#${id}-clock", { scale: 1.05, rotation: 0, x: 0, y: 0 }, ${(Number(revealSec) + 0.36).toFixed(3)});`
   );
   jsLines.push(
     `tl.fromTo("#${id}-bells", { rotation: -22, transformOrigin: "50% 80%" }, { rotation: 22, duration: 0.07, yoyo: true, repeat: 7, ease: "sine.inOut", immediateRender: false }, ${revealSec});`

@@ -259,8 +259,9 @@ async function main() {
     );
   }
   const hasSwoosh = fs.existsSync(swooshSfx);
-  const bgMusicFile = path.join(ROOT, "assets", "music", "quiz-102bpm-dry.mp3");
-  const hasBgMusic = fs.existsSync(bgMusicFile);
+  const bgMusicArg = process.argv[5] || process.env.BG_MUSIC || "quiz-102bpm-dry.mp3";
+  const bgMusicFile = bgMusicArg === "none" ? "" : path.join(ROOT, "assets", "music", path.basename(bgMusicArg));
+  const hasBgMusic = Boolean(bgMusicFile && fs.existsSync(bgMusicFile));
 
   if (hasTick && hasTrim) {
     const inputs = ["-i", voiceMp3, "-i", tickSfx, "-i", trimSfx];

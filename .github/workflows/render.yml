@@ -31,6 +31,10 @@ on:
         description: 'Modo de execução (full = áudio + vídeo MP4, audio_only = apenas áudio MP3)'
         required: false
         default: 'full'
+      bg_music:
+        description: 'Música de fundo em assets/music/ (ou none)'
+        required: false
+        default: 'quiz-102bpm-dry.mp3'
 
 jobs:
   render:
@@ -125,7 +129,7 @@ jobs:
       - name: Gerar áudio do Quiz (caso template seja quiz-mobile)
         if: ${{ inputs.template == 'quiz-mobile' }}
         run: |
-          node scripts/generate_quiz_audio.cjs templates/quiz-mobile/quiz3-francisca.json audio/quiz-mix.mp3 transcript/quiz-timings.json
+          node scripts/generate_quiz_audio.cjs templates/quiz-mobile/quiz3-francisca.json audio/quiz-mix.mp3 transcript/quiz-timings.json "${{ inputs.bg_music }}"
 
       - name: Salvar áudio MP3 como artefato
         if: ${{ inputs.template == 'quiz-mobile' }}

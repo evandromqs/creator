@@ -571,6 +571,20 @@
       solar: { label: '🟠 Solar', bg: '#451a03', headerBg: '#7c2d12', clockRing: '#dc2626', clockFace: '#fde047', grad: 'linear-gradient(155deg,#7c2d12 0%,#9a3412 45%,#451a03 100%)', accent: '#fb923c', clockBg: '#fde047', roundBgs: ['#fb923c', '#facc15', '#fb7185', '#38bdf8', '#4ade80', '#f472b6'] },
     };
 
+    const BG_MUSICS = [
+      { id: 'quiz-102bpm-dry.mp3', label: '🎵 Trivia 102 BPM Dry (Padrão)' },
+      { id: 'quiz-102bpm.mp3', label: '🎵 Trivia 102 BPM' },
+      { id: 'quiz-groove.mp3', label: '🎵 Trivia Time Groove' },
+      { id: 'quiz-lofi-cozy.mp3', label: '🎵 Cozy Lo-Fi Trivia' },
+      { id: 'quiz-kids-bright.mp3', label: '🎵 Kids Quiz Bright' },
+      { id: 'quiz-swing-sophisticated.mp3', label: '🎵 Sophisticated Swing' },
+      { id: 'quiz-synthwave-dreamy.mp3', label: '🎵 Dreamy Synthwave' },
+      { id: 'quiz-tension-96bpm.mp3', label: '🎵 Drumless Tension 96 BPM' },
+      { id: 'quiz-tension-sparse.mp3', label: '🎵 Drumless Tension Sparse' },
+      { id: 'quiz-tension-minimal.mp3', label: '🎵 Ultra-Minimal Tension' },
+      { id: 'none', label: '🔇 Sem música de fundo' },
+    ];
+
     const WALLPAPER_DOODLES = {
       school: [
         `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="10" width="36" height="44" rx="5"/><line x1="22" y1="20" x2="42" y2="20"/><line x1="22" y1="28" x2="42" y2="28"/><line x1="22" y1="36" x2="34" y2="36"/></svg>`,
@@ -994,11 +1008,11 @@
       return res.json();
     }
 
-    async function dispatchRender(token, { template, title, customData, theme = 'roxo', mode = 'full' }) {
+    async function dispatchRender(token, { template, title, customData, theme = 'roxo', mode = 'full', bgMusic = 'quiz-102bpm-dry.mp3' }) {
       try {
         return await ghApi(token, `actions/workflows/${WORKFLOW_ID}/dispatches`, {
           method: 'POST',
-          body: JSON.stringify({ ref: 'main', inputs: { template, video_title: title, custom_data: customData, theme, mode } }),
+          body: JSON.stringify({ ref: 'main', inputs: { template, video_title: title, custom_data: customData, theme, mode, bg_music: bgMusic } }),
         });
       } catch (err) {
         if (String(err.message).includes('Unexpected inputs')) {
@@ -1363,6 +1377,7 @@
       const [template, setTemplate] = useState('quiz-mobile');
       const [videoTitle, setVideoTitle] = useState(() => 'quiz-geografia-' + Math.floor(Math.random() * 900 + 100));
       const [visualTheme, setVisualTheme] = useState('roxo');
+      const [bgMusic, setBgMusic] = useState('quiz-102bpm-dry.mp3');
       const [voiceName, setVoiceName] = useState('pt-BR-FranciscaNeural');
 
       const [aiTopic, setAiTopic] = useState('Curiosidades do Brasil');
@@ -1875,7 +1890,7 @@
 
         setDispatchLoading(true);
         try {
-          await dispatchRender(ghToken, { template, title, customData, theme: visualTheme, mode: 'full' });
+          await dispatchRender(ghToken, { template, title, customData, theme: visualTheme, mode: 'full', bgMusic });
           notify('success', 'Enviado para a esteira!', `"${title}" já está na fila de renderização.`);
           setTimeout(() => fetchRuns(), 2200);
         } catch (err) {
@@ -2146,6 +2161,14 @@
                           </div>
                         )}
                       </div>
+                      {template === 'quiz-mobile' && (
+                        <div className="form-group" style={{ marginTop: '10px', marginBottom: 0 }}>
+                          <label>Música de Fundo (assets/music)</label>
+                          <select value={bgMusic} onChange={e => setBgMusic(e.target.value)}>
+                            {BG_MUSICS.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
+                          </select>
+                        </div>
+                      )}
                     </div>
 
                     <div className="card">

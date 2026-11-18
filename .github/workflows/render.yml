@@ -1,4 +1,5 @@
 name: Render Video
+run-name: "🎬 ${{ inputs.video_title || inputs.template }} (${{ inputs.template }})"
 
 on:
   workflow_dispatch:

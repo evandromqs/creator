@@ -491,6 +491,11 @@
     @keyframes kScan { 0%, 100% { transform: translateY(36px); } 50% { transform: translateY(340px); } }
     @keyframes kPulse { 0% { transform: scale(0.45); opacity: 0.75; } 100% { transform: scale(1.75); opacity: 0; } }
     @keyframes kDrift { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+    @keyframes wpSlide { 0% { transform: rotate(-12deg) translate3d(0, 0, 0); } 100% { transform: rotate(-12deg) translate3d(-48px, -64px, 0); } }
+    @keyframes wpIconSpin { 0%, 100% { transform: rotate(-16deg) scale(0.96); } 50% { transform: rotate(18deg) scale(1.06); } }
+    @keyframes alarmRing { 0%, 100% { transform: rotate(0deg); } 20% { transform: rotate(-16deg); } 40% { transform: rotate(16deg); } 60% { transform: rotate(-12deg); } 80% { transform: rotate(12deg); } }
+    @keyframes clockTickPop { 0% { transform: scale(1.22) rotate(-5deg); } 100% { transform: scale(1) rotate(0deg); } }
+    @keyframes roundSwooshIn { 0% { opacity: 0; transform: translateX(65px) rotate(2.5deg) scale(0.95); } 100% { opacity: 1; transform: translateX(0) rotate(0deg) scale(1); } }
     .k-dolly { animation: kDrift 5s ease-in-out infinite; width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .sim-header { width: 100%; padding: 6px 10px; border-radius: 8px; background: rgba(15, 23, 42, 0.75); display: flex; justify-content: space-between; font-size: 9px; font-weight: 900; color: #fff; }
     .sim-dots { width: 100%; display: grid; gap: 4px; margin-top: 8px; }
@@ -559,12 +564,103 @@
     };
 
     const THEMES = {
-      roxo: { label: '🟣 Roxo & Ciano', bg: '#3b0764', grad: 'linear-gradient(155deg,#4c1d95 0%,#6d28d9 45%,#3b0764 100%)', accent: '#22d3ee', clockBg: '#fde047' },
-      neon: { label: '🟢 Dark Neon', bg: '#090d16', grad: 'linear-gradient(155deg,#0f172a 0%,#1e1b4b 50%,#030712 100%)', accent: '#10b981', clockBg: '#34d399' },
-      cyberpunk: { label: '🩷 Cyberpunk', bg: '#18062c', grad: 'linear-gradient(155deg,#2e1065 0%,#701a75 50%,#0f0720 100%)', accent: '#f43f5e', clockBg: '#facc15' },
-      esmeralda: { label: '💚 Esmeralda', bg: '#022c22', grad: 'linear-gradient(155deg,#064e3b 0%,#047857 45%,#022c22 100%)', accent: '#34d399', clockBg: '#fde047' },
-      solar: { label: '🟠 Solar', bg: '#451a03', grad: 'linear-gradient(155deg,#7c2d12 0%,#9a3412 45%,#451a03 100%)', accent: '#fb923c', clockBg: '#fde047' },
+      roxo: { label: '🟣 Roxo & Pop', bg: '#3b0764', headerBg: '#31105f', clockRing: '#e11d48', clockFace: '#fde047', grad: 'linear-gradient(155deg,#4c1d95 0%,#6d28d9 45%,#3b0764 100%)', accent: '#22d3ee', clockBg: '#fde047', roundBgs: ['#facc15', '#22d3ee', '#fb7185', '#4ade80', '#a78bfa', '#fb923c'] },
+      neon: { label: '🟢 Dark Neon', bg: '#090d16', headerBg: '#090d16', clockRing: '#10b981', clockFace: '#fde047', grad: 'linear-gradient(155deg,#0f172a 0%,#1e1b4b 50%,#030712 100%)', accent: '#10b981', clockBg: '#34d399', roundBgs: ['#34d399', '#38bdf8', '#a78bfa', '#facc15', '#fb7185', '#2dd4bf'] },
+      cyberpunk: { label: '🩷 Cyberpunk', bg: '#18062c', headerBg: '#2e1065', clockRing: '#f43f5e', clockFace: '#facc15', grad: 'linear-gradient(155deg,#2e1065 0%,#701a75 50%,#0f0720 100%)', accent: '#f43f5e', clockBg: '#facc15', roundBgs: ['#f43f5e', '#facc15', '#22d3ee', '#c084fc', '#fb923c', '#4ade80'] },
+      esmeralda: { label: '💚 Esmeralda', bg: '#022c22', headerBg: '#064e3b', clockRing: '#f59e0b', clockFace: '#fde047', grad: 'linear-gradient(155deg,#064e3b 0%,#047857 45%,#022c22 100%)', accent: '#34d399', clockBg: '#fde047', roundBgs: ['#4ade80', '#facc15', '#2dd4bf', '#38bdf8', '#fb923c', '#a3e635'] },
+      solar: { label: '🟠 Solar', bg: '#451a03', headerBg: '#7c2d12', clockRing: '#dc2626', clockFace: '#fde047', grad: 'linear-gradient(155deg,#7c2d12 0%,#9a3412 45%,#451a03 100%)', accent: '#fb923c', clockBg: '#fde047', roundBgs: ['#fb923c', '#facc15', '#fb7185', '#38bdf8', '#4ade80', '#f472b6'] },
     };
+
+    const WALLPAPER_DOODLES = {
+      school: [
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="10" width="36" height="44" rx="5"/><line x1="22" y1="20" x2="42" y2="20"/><line x1="22" y1="28" x2="42" y2="28"/><line x1="22" y1="36" x2="34" y2="36"/></svg>`,
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 50L22 48L48 22L42 16L16 42L14 50Z"/><line x1="38" y1="20" x2="44" y2="26"/></svg>`,
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><rect x="16" y="10" width="32" height="44" rx="6"/><rect x="22" y="16" width="20" height="10" rx="2"/><circle cx="24" cy="34" r="2"/><circle cx="32" cy="34" r="2"/><circle cx="40" cy="34" r="2"/><circle cx="24" cy="42" r="2"/><circle cx="32" cy="42" r="2"/><circle cx="40" cy="42" r="2"/></svg>`,
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M24 46H40M26 52H38M32 12C23 12 18 18 18 26C18 31 22 35 24 39H40C42 35 46 31 46 26C46 18 41 12 32 12Z"/></svg>`,
+      ],
+      geography: [
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg>`,
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg>`,
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg>`,
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg>`,
+      ],
+      nature: [
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 48C16 28 32 14 48 14C48 30 36 48 16 48Z"/><path d="M16 48L36 28"/></svg>`,
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="38" r="9"/><circle cx="20" cy="26" r="4"/><circle cx="28" cy="20" r="4"/><circle cx="38" cy="20" r="4"/><circle cx="45" cy="26" r="4"/></svg>`,
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="10"/><line x1="32" y1="12" x2="32" y2="17"/><line x1="32" y1="47" x2="32" y2="52"/><line x1="12" y1="32" x2="17" y2="32"/><line x1="47" y1="32" x2="52" y2="32"/></svg>`,
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="32,12 16,38 28,38 24,52 48,26 36,26"/></svg>`,
+      ],
+      science: [
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="32" cy="32" rx="22" ry="9" transform="rotate(30 32 32)"/><ellipse cx="32" cy="32" rx="22" ry="9" transform="rotate(-30 32 32)"/><circle cx="32" cy="32" r="4"/></svg>`,
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C40 20 42 34 38 44H26C22 34 24 20 32 12Z"/><path d="M26 38L18 46L26 44M38 38L46 46L38 44"/><circle cx="32" cy="28" r="4"/></svg>`,
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="12"/><ellipse cx="32" cy="32" rx="24" ry="7" transform="rotate(-20 32 32)"/></svg>`,
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M26 14H38M29 14V26L18 46C17 48 18 50 21 50H43C46 50 47 48 46 46L35 26V14"/></svg>`,
+      ],
+      history: [
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,46 16,22 26,32 32,18 38,32 48,22 52,46"/></svg>`,
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12L50 20V32C50 44 32 52 32 52C32 52 14 44 14 32V20L32 12Z"/></svg>`,
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14H44M20 50H44M22 14C22 26 32 28 32 32C32 36 22 38 22 50M42 14C42 26 32 28 32 32C32 36 42 38 42 50"/></svg>`,
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="32,14 10,48 54,48"/><line x1="32" y1="14" x2="38" y2="48"/></svg>`,
+      ],
+      pop: [
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="32,12 38,25 52,27 42,37 44,51 32,44 20,51 22,37 12,27 26,25"/></svg>`,
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16H42V28C42 34 37 38 32 38C27 38 22 34 22 28V16Z"/><path d="M22 20H14V26C14 30 18 32 22 32M42 20H50V26C50 30 46 32 42 32M32 38V48M22 48H42"/></svg>`,
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="22" width="36" height="28" rx="4"/><path d="M14 22L46 14L50 22"/></svg>`,
+        `<svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="24" width="40" height="22" rx="10"/><line x1="22" y1="31" x2="22" y2="39"/><line x1="18" y1="35" x2="26" y2="35"/><circle cx="40" cy="33" r="2"/><circle cx="45" cy="37" r="2"/></svg>`,
+      ],
+    };
+
+    function detectBgTheme(category, questionText, explicitTheme) {
+      if (explicitTheme && WALLPAPER_DOODLES[explicitTheme]) return explicitTheme;
+      const s = `${category || ''} ${questionText || ''}`.toLowerCase();
+      if (/geograf|pa[ií]s|capital|rio|oceano|ilha|continente|mapa|mundo|cidade/.test(s)) return 'geography';
+      if (/animal|floresta|natureza|planta|baleia|canguru|rato|bioma|amaz[oô]nia|mar|ave|peixe/.test(s)) return 'nature';
+      if (/ci[eê]ncia|espa[cç]o|planeta|f[ií]sica|qu[ií]mica|corpo|luz|sol|estrela|[aá]tomo/.test(s)) return 'science';
+      if (/hist[oó]ria|antig|rei|imp[eé]rio|guerra|egito|romano|idade|descobrimento/.test(s)) return 'history';
+      if (/filme|cinema|her[oó]i|m[uú]sica|esporte|futebol|jogo|s[eé]rie|pop|oscar/.test(s)) return 'pop';
+      return 'school';
+    }
+
+    function sanitizeInlineSvg(svgStr) {
+      if (!svgStr || typeof svgStr !== 'string') return null;
+      const trimmed = svgStr.trim();
+      if (!trimmed.startsWith('<svg') || !trimmed.endsWith('</svg>')) return null;
+      return trimmed;
+    }
+
+    function getContextualOptionSvg(optText, category, oi) {
+      const t = `${optText || ''} ${category || ''}`.toLowerCase();
+      if (/baleia|golfinho|peixe|mar|oceano|tubar/.test(t)) {
+        return `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#bae6fd" stroke="#0f172a" stroke-width="3.5"/><path d="M14 36C14 24 26 20 38 22C46 23 50 20 52 16C52 24 48 30 46 34C48 38 52 40 52 40C44 44 26 44 14 36Z" fill="#0284c7" stroke="#0f172a" stroke-width="3"/><circle cx="24" cy="30" r="2.5" fill="#0f172a"/></svg>`;
+      }
+      if (/canguru|le[aã]o|tigre|cachorro|lobo|urso|macaco|girafa|elefante|animal/.test(t)) {
+        return `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#fde68a" stroke="#0f172a" stroke-width="3.5"/><path d="M22 20L18 10L28 16M42 20L46 10L36 16" fill="#d97706" stroke="#0f172a" stroke-width="3"/><circle cx="32" cy="34" r="15" fill="#f59e0b" stroke="#0f172a" stroke-width="3"/><circle cx="26" cy="31" r="2.5" fill="#0f172a"/><circle cx="38" cy="31" r="2.5" fill="#0f172a"/><ellipse cx="32" cy="37" rx="5" ry="3.5" fill="#78350f"/></svg>`;
+      }
+      if (/rato|coelho|gato|hamster|esquilo/.test(t)) {
+        return `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#e2e8f0" stroke="#0f172a" stroke-width="3.5"/><circle cx="20" cy="22" r="8" fill="#94a3b8" stroke="#0f172a" stroke-width="3"/><circle cx="44" cy="22" r="8" fill="#94a3b8" stroke="#0f172a" stroke-width="3"/><circle cx="32" cy="35" r="14" fill="#cbd5e1" stroke="#0f172a" stroke-width="3"/><circle cx="27" cy="32" r="2.5" fill="#0f172a"/><circle cx="37" cy="32" r="2.5" fill="#0f172a"/><circle cx="32" cy="38" r="3" fill="#f43f5e"/></svg>`;
+      }
+      if (/avi[aã]o|jato|voo|foguet|helic/.test(t)) {
+        return `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#e0f2fe" stroke="#0f172a" stroke-width="3.5"/><path d="M14 36L50 20L42 46L32 38L24 44L26 36L14 36Z" fill="#38bdf8" stroke="#0f172a" stroke-width="3" stroke-linejoin="round"/></svg>`;
+      }
+      if (/bicicleta|moto|carro|trem|[oô]nibus|roda/.test(t)) {
+        return `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#dcfce7" stroke="#0f172a" stroke-width="3.5"/><circle cx="21" cy="40" r="8" fill="#fff" stroke="#0f172a" stroke-width="3"/><circle cx="43" cy="40" r="8" fill="#fff" stroke="#0f172a" stroke-width="3"/><path d="M21 40L29 26H39L32 40H21M39 26L43 40" fill="none" stroke="#ef4444" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      }
+      if (/amaz[oô]nia|floresta|mata|cerrado|planta|[aá]rvore|ilha|su[eé]cia|filipinas|indon[eé]sia/.test(t)) {
+        return `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#bbf7d0" stroke="#0f172a" stroke-width="3.5"/><rect x="28" y="38" width="8" height="14" fill="#92400e" stroke="#0f172a" stroke-width="3"/><circle cx="32" cy="26" r="14" fill="#22c55e" stroke="#0f172a" stroke-width="3"/><circle cx="23" cy="31" r="9" fill="#16a34a" stroke="#0f172a" stroke-width="3"/><circle cx="41" cy="31" r="9" fill="#16a34a" stroke="#0f172a" stroke-width="3"/></svg>`;
+      }
+      if (/rio|nilo|água|mar|lago|cachoeira|yangtz/.test(t)) {
+        return `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#cffafe" stroke="#0f172a" stroke-width="3.5"/><path d="M14 28Q23 20 32 28T50 28M14 38Q23 30 32 38T50 38" fill="none" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/></svg>`;
+      }
+      if (/jap[aã]o|sol|china|coreia|[aá]sia/.test(t)) {
+        return `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#fef3c7" stroke="#0f172a" stroke-width="3.5"/><circle cx="32" cy="32" r="13" fill="#ef4444" stroke="#0f172a" stroke-width="3"/></svg>`;
+      }
+      const fallbacks = [
+        `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#ddd6fe" stroke="#0f172a" stroke-width="3.5"/><circle cx="32" cy="32" r="15" fill="#38bdf8" stroke="#0f172a" stroke-width="3"/><path d="M22 28Q30 22 36 28T44 34" fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round"/></svg>`,
+        `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#fde68a" stroke="#0f172a" stroke-width="3.5"/><polygon points="32,13 37,25 50,26 40,35 43,48 32,41 21,48 24,35 14,26 27,25" fill="#f59e0b" stroke="#0f172a" stroke-width="3" stroke-linejoin="round"/></svg>`,
+        `<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#fecdd3" stroke="#0f172a" stroke-width="3.5"/><polygon points="34,12 18,35 30,35 28,52 46,28 34,28" fill="#fb7185" stroke="#0f172a" stroke-width="3" stroke-linejoin="round"/></svg>`,
+      ];
+      return fallbacks[oi % fallbacks.length];
+    }
 
     const DEFAULT_QUIZ = [
       { q: 'Qual país tem mais ilhas no mundo?', opts: ['Indonésia', 'Filipinas', 'Suécia'], ans: 'Suécia', category: 'GEOGRAFIA' },
@@ -708,8 +804,34 @@
       return new Blob([wavBuffer], { type: 'audio/wav' });
     }
 
+    function playWebAudioSwoosh() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioCtx();
+        const dur = 0.32;
+        const buf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * dur), ctx.sampleRate);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < data.length; i++) {
+          const t = i / data.length;
+          const env = Math.sin(Math.PI * t);
+          data[i] = (Math.random() * 2 - 1) * env * 0.35;
+        }
+        const src = ctx.createBufferSource();
+        src.buffer = buf;
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(300, ctx.currentTime);
+        filter.frequency.exponentialRampToValueAtTime(1600, ctx.currentTime + dur * 0.6);
+        filter.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + dur);
+        src.connect(filter);
+        filter.connect(ctx.destination);
+        src.start();
+        setTimeout(() => ctx.close().catch(() => {}), 500);
+      } catch {}
+    }
+
     async function buildFullQuizAudioViaWorker(questions, voice, onProgress) {
-      const textsSet = new Set([OUTRO_TEXT, '5', '4', '3', '2', '1', 'A:', 'B:', 'C:']);
+      const textsSet = new Set([OUTRO_TEXT, 'A:', 'B:', 'C:']);
       questions.forEach(item => {
         textsSet.add(item.q);
         (item.opts || []).slice(0, 3).forEach(opt => textsSet.add(`${opt}?`));
@@ -737,7 +859,9 @@
         ]);
         const events = [], roundsMeta = [];
         let cursor = 0;
-        for (const item of questions) {
+        for (let qIdx = 0; qIdx < questions.length; qIdx++) {
+          const item = questions[qIdx];
+          const roundStart = cursor;
           const qBuf = rawMap.get(item.q);
           events.push({ buf: qBuf, at: cursor }); cursor += qBuf.duration + 0.35;
           for (let oi = 0; oi < 3; oi++) {
@@ -747,24 +871,41 @@
             events.push({ buf: oBuf, at: cursor }); cursor += oBuf.duration + (oi < 2 ? 0.3 : 0.45);
           }
           const startCue = cursor;
-          for (const n of ['5', '4', '3', '2', '1']) {
-            const nBuf = rawMap.get(n);
-            events.push({ buf: nBuf, at: cursor }); cursor += nBuf.duration + 0.7;
+          const cues = [];
+          for (let s = 0; s < 5; s++) {
+            cues.push(cursor);
+            cursor += 1.0;
           }
-          roundsMeta.push({ startCue, revealAt: cursor });
+          const revealAt = cursor;
           const ansBuf = rawMap.get(`Resposta certa: ${item.ans}!`);
           events.push({ buf: ansBuf, at: cursor }); cursor += ansBuf.duration + 0.9;
+          roundsMeta.push({ roundStart, startCue, cues, revealAt, end: cursor });
         }
         const outroBuf = rawMap.get(OUTRO_TEXT);
         events.push({ buf: outroBuf, at: cursor }); cursor += outroBuf.duration;
 
-        onProgress(92, 'Mixando pausas + tic-tac contínuo + trim_alarm...');
+        onProgress(92, 'Mixando pausas + tic-tac (5s) + swoosh + trim_alarm...');
         const offline = new OfflineAudioContext(2, Math.ceil((cursor + 0.5) * 44100), 44100);
         for (const ev of events) {
           const src = offline.createBufferSource();
           src.buffer = ev.buf; src.connect(offline.destination); src.start(ev.at);
         }
-        for (const rm of roundsMeta) {
+        for (let rIdx = 0; rIdx < roundsMeta.length; rIdx++) {
+          const rm = roundsMeta[rIdx];
+          if (rIdx > 0) {
+            const swDur = 0.32;
+            const swBuf = offline.createBuffer(1, Math.floor(44100 * swDur), 44100);
+            const ch = swBuf.getChannelData(0);
+            for (let i = 0; i < ch.length; i++) ch[i] = (Math.random() * 2 - 1) * Math.sin(Math.PI * (i / ch.length)) * 0.4;
+            const swSrc = offline.createBufferSource();
+            swSrc.buffer = swBuf;
+            const flt = offline.createBiquadFilter();
+            flt.type = 'bandpass';
+            const st = Math.max(0, rm.roundStart - 0.14);
+            flt.frequency.setValueAtTime(350, st);
+            flt.frequency.exponentialRampToValueAtTime(1500, st + swDur * 0.6);
+            swSrc.connect(flt); flt.connect(offline.destination); swSrc.start(st);
+          }
           const ttSrc = offline.createBufferSource();
           ttSrc.buffer = tictacBuf; ttSrc.loop = true;
           const ttGain = offline.createGain();
@@ -782,7 +923,9 @@
         }
         const rendered = await offline.startRendering();
         onProgress(100, 'Áudio completo pronto!');
-        return audioBufferToWavBlob(rendered);
+        const wavBlob = audioBufferToWavBlob(rendered);
+        wavBlob.roundsMeta = roundsMeta;
+        return wavBlob;
       } finally { ctx.close().catch(() => {}); }
     }
 
@@ -883,53 +1026,137 @@
       return data.choices[0].message.content.trim().replace(/^```(?:json)?\s*/i, '').replace(/```$/i, '').trim();
     }
 
-    function QuizPhonePreview({ questions, activeIdx, themeKey, clockValue, revealed, onPrev, onNext, onToggleReveal }) {
+    function QuizPhonePreview({ questions, activeIdx, themeKey, clockValue, revealed, onPrev, onNext, onToggleReveal, onAnimateRound }) {
       const theme = THEMES[themeKey] || THEMES.roxo;
       const total = questions.length || 1;
       const idx = Math.min(activeIdx, total - 1);
       const item = questions[idx] || { q: 'Adicione uma pergunta...', opts: ['A', 'B', 'C'], ans: 'A', category: 'QUIZ' };
-      const progressPct = revealed ? 100 : ((5 - Math.min(5, Math.max(0, clockValue))) / 5) * 100;
-      const ROUND_COLORS = ['#facc15', '#22d3ee', '#fb7185', '#4ade80', '#a78bfa', '#fb923c'];
-      const roundBg = ROUND_COLORS[idx % ROUND_COLORS.length];
+      const remainPct = revealed ? 0 : (Math.min(5, Math.max(0, clockValue)) / 5);
+      const roundBgs = theme.roundBgs || ['#facc15', '#22d3ee', '#fb7185', '#4ade80', '#a78bfa', '#fb923c'];
+      const roundBg = roundBgs[idx % roundBgs.length];
+      const bgThemeKey = detectBgTheme(item.category, item.q, item.bgTheme);
+      const baseDoodles = WALLPAPER_DOODLES[bgThemeKey] || WALLPAPER_DOODLES.school;
+      const customBgSvg = sanitizeInlineSvg(item.bgSvg);
+      const doodlePool = customBgSvg ? [customBgSvg, ...baseDoodles] : baseDoodles;
+      const badgeSvg = customBgSvg || baseDoodles[0];
+      const ringCirc = 163.36; // 2 * PI * 26
+      const ringOffset = ringCirc * (1 - remainPct);
+
+      const wpTiles = [];
+      for (let r = 0; r < 6; r++) {
+        for (let c = 0; c < 4; c++) {
+          const dSvg = doodlePool[(r * 4 + c) % doodlePool.length];
+          wpTiles.push({
+            key: `${r}-${c}`,
+            top: r * 86 - 20 + (c % 2 === 0 ? 0 : 32),
+            left: c * 74 - 16,
+            dur: 3.6 + ((r + c) % 3) * 0.9,
+            svg: dSvg,
+          });
+        }
+      }
+
       return (
         <div className="sim-wrap">
-          <div className="phone-frame" style={{ background: roundBg, padding: 0, justifyContent: 'flex-start' }}>
-            <div style={{ width: '100%', background: '#31105f', borderBottom: '4px solid #0f172a', borderRadius: '0 0 24px 24px', padding: '14px 16px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 4px 0 rgba(15,23,42,0.25)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '1.35rem', lineHeight: 1 }}>🎓</span>
-                <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
-                  <span style={{ fontWeight: 900, fontSize: '0.72rem', color: '#fff', letterSpacing: '0.5px' }}>{(item.category || 'CONHECIMENTOS GERAIS').toUpperCase()}</span>
-                  <span style={{ fontWeight: 800, fontSize: '0.58rem', color: '#fde047' }}>RODADA {idx + 1}/{total}</span>
+          <div className="phone-frame" style={{ background: roundBg, padding: 0, justifyContent: 'flex-start', transition: 'background 0.35s ease' }}>
+            {/* Papel de parede rotacionando e flutuando de acordo com o tema */}
+            <div style={{ position: 'absolute', inset: '-60px', pointerEvents: 'none', zIndex: 0, animation: 'wpSlide 7s linear infinite' }}>
+              {wpTiles.map(t => (
+                <div
+                  key={t.key}
+                  style={{ position: 'absolute', top: `${t.top}px`, left: `${t.left}px`, width: '34px', height: '34px', opacity: 0.15, animation: `wpIconSpin ${t.dur}s ease-in-out infinite` }}
+                  dangerouslySetInnerHTML={{ __html: t.svg }}
+                />
+              ))}
+            </div>
+
+            {/* Topo Curvo Estilo Cartoon + Despertador Animado */}
+            <div style={{ position: 'relative', zIndex: 2, width: '100%', background: theme.headerBg || '#31105f', borderBottom: '4px solid #0f172a', borderRadius: '0 0 24px 24px', padding: '11px 13px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 4px 0 rgba(15,23,42,0.28)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+                <div
+                  style={{ width: '28px', height: '28px', borderRadius: '8px', background: '#fde047', border: '2px solid #0f172a', boxShadow: '0 2px 0 #0f172a', padding: '3px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
+                  dangerouslySetInnerHTML={{ __html: badgeSvg }}
+                />
+                <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left', minWidth: 0 }}>
+                  <span style={{ fontWeight: 900, fontSize: '0.66rem', color: '#fff', textShadow: '0 2px 0 #0f172a', letterSpacing: '0.4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{(item.category || 'CONHECIMENTOS GERAIS').toUpperCase()}</span>
+                  <span style={{ fontWeight: 800, fontSize: '0.54rem', color: '#fde047' }}>RODADA {idx + 1} DE {total}</span>
                 </div>
               </div>
-              <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: revealed ? '#4ade80' : '#fde047', border: '3px solid #0f172a', boxShadow: '0 3px 0 #0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '1rem', color: '#0f172a' }}>{revealed ? '0' : clockValue}</div>
-            </div>
-            <div style={{ width: '100%', padding: '10px 14px 14px', display: 'flex', flexDirection: 'column', flex: 1 }}>
-              <div className="sim-dots" style={{ gridTemplateColumns: `repeat(${total}, 1fr)`, marginTop: '2px' }}>
-                {questions.map((_, i) => <span key={i} className="sim-dot" style={i === idx ? { background: '#fff', border: '1.5px solid #0f172a' } : i < idx ? { background: '#0f172a' } : { background: 'rgba(15,23,42,0.2)' }} />)}
+
+              <div
+                key={`clk-${idx}-${clockValue}-${revealed}`}
+                style={{ position: 'relative', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, filter: 'drop-shadow(0 3px 0 #0f172a)', animation: revealed ? 'alarmRing 0.35s ease-in-out 2' : 'clockTickPop 0.28s ease-out' }}
+              >
+                <svg viewBox="0 0 80 80" width="44" height="44">
+                  <g style={{ transformOrigin: '40px 40px', animation: revealed ? 'alarmRing 0.18s linear infinite' : undefined }}>
+                    <path d="M12 20 C6 11, 16 3, 25 10 Z" fill="#facc15" stroke="#0f172a" strokeWidth="3.5" strokeLinejoin="round" />
+                    <path d="M68 20 C74 11, 64 3, 55 10 Z" fill="#facc15" stroke="#0f172a" strokeWidth="3.5" strokeLinejoin="round" />
+                    <rect x="37" y="4" width="6" height="9" rx="2" fill="#facc15" stroke="#0f172a" strokeWidth="3" />
+                  </g>
+                  <line x1="20" y1="67" x2="13" y2="75" stroke="#0f172a" strokeWidth="4.5" strokeLinecap="round" />
+                  <line x1="60" y1="67" x2="67" y2="75" stroke="#0f172a" strokeWidth="4.5" strokeLinecap="round" />
+                  <circle cx="40" cy="43" r="30" fill={theme.clockRing || '#e11d48'} stroke="#0f172a" strokeWidth="3.8" />
+                  <circle cx="40" cy="43" r="23.5" fill={revealed ? '#4ade80' : (theme.clockFace || '#fde047')} stroke="#0f172a" strokeWidth="3" />
+                  <circle
+                    cx="40" cy="43" r="26" fill="none" stroke="#ffffff" strokeWidth="3" strokeLinecap="round"
+                    strokeDasharray={ringCirc} strokeDashoffset={ringOffset} transform="rotate(-90 40 43)"
+                    style={{ transition: 'stroke-dashoffset 0.3s linear' }}
+                  />
+                </svg>
+                <span style={{ position: 'absolute', top: '54%', left: '50%', transform: 'translate(-50%, -50%)', fontWeight: 900, fontSize: '0.96rem', color: '#0f172a', lineHeight: 1 }}>
+                  {revealed ? '0' : clockValue}
+                </span>
               </div>
-              <div className="sim-qbox" style={{ border: '3px solid #0f172a', boxShadow: '0 5px 0 #0f172a', borderRadius: '18px', marginTop: '12px' }}>{item.q || 'Pergunta sem texto'}</div>
-              <div className="sim-track" style={{ border: '2px solid #0f172a', background: 'rgba(15,23,42,0.2)', marginTop: '12px' }}><div className="sim-fill" style={{ width: `${progressPct}%`, background: '#fff' }} /></div>
-              <div className="sim-opts" style={{ marginTop: '12px', gap: '8px' }}>
+            </div>
+
+            <div key={`body-${idx}`} style={{ position: 'relative', zIndex: 2, width: '100%', padding: '9px 13px 12px', display: 'flex', flexDirection: 'column', flex: 1, animation: 'roundSwooshIn 0.3s ease-out' }}>
+              <div className="sim-dots" style={{ gridTemplateColumns: `repeat(${total}, 1fr)`, marginTop: '2px' }}>
+                {questions.map((_, i) => <span key={i} className="sim-dot" style={i === idx ? { background: '#fff', border: '1.5px solid #0f172a', height: '5px' } : i < idx ? { background: '#0f172a', height: '5px' } : { background: 'rgba(15,23,42,0.22)', border: '1px solid #0f172a', height: '5px' }} />)}
+              </div>
+
+              <div className="sim-qbox" style={{ border: '3px solid #0f172a', boxShadow: '0 5px 0 #0f172a', borderRadius: '16px', marginTop: '10px', minHeight: '78px', padding: '10px 9px' }}>
+                {item.q || 'Pergunta sem texto'}
+              </div>
+
+              <div className="sim-track" style={{ border: '2px solid #0f172a', background: 'rgba(15,23,42,0.22)', marginTop: '10px', height: '7px' }}>
+                <div className="sim-fill" style={{ width: `${remainPct * 100}%`, background: '#fff' }} />
+              </div>
+
+              <div className="sim-opts" style={{ marginTop: '11px', gap: '8px' }}>
                 {(item.opts || []).slice(0, 3).map((opt, oi) => {
                   const isCorrect = opt === item.ans;
-                  const style = { border: '2.5px solid #0f172a', boxShadow: '0 4px 0 #0f172a', borderRadius: '999px', ...(revealed ? (isCorrect ? { background: '#4ade80' } : { opacity: 0.45 }) : {}) };
+                  const customSvg = Array.isArray(item.optSvgs) ? sanitizeInlineSvg(item.optSvgs[oi]) : null;
+                  const iconSvg = customSvg || getContextualOptionSvg(opt, item.category, oi);
+                  const style = {
+                    border: '2.5px solid #0f172a',
+                    boxShadow: revealed && isCorrect ? '0 4px 0 #0f172a, 0 0 14px rgba(74,222,128,0.85)' : '0 4px 0 #0f172a',
+                    borderRadius: '999px',
+                    padding: '5px 9px 5px 6px',
+                    transition: 'all 0.25s ease',
+                    ...(revealed ? (isCorrect ? { background: '#4ade80', transform: 'scale(1.03)' } : { opacity: 0.45, transform: 'scale(0.97)' }) : {}),
+                  };
                   return (
                     <div key={oi} className="sim-opt" style={style}>
-                      <span className="sim-opt-let" style={{ borderRadius: '50%', background: '#31105f' }}>{['A', 'B', 'C'][oi]}</span>
+                      <div
+                        style={{ width: '26px', height: '26px', margin: '-4px 0 -4px -2px', flexShrink: 0, filter: 'drop-shadow(0 2px 0 rgba(15,23,42,0.3))' }}
+                        dangerouslySetInnerHTML={{ __html: iconSvg }}
+                      />
+                      <span className="sim-opt-let" style={{ borderRadius: '50%', background: theme.headerBg || '#31105f', border: '1.5px solid #0f172a', width: '18px', height: '18px', fontSize: '8.5px' }}>{['A', 'B', 'C'][oi]}</span>
                       <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{opt}</span>
-                      {revealed && isCorrect && <span>✓</span>}
+                      {revealed && isCorrect && <span style={{ fontWeight: 900 }}>✓</span>}
                     </div>
                   );
                 })}
               </div>
-              <div className="sim-footer" style={{ color: '#0f172a', opacity: 0.75, marginTop: 'auto' }}>@CREATORSTUDIO</div>
+
+              <div className="sim-footer" style={{ color: '#0f172a', opacity: 0.8, marginTop: 'auto' }}>@CREATORSTUDIO</div>
             </div>
           </div>
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <button className="btn-secondary" type="button" onClick={onPrev}>◀</button>
+          <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <button className="btn-secondary" type="button" onClick={onPrev} title="Rodada anterior">◀</button>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700 }}>{idx + 1} / {total}</span>
-            <button className="btn-secondary" type="button" onClick={onNext}>▶</button>
+            <button className="btn-secondary" type="button" onClick={onNext} title="Próxima rodada (com Swoosh)">▶</button>
+            {onAnimateRound && <button className="btn-secondary" type="button" onClick={onAnimateRound} title="Animar relógio 5s + SFX">⏱️ Animar 5s</button>}
             <button className="btn-secondary" type="button" onClick={onToggleReveal}>{revealed ? '🙈 Ocultar' : '👁️ Resposta'}</button>
           </div>
         </div>
@@ -1283,9 +1510,31 @@
 
       function setAudioBlob(blob, statusMsg) {
         if (audioObjUrlRef.current) URL.revokeObjectURL(audioObjUrlRef.current);
+        if (blob && blob.roundsMeta) audioObjUrlRef.roundsMeta = blob.roundsMeta;
         const objUrl = URL.createObjectURL(blob);
         audioObjUrlRef.current = objUrl;
         setAudioUrlAndPlay(objUrl, statusMsg);
+      }
+
+      function handleAudioTimeUpdate(e) {
+        const meta = audioObjUrlRef.roundsMeta;
+        if (!meta || !meta.length || template !== 'quiz-mobile') return;
+        const t = e.currentTarget.currentTime;
+        const rIdx = meta.findIndex(rm => t >= rm.roundStart && t < rm.end);
+        if (rIdx === -1) return;
+        const rm = meta[rIdx];
+        if (activeIdx !== rIdx) setActiveIdx(rIdx);
+        if (t >= rm.revealAt) {
+          if (!simRevealed) setSimRevealed(true);
+          if (simClock !== 0) setSimClock(0);
+        } else if (t >= rm.startCue) {
+          if (simRevealed) setSimRevealed(false);
+          const secLeft = Math.max(1, Math.min(5, 5 - Math.floor(t - rm.startCue)));
+          if (simClock !== secLeft) setSimClock(secLeft);
+        } else {
+          if (simRevealed) setSimRevealed(false);
+          if (simClock !== 5) setSimClock(5);
+        }
       }
 
       async function generateByTemplate(tplId, topic, tone, count) {
@@ -1293,12 +1542,18 @@
         if (tplId === 'quiz-mobile') {
           const raw = await callGroq(
             key, groqModel,
-            'Retorne APENAS um JSON válido no formato {"questions":[{"q":"pergunta curta","opts":["op1","op2","op3"],"ans":"op_correta"}]} sem markdown. Cada pergunta deve ter EXATAMENTE 3 opções em opts.',
-            `Gere ${count} perguntas de quiz sobre "${topic}" (nível ${tone}) em português do Brasil, curtas e envolventes.`
+            'Retorne APENAS um JSON válido no formato {"questions":[{"q":"pergunta curta","opts":["op1","op2","op3"],"ans":"op_correta","bgTheme":"school|geography|nature|science|history|pop","bgSvg":"<svg viewBox=\'0 0 64 64\'>...</svg>","optSvgs":["<svg viewBox=\'0 0 64 64\'>...</svg>","<svg viewBox=\'0 0 64 64\'>...</svg>","<svg viewBox=\'0 0 64 64\'>...</svg>"]}]} sem markdown. REGRA DE SVGs: Cada item de optSvgs deve ser um ícone SVG cartoon colorido e compacto (viewBox="0 0 64 64", usando apenas aspas simples nos atributos internos do SVG, com círculo de fundo colorido, stroke=\'#0f172a\' stroke-width=\'3\' e formas geométricas claras que ilustrem visualmente aquela opção específica). bgSvg deve ser um ícone SVG 64x64 que represente o tema da pergunta.',
+            `Gere ${count} perguntas de quiz sobre "${topic}" (nível ${tone}) em português do Brasil, curtas e envolventes, com ícones SVG contextuais para cada alternativa.`
           );
           const parsed = JSON.parse(raw);
           const list = (Array.isArray(parsed) ? parsed : parsed.questions).map(i => ({
-            q: String(i.q || ''), opts: Array.isArray(i.opts) ? i.opts.slice(0, 3) : ['A', 'B', 'C'], ans: String(i.ans || i.opts?.[0] || ''), category: i.category || topic.toUpperCase(),
+            q: String(i.q || ''),
+            opts: Array.isArray(i.opts) ? i.opts.slice(0, 3) : ['A', 'B', 'C'],
+            ans: String(i.ans || i.opts?.[0] || ''),
+            category: i.category || topic.toUpperCase(),
+            bgTheme: i.bgTheme || detectBgTheme(topic, i.q),
+            bgSvg: sanitizeInlineSvg(i.bgSvg) || undefined,
+            optSvgs: Array.isArray(i.optSvgs) ? i.optSvgs.slice(0, 3).map(s => sanitizeInlineSvg(s)) : undefined,
           }));
           return { title: `quiz-${slugify(topic)}-${Math.floor(Math.random() * 900 + 100)}`, payload: list };
         }
@@ -1497,9 +1752,10 @@
         setInstantPlaying(true);
         const playOneSfx = (path) => { if (!instantAbortRef.current) { const a = new Audio(path); a.volume = 0.85; a.play().catch(() => {}); } };
         try {
-          Promise.all(['5', '4', '3', '2', '1', 'A:', 'B:', 'C:'].map(t => fetchEdgeTtsBytes(t, voiceName, '0.9'))).catch(() => {});
+          Promise.all(['A:', 'B:', 'C:'].map(t => fetchEdgeTtsBytes(t, voiceName, '0.9'))).catch(() => {});
           for (let i = 0; i < questions.length && !instantAbortRef.current; i++) {
             const q = questions[i];
+            if (i > 0) playWebAudioSwoosh();
             setActiveIdx(i); setSimRevealed(false); setSimClock(5);
             setAudioStatus(`⚡ Carregando fala (Rodada ${i + 1}/${questions.length})...`);
             await Promise.all([q.q, `${q.opts?.[0] || ''}?`, `${q.opts?.[1] || ''}?`, `${q.opts?.[2] || ''}?`, `Resposta certa: ${q.ans}!`].map(t => fetchEdgeTtsBytes(t, voiceName, '0.9').catch(() => null)));
@@ -1514,8 +1770,8 @@
             const tictac = new Audio('sfx/tic-tac.mp3'); tictac.loop = true; tictac.volume = 0.45; tictac.play().catch(() => {}); activeTicTacRef.current = tictac;
             for (const n of [5, 4, 3, 2, 1]) {
               if (instantAbortRef.current) break;
-              setSimClock(n); setAudioStatus(`⚡ Rodada ${i + 1}/${questions.length}: Contagem ${n}...`);
-              await speakEdge(String(n)); if (instantAbortRef.current) break; await sleepMs(700);
+              setSimClock(n); setAudioStatus(`⚡ Rodada ${i + 1}/${questions.length}: Timer ${n}s (tic-tac)...`);
+              await sleepMs(1000);
             }
             if (activeTicTacRef.current) { activeTicTacRef.current.pause(); activeTicTacRef.current = null; }
             if (instantAbortRef.current) break;
@@ -1529,6 +1785,61 @@
           if (activeTicTacRef.current) { activeTicTacRef.current.pause(); activeTicTacRef.current = null; }
           setInstantPlaying(false);
         }
+      }
+
+      async function handleAnimateSingleRound() {
+        instantAbortRef.current = false;
+        if (activeTicTacRef.current) { activeTicTacRef.current.pause(); activeTicTacRef.current = null; }
+        playWebAudioSwoosh();
+        setSimRevealed(false);
+        setSimClock(5);
+        const tictac = new Audio('sfx/tic-tac.mp3');
+        tictac.loop = true;
+        tictac.volume = 0.45;
+        tictac.play().catch(() => {});
+        activeTicTacRef.current = tictac;
+        for (const n of [5, 4, 3, 2, 1]) {
+          if (instantAbortRef.current) break;
+          setSimClock(n);
+          await sleepMs(1000);
+        }
+        if (activeTicTacRef.current) { activeTicTacRef.current.pause(); activeTicTacRef.current = null; }
+        if (!instantAbortRef.current) {
+          setSimClock(0);
+          setSimRevealed(true);
+          const al = new Audio('sfx/trim_alarm.mp3');
+          al.volume = 0.85;
+          al.play().catch(() => {});
+        }
+      }
+
+      async function handleGenerateQuizSvgs() {
+        const key = groqKey || groqDraft.trim();
+        if (!key) { setActiveSection('settings'); return notify('warning', 'Groq API Key necessária', 'Configure sua chave em Integrações.'); }
+        setAiLoading(true);
+        try {
+          const summary = questions.map((q, idx) => ({ idx, q: q.q, opts: q.opts, category: q.category || aiTopic }));
+          const raw = await callGroq(
+            key, groqModel,
+            'Você é um ilustrador vetorial SVG. Receba a lista de perguntas e retorne APENAS um JSON válido no formato {"items":[{"bgTheme":"school|geography|nature|science|history|pop","bgSvg":"<svg viewBox=\'0 0 64 64\'>...</svg>","optSvgs":["<svg viewBox=\'0 0 64 64\'>...</svg>","<svg viewBox=\'0 0 64 64\'>...</svg>","<svg viewBox=\'0 0 64 64\'>...</svg>"]}]} sem markdown. Use apenas aspas simples nos atributos internos do SVG, com círculo de fundo colorido, stroke=\'#0f172a\' stroke-width=\'3\' e desenho cartoon claro para cada opção.',
+            `Gere os SVGs contextuais para estas perguntas: ${JSON.stringify(summary)}`
+          );
+          const parsed = JSON.parse(raw);
+          const arr = Array.isArray(parsed) ? parsed : (parsed.items || []);
+          const next = questions.map((q, idx) => {
+            const gen = arr[idx] || {};
+            return {
+              ...q,
+              bgTheme: gen.bgTheme || detectBgTheme(q.category, q.q, q.bgTheme),
+              bgSvg: sanitizeInlineSvg(gen.bgSvg) || q.bgSvg,
+              optSvgs: Array.isArray(gen.optSvgs) ? gen.optSvgs.slice(0, 3).map((s, oi) => sanitizeInlineSvg(s) || q.optSvgs?.[oi]) : q.optSvgs,
+            };
+          });
+          syncQuestions(next);
+          notify('success', 'Ícones SVG gerados com IA!', 'Veja os novos ícones contextuais no Preview 9:16.');
+        } catch (err) {
+          notify('error', 'Erro ao gerar SVGs', err.message);
+        } finally { setAiLoading(false); }
       }
 
       function stopInstantPreview() {
@@ -1867,12 +2178,19 @@
                       <div className="step-header">
                         <div className="step-title"><span className="step-num">3</span><span>Roteiro, Áudio & Disparo</span></div>
                         {template === 'quiz-mobile' && (
-                          <div style={{ display: 'flex', gap: '6px' }}>
+                          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                             <div className="tabs">
                               <button type="button" className={`tab-btn ${editorTab === 'visual' ? 'active' : ''}`} onClick={() => setEditorTab('visual')}>✨ Cards ({questions.length})</button>
                               <button type="button" className={`tab-btn ${editorTab === 'json' ? 'active' : ''}`} onClick={() => setEditorTab('json')}>💻 JSON</button>
                             </div>
-                            {editorTab === 'visual' && <button className="btn-secondary" type="button" onClick={addQuestion} style={{ padding: '4px 9px' }}>+ Pergunta</button>}
+                            {editorTab === 'visual' && (
+                              <>
+                                <button className="btn-secondary" type="button" onClick={handleGenerateQuizSvgs} disabled={aiLoading} style={{ padding: '4px 9px' }}>
+                                  {aiLoading ? '⏳...' : '🎨 Gerar SVGs (IA)'}
+                                </button>
+                                <button className="btn-secondary" type="button" onClick={addQuestion} style={{ padding: '4px 9px' }}>+ Pergunta</button>
+                              </>
+                            )}
                           </div>
                         )}
                         {template === 'kinetic-shorts' && (
@@ -2022,7 +2340,7 @@
                           </div>
                         )}
                         {!audioLoading && audioProgress === 0 && audioStatus && <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '8px' }}>{audioStatus}</div>}
-                        {audioSrc && <audio ref={audioRef} src={audioSrc} controls style={{ width: '100%', marginTop: '10px' }} />}
+                        {audioSrc && <audio ref={audioRef} src={audioSrc} onTimeUpdate={handleAudioTimeUpdate} controls style={{ width: '100%', marginTop: '10px' }} />}
                       </div>
 
                       <button className="btn-primary" type="button" onClick={handleDispatchRender} disabled={dispatchLoading}>
@@ -2042,9 +2360,10 @@
                       {template === 'quiz-mobile' ? (
                         <QuizPhonePreview
                           questions={questions} activeIdx={activeIdx} themeKey={visualTheme} clockValue={simClock} revealed={simRevealed}
-                          onPrev={() => { setSimRevealed(false); setSimClock(5); setActiveIdx(i => (i - 1 + questions.length) % questions.length); }}
-                          onNext={() => { setSimRevealed(false); setSimClock(5); setActiveIdx(i => (i + 1) % questions.length); }}
+                          onPrev={() => { playWebAudioSwoosh(); setSimRevealed(false); setSimClock(5); setActiveIdx(i => (i - 1 + questions.length) % questions.length); }}
+                          onNext={() => { playWebAudioSwoosh(); setSimRevealed(false); setSimClock(5); setActiveIdx(i => (i + 1) % questions.length); }}
                           onToggleReveal={() => { setSimRevealed(v => !v); setSimClock(simRevealed ? 5 : 0); }}
+                          onAnimateRound={handleAnimateSingleRound}
                         />
                       ) : template === 'kinetic-shorts' ? (
                         <KineticPhonePreview

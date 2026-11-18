@@ -3,449 +3,947 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=1080, height=1920" />
-<title>Quiz Mobile 3 (Francisca + SFX) — Hyperframes</title>
+<title>Quiz Mobile — Creator Studio</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&display=block" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:1080px;height:1920px;overflow:hidden;font-family:'Poppins',sans-serif;background:#3b0764}
-#root{position:relative;width:1080px;height:1920px;overflow:hidden;background:linear-gradient(155deg,#4c1d95 0%,#6d28d9 45%,#3b0764 100%)}
-.stripes{position:absolute;inset:0;overflow:hidden;pointer-events:none}
-.stripe{position:absolute;top:-300px;width:4px;height:2600px;background:rgba(255,255,255,.06);transform:rotate(20deg)}
-.scene{position:absolute;inset:0;padding:0 64px 72px;display:flex;flex-direction:column;align-items:center}
-.wave-header{width:calc(100% + 128px);margin:0 -64px;padding:52px 64px 48px;background:#31105f;border-bottom:8px solid #0f172a;border-radius:0 0 60px 60px;box-shadow:0 12px 0 rgba(15,23,42,.25);display:flex;align-items:center;justify-content:space-between}
-.h-left{display:flex;align-items:center;gap:22px}
-.h-badge{font-size:68px;line-height:1}
+html,body{width:1080px;height:1920px;overflow:hidden;font-family:'Poppins',sans-serif;background:#31105f}
+#root{position:relative;width:1080px;height:1920px;overflow:hidden;background:#31105f}
+.scene{position:absolute;inset:0;padding:0 64px 64px;display:flex;flex-direction:column;align-items:center;overflow:hidden}
+.wp-wrap{position:absolute;inset:-240px;pointer-events:none;z-index:0;transform:rotate(-12deg)}
+.wp-grid{position:relative;width:1560px;height:2400px}
+.wp-tile{position:absolute;width:130px;height:130px;opacity:.14}
+.wp-tile svg{width:100%;height:100%}
+.wave-header{position:relative;z-index:2;width:calc(100% + 128px);margin:0 -64px;padding:44px 60px 42px;background:#31105f;border-bottom:8px solid #0f172a;border-radius:0 0 68px 68px;box-shadow:0 14px 0 rgba(15,23,42,.28);display:flex;align-items:center;justify-content:space-between}
+.h-left{display:flex;align-items:center;gap:24px}
+.h-mascot{width:96px;height:96px;border-radius:28px;background:#fde047;border:5px solid #0f172a;box-shadow:0 7px 0 #0f172a;padding:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.h-mascot svg{width:100%;height:100%}
 .h-titles{display:flex;flex-direction:column;gap:4px}
-.h-cat{font-weight:900;font-size:38px;color:#ffffff;text-shadow:0 4px 0 #0f172a;letter-spacing:1px}
-.h-round{font-weight:800;font-size:26px;color:#fde047}
-.dots{width:100%;display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:36px}
-.dot{height:14px;border-radius:999px;background:rgba(15,23,42,.2);border:2px solid rgba(15,23,42,.3)}
+.h-cat{font-weight:900;font-size:40px;color:#ffffff;text-shadow:0 5px 0 #0f172a;letter-spacing:1px;line-height:1.1}
+.h-round{font-weight:800;font-size:27px;color:#fde047;letter-spacing:1.5px}
+.alarm-clock{position:relative;width:168px;height:168px;display:flex;align-items:center;justify-content:center;flex-shrink:0;filter:drop-shadow(0 8px 0 #0f172a)}
+.alarm-num{position:absolute;top:54%;left:50%;transform:translate(-50%,-50%);font-weight:900;font-size:68px;color:#0f172a;line-height:1}
+.dots{position:relative;z-index:2;width:100%;display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:32px}
+.dot{height:16px;border-radius:999px;background:rgba(15,23,42,.22);border:3px solid #0f172a}
 .dot.done{background:#0f172a}
-.dot.active{background:#ffffff;border-color:#0f172a}
-.q-box{width:100%;margin-top:48px;padding:64px 48px;border-radius:40px;background:#ffffff;border:6px solid #0f172a;box-shadow:0 12px 0 #0f172a;font-weight:900;font-size:56px;line-height:1.25;color:#0f172a;text-align:center;min-height:320px;display:flex;align-items:center;justify-content:center}
-.clock{width:136px;height:136px;border-radius:50%;background:#fde047;border:6px solid #0f172a;box-shadow:0 8px 0 #0f172a;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:70px;color:#0f172a;flex-shrink:0}
-.timer-track{width:96%;height:18px;border-radius:999px;background:rgba(15,23,42,.2);border:3px solid #0f172a;overflow:hidden;margin-top:44px}
+.dot.active{background:#ffffff;box-shadow:0 4px 0 #0f172a}
+.q-box{position:relative;z-index:2;width:100%;margin-top:38px;padding:58px 48px;border-radius:42px;background:#ffffff;border:7px solid #0f172a;box-shadow:0 16px 0 #0f172a;min-height:340px;display:flex;align-items:center;justify-content:center}
+.q-text{font-weight:900;font-size:56px;line-height:1.24;color:#0f172a;text-align:center}
+.timer-track{position:relative;z-index:2;width:96%;height:22px;border-radius:999px;background:rgba(15,23,42,.25);border:4px solid #0f172a;overflow:hidden;margin-top:42px}
 .timer-fill{width:100%;height:100%;background:#ffffff;transform-origin:0 50%}
-.opts{width:100%;margin-top:44px;display:flex;flex-direction:column;gap:28px}
-.opt{position:relative;width:100%;padding:28px 34px;border-radius:999px;background:#ffffff;border:5px solid #0f172a;box-shadow:0 10px 0 #0f172a;display:flex;align-items:center;gap:26px}
-.opt-let{width:74px;height:74px;border-radius:50%;background:#31105f;color:#ffffff;font-weight:900;font-size:38px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.opt-txt{font-weight:800;font-size:44px;color:#0f172a;flex:1}
-.opt-check{font-weight:900;font-size:44px;color:#0f172a;margin-right:10px}
-.footer{margin-top:auto;font-weight:900;font-size:30px;letter-spacing:2px;color:#0f172a;opacity:.75}
+.opts{position:relative;z-index:2;width:100%;margin-top:42px;display:flex;flex-direction:column;gap:30px}
+.opt{position:relative;width:100%;padding:22px 34px 22px 24px;border-radius:999px;background:#ffffff;border:6px solid #0f172a;box-shadow:0 12px 0 #0f172a;display:flex;align-items:center;gap:22px}
+.opt-ico{width:96px;height:96px;margin:-14px 0 -14px -8px;flex-shrink:0;filter:drop-shadow(0 5px 0 rgba(15,23,42,.35))}
+.opt-ico svg{width:100%;height:100%}
+.opt-let{width:68px;height:68px;border-radius:50%;background:#31105f;border:4px solid #0f172a;color:#ffffff;font-weight:900;font-size:36px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.opt-txt{font-weight:900;font-size:44px;color:#0f172a;flex:1;line-height:1.15}
+.opt-check{font-weight:900;font-size:48px;color:#0f172a;margin-right:8px}
+.footer{position:relative;z-index:2;margin-top:auto;font-weight:900;font-size:30px;letter-spacing:3px;color:#0f172a;opacity:.8}
 .outro{justify-content:center;text-align:center;gap:34px}
-.outro-logo{width:210px;height:210px;border-radius:50%;box-shadow:0 16px 40px rgba(0,0,0,.4)}
-.outro-title{font-weight:900;font-size:74px;color:#ffffff;text-shadow:0 8px 0 #1e1b4b}
+.outro-logo{width:210px;height:210px;border-radius:50%;border:6px solid #0f172a;box-shadow:0 14px 0 #0f172a}
+.outro-title{font-weight:900;font-size:74px;color:#ffffff;text-shadow:0 8px 0 #0f172a}
 .outro-sub{font-weight:700;font-size:44px;color:#f8fafc}
-.outro-cta{margin-top:16px;padding:34px 66px;border-radius:28px;background:#fde047;color:#0f172a;font-weight:900;font-size:42px;box-shadow:0 14px 36px rgba(0,0,0,.3)}
+.outro-cta{margin-top:16px;padding:34px 66px;border-radius:999px;background:#fde047;border:6px solid #0f172a;color:#0f172a;font-weight:900;font-size:42px;box-shadow:0 14px 0 #0f172a}
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="main" data-start="0" data-duration="108.77" data-width="1080" data-height="1920">
-  <audio id="audio-narration" src="assets/quiz3-mix.mp3" data-start="0" data-duration="108.77" data-volume="1.0"></audio>
-  <div class="stripes" data-layout-allow-overflow><div class="stripe" style="left:-400px"></div><div class="stripe" style="left:-180px"></div><div class="stripe" style="left:40px"></div><div class="stripe" style="left:260px"></div><div class="stripe" style="left:480px"></div><div class="stripe" style="left:700px"></div><div class="stripe" style="left:920px"></div><div class="stripe" style="left:1140px"></div><div class="stripe" style="left:1360px"></div><div class="stripe" style="left:1580px"></div></div>
+<div id="root" data-composition-id="main" data-start="0" data-duration="100.27" data-width="1080" data-height="1920">
+  <audio id="audio-narration" src="audio/quiz-mix.mp3" data-start="0" data-duration="100.27" data-volume="1.0"></audio>
 
-  <div id="q1" class="scene clip" style="background:#facc15" data-start="0" data-duration="15.73">
+  <div id="q1" class="scene clip" style="background:#facc15" data-start="0" data-duration="15.38">
+    <div class="wp-wrap" data-layout-allow-overflow>
+      <div class="wp-grid" id="q1-wp"><div class="wp-tile" id="q1-wpt-0-0" style="top:-120px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q1-wpt-0-1" style="top:-10px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q1-wpt-0-2" style="top:-120px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q1-wpt-0-3" style="top:-10px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q1-wpt-0-4" style="top:-120px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q1-wpt-1-0" style="top:190px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q1-wpt-1-1" style="top:300px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q1-wpt-1-2" style="top:190px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q1-wpt-1-3" style="top:300px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q1-wpt-1-4" style="top:190px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q1-wpt-2-0" style="top:500px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q1-wpt-2-1" style="top:610px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q1-wpt-2-2" style="top:500px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q1-wpt-2-3" style="top:610px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q1-wpt-2-4" style="top:500px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q1-wpt-3-0" style="top:810px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q1-wpt-3-1" style="top:920px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q1-wpt-3-2" style="top:810px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q1-wpt-3-3" style="top:920px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q1-wpt-3-4" style="top:810px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q1-wpt-4-0" style="top:1120px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q1-wpt-4-1" style="top:1230px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q1-wpt-4-2" style="top:1120px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q1-wpt-4-3" style="top:1230px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q1-wpt-4-4" style="top:1120px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q1-wpt-5-0" style="top:1430px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q1-wpt-5-1" style="top:1540px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q1-wpt-5-2" style="top:1430px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q1-wpt-5-3" style="top:1540px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q1-wpt-5-4" style="top:1430px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q1-wpt-6-0" style="top:1740px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q1-wpt-6-1" style="top:1850px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q1-wpt-6-2" style="top:1740px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q1-wpt-6-3" style="top:1850px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q1-wpt-6-4" style="top:1740px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div></div>
+    </div>
+
     <div class="wave-header">
       <div class="h-left">
-        <span class="h-badge">🎓</span>
+        <div class="h-mascot"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div>
         <div class="h-titles">
-          <span class="h-cat">GEOGRAFIA</span>
-          <span class="h-round">RODADA 1/6</span>
+          <span class="h-cat">CONHECIMENTOS GERAIS</span>
+          <span class="h-round">RODADA 1 DE 6</span>
         </div>
       </div>
-      <div class="clock" id="q1-clock"><span id="q1-num">5</span></div>
+
+      <div class="alarm-clock" id="q1-clock">
+        <svg viewBox="0 0 160 160" width="168" height="168">
+          <g id="q1-bells">
+            <path d="M22 38 C12 22, 30 6, 48 18 Z" fill="#facc15" stroke="#0f172a" stroke-width="6" stroke-linejoin="round"/>
+            <path d="M138 38 C148 22, 130 6, 112 18 Z" fill="#facc15" stroke="#0f172a" stroke-width="6" stroke-linejoin="round"/>
+            <rect x="74" y="8" width="12" height="18" rx="4" fill="#facc15" stroke="#0f172a" stroke-width="5"/>
+          </g>
+          <line x1="38" y1="136" x2="26" y2="152" stroke="#0f172a" stroke-width="9" stroke-linecap="round"/>
+          <line x1="122" y1="136" x2="134" y2="152" stroke="#0f172a" stroke-width="9" stroke-linecap="round"/>
+          <circle cx="80" cy="86" r="62" fill="#e11d48" stroke="#0f172a" stroke-width="7"/>
+          <circle id="q1-dial" cx="80" cy="86" r="49" fill="#fde047" stroke="#0f172a" stroke-width="5"/>
+          <circle id="q1-ring" cx="80" cy="86" r="54" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"
+            stroke-dasharray="339.29" stroke-dashoffset="0" transform="rotate(-90 80 86)"/>
+        </svg>
+        <span class="alarm-num" id="q1-num">5</span>
+      </div>
     </div>
+
     <div class="dots"><span class="dot active"></span><span class="dot "></span><span class="dot "></span><span class="dot "></span><span class="dot "></span><span class="dot "></span></div>
-    <div class="q-box" id="q1-qbox">Qual país tem mais ilhas no mundo?</div>
+
+    <div class="q-box" id="q1-qbox">
+      <div class="q-text">Qual país tem mais ilhas no mundo?</div>
+    </div>
+
     <div class="timer-track"><div class="timer-fill" id="q1-bar"></div></div>
+
     <div class="opts">
       <div class="opt" id="q1-opt-0">
+        <div class="opt-ico" id="q1-ico-0"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#ddd6fe" stroke="#0f172a" stroke-width="3.5"/><circle cx="32" cy="32" r="15" fill="#38bdf8" stroke="#0f172a" stroke-width="3"/><path d="M22 28Q30 22 36 28T44 34" fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round"/></svg></div>
         <span class="opt-let">A</span>
         <span class="opt-txt">Indonésia</span>
         <span class="opt-check" id="q1-chk-0">✓</span>
       </div>
       <div class="opt" id="q1-opt-1">
+        <div class="opt-ico" id="q1-ico-1"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#fde68a" stroke="#0f172a" stroke-width="3.5"/><polygon points="32,13 37,25 50,26 40,35 43,48 32,41 21,48 24,35 14,26 27,25" fill="#f59e0b" stroke="#0f172a" stroke-width="3" stroke-linejoin="round"/></svg></div>
         <span class="opt-let">B</span>
         <span class="opt-txt">Filipinas</span>
         <span class="opt-check" id="q1-chk-1">✓</span>
       </div>
       <div class="opt" id="q1-opt-2">
+        <div class="opt-ico" id="q1-ico-2"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#fecdd3" stroke="#0f172a" stroke-width="3.5"/><polygon points="34,12 18,35 30,35 28,52 46,28 34,28" fill="#fb7185" stroke="#0f172a" stroke-width="3" stroke-linejoin="round"/></svg></div>
         <span class="opt-let">C</span>
         <span class="opt-txt">Suécia</span>
         <span class="opt-check" id="q1-chk-2">✓</span>
       </div></div>
+
     <div class="footer">@CREATORSTUDIO</div>
   </div>
 
-  <div id="q2" class="scene clip" style="background:#22d3ee" data-start="15.73" data-duration="16.04">
+  <div id="q2" class="scene clip" style="background:#22d3ee" data-start="15.377" data-duration="14.96">
+    <div class="wp-wrap" data-layout-allow-overflow>
+      <div class="wp-grid" id="q2-wp"><div class="wp-tile" id="q2-wpt-0-0" style="top:-120px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q2-wpt-0-1" style="top:-10px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q2-wpt-0-2" style="top:-120px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q2-wpt-0-3" style="top:-10px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q2-wpt-0-4" style="top:-120px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q2-wpt-1-0" style="top:190px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q2-wpt-1-1" style="top:300px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q2-wpt-1-2" style="top:190px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q2-wpt-1-3" style="top:300px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q2-wpt-1-4" style="top:190px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q2-wpt-2-0" style="top:500px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q2-wpt-2-1" style="top:610px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q2-wpt-2-2" style="top:500px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q2-wpt-2-3" style="top:610px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q2-wpt-2-4" style="top:500px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q2-wpt-3-0" style="top:810px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q2-wpt-3-1" style="top:920px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q2-wpt-3-2" style="top:810px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q2-wpt-3-3" style="top:920px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q2-wpt-3-4" style="top:810px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q2-wpt-4-0" style="top:1120px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q2-wpt-4-1" style="top:1230px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q2-wpt-4-2" style="top:1120px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q2-wpt-4-3" style="top:1230px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q2-wpt-4-4" style="top:1120px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q2-wpt-5-0" style="top:1430px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q2-wpt-5-1" style="top:1540px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q2-wpt-5-2" style="top:1430px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q2-wpt-5-3" style="top:1540px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q2-wpt-5-4" style="top:1430px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q2-wpt-6-0" style="top:1740px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q2-wpt-6-1" style="top:1850px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q2-wpt-6-2" style="top:1740px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q2-wpt-6-3" style="top:1850px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q2-wpt-6-4" style="top:1740px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div></div>
+    </div>
+
     <div class="wave-header">
       <div class="h-left">
-        <span class="h-badge">🎓</span>
+        <div class="h-mascot"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div>
         <div class="h-titles">
-          <span class="h-cat">GEOGRAFIA</span>
-          <span class="h-round">RODADA 2/6</span>
+          <span class="h-cat">CONHECIMENTOS GERAIS</span>
+          <span class="h-round">RODADA 2 DE 6</span>
         </div>
       </div>
-      <div class="clock" id="q2-clock"><span id="q2-num">5</span></div>
+
+      <div class="alarm-clock" id="q2-clock">
+        <svg viewBox="0 0 160 160" width="168" height="168">
+          <g id="q2-bells">
+            <path d="M22 38 C12 22, 30 6, 48 18 Z" fill="#facc15" stroke="#0f172a" stroke-width="6" stroke-linejoin="round"/>
+            <path d="M138 38 C148 22, 130 6, 112 18 Z" fill="#facc15" stroke="#0f172a" stroke-width="6" stroke-linejoin="round"/>
+            <rect x="74" y="8" width="12" height="18" rx="4" fill="#facc15" stroke="#0f172a" stroke-width="5"/>
+          </g>
+          <line x1="38" y1="136" x2="26" y2="152" stroke="#0f172a" stroke-width="9" stroke-linecap="round"/>
+          <line x1="122" y1="136" x2="134" y2="152" stroke="#0f172a" stroke-width="9" stroke-linecap="round"/>
+          <circle cx="80" cy="86" r="62" fill="#e11d48" stroke="#0f172a" stroke-width="7"/>
+          <circle id="q2-dial" cx="80" cy="86" r="49" fill="#fde047" stroke="#0f172a" stroke-width="5"/>
+          <circle id="q2-ring" cx="80" cy="86" r="54" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"
+            stroke-dasharray="339.29" stroke-dashoffset="0" transform="rotate(-90 80 86)"/>
+        </svg>
+        <span class="alarm-num" id="q2-num">5</span>
+      </div>
     </div>
+
     <div class="dots"><span class="dot done"></span><span class="dot active"></span><span class="dot "></span><span class="dot "></span><span class="dot "></span><span class="dot "></span></div>
-    <div class="q-box" id="q2-qbox">Qual é a capital da Austrália?</div>
+
+    <div class="q-box" id="q2-qbox">
+      <div class="q-text">Qual é a capital da Austrália?</div>
+    </div>
+
     <div class="timer-track"><div class="timer-fill" id="q2-bar"></div></div>
+
     <div class="opts">
       <div class="opt" id="q2-opt-0">
+        <div class="opt-ico" id="q2-ico-0"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#ddd6fe" stroke="#0f172a" stroke-width="3.5"/><circle cx="32" cy="32" r="15" fill="#38bdf8" stroke="#0f172a" stroke-width="3"/><path d="M22 28Q30 22 36 28T44 34" fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round"/></svg></div>
         <span class="opt-let">A</span>
         <span class="opt-txt">Sydney</span>
         <span class="opt-check" id="q2-chk-0">✓</span>
       </div>
       <div class="opt" id="q2-opt-1">
+        <div class="opt-ico" id="q2-ico-1"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#fde68a" stroke="#0f172a" stroke-width="3.5"/><polygon points="32,13 37,25 50,26 40,35 43,48 32,41 21,48 24,35 14,26 27,25" fill="#f59e0b" stroke="#0f172a" stroke-width="3" stroke-linejoin="round"/></svg></div>
         <span class="opt-let">B</span>
         <span class="opt-txt">Melbourne</span>
         <span class="opt-check" id="q2-chk-1">✓</span>
       </div>
       <div class="opt" id="q2-opt-2">
+        <div class="opt-ico" id="q2-ico-2"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#fecdd3" stroke="#0f172a" stroke-width="3.5"/><polygon points="34,12 18,35 30,35 28,52 46,28 34,28" fill="#fb7185" stroke="#0f172a" stroke-width="3" stroke-linejoin="round"/></svg></div>
         <span class="opt-let">C</span>
         <span class="opt-txt">Canberra</span>
         <span class="opt-check" id="q2-chk-2">✓</span>
       </div></div>
+
     <div class="footer">@CREATORSTUDIO</div>
   </div>
 
-  <div id="q3" class="scene clip" style="background:#fb7185" data-start="31.77" data-duration="17.17">
+  <div id="q3" class="scene clip" style="background:#fb7185" data-start="30.334" data-duration="16.04">
+    <div class="wp-wrap" data-layout-allow-overflow>
+      <div class="wp-grid" id="q3-wp"><div class="wp-tile" id="q3-wpt-0-0" style="top:-120px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q3-wpt-0-1" style="top:-10px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q3-wpt-0-2" style="top:-120px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q3-wpt-0-3" style="top:-10px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q3-wpt-0-4" style="top:-120px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q3-wpt-1-0" style="top:190px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q3-wpt-1-1" style="top:300px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q3-wpt-1-2" style="top:190px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q3-wpt-1-3" style="top:300px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q3-wpt-1-4" style="top:190px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q3-wpt-2-0" style="top:500px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q3-wpt-2-1" style="top:610px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q3-wpt-2-2" style="top:500px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q3-wpt-2-3" style="top:610px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q3-wpt-2-4" style="top:500px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q3-wpt-3-0" style="top:810px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q3-wpt-3-1" style="top:920px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q3-wpt-3-2" style="top:810px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q3-wpt-3-3" style="top:920px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q3-wpt-3-4" style="top:810px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q3-wpt-4-0" style="top:1120px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q3-wpt-4-1" style="top:1230px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q3-wpt-4-2" style="top:1120px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q3-wpt-4-3" style="top:1230px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q3-wpt-4-4" style="top:1120px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q3-wpt-5-0" style="top:1430px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q3-wpt-5-1" style="top:1540px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q3-wpt-5-2" style="top:1430px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q3-wpt-5-3" style="top:1540px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q3-wpt-5-4" style="top:1430px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q3-wpt-6-0" style="top:1740px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q3-wpt-6-1" style="top:1850px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q3-wpt-6-2" style="top:1740px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q3-wpt-6-3" style="top:1850px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q3-wpt-6-4" style="top:1740px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div></div>
+    </div>
+
     <div class="wave-header">
       <div class="h-left">
-        <span class="h-badge">🎓</span>
+        <div class="h-mascot"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div>
         <div class="h-titles">
-          <span class="h-cat">GEOGRAFIA</span>
-          <span class="h-round">RODADA 3/6</span>
+          <span class="h-cat">CONHECIMENTOS GERAIS</span>
+          <span class="h-round">RODADA 3 DE 6</span>
         </div>
       </div>
-      <div class="clock" id="q3-clock"><span id="q3-num">5</span></div>
+
+      <div class="alarm-clock" id="q3-clock">
+        <svg viewBox="0 0 160 160" width="168" height="168">
+          <g id="q3-bells">
+            <path d="M22 38 C12 22, 30 6, 48 18 Z" fill="#facc15" stroke="#0f172a" stroke-width="6" stroke-linejoin="round"/>
+            <path d="M138 38 C148 22, 130 6, 112 18 Z" fill="#facc15" stroke="#0f172a" stroke-width="6" stroke-linejoin="round"/>
+            <rect x="74" y="8" width="12" height="18" rx="4" fill="#facc15" stroke="#0f172a" stroke-width="5"/>
+          </g>
+          <line x1="38" y1="136" x2="26" y2="152" stroke="#0f172a" stroke-width="9" stroke-linecap="round"/>
+          <line x1="122" y1="136" x2="134" y2="152" stroke="#0f172a" stroke-width="9" stroke-linecap="round"/>
+          <circle cx="80" cy="86" r="62" fill="#e11d48" stroke="#0f172a" stroke-width="7"/>
+          <circle id="q3-dial" cx="80" cy="86" r="49" fill="#fde047" stroke="#0f172a" stroke-width="5"/>
+          <circle id="q3-ring" cx="80" cy="86" r="54" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"
+            stroke-dasharray="339.29" stroke-dashoffset="0" transform="rotate(-90 80 86)"/>
+        </svg>
+        <span class="alarm-num" id="q3-num">5</span>
+      </div>
     </div>
+
     <div class="dots"><span class="dot done"></span><span class="dot done"></span><span class="dot active"></span><span class="dot "></span><span class="dot "></span><span class="dot "></span></div>
-    <div class="q-box" id="q3-qbox">Qual país é conhecido como a Terra do Sol Nascente?</div>
+
+    <div class="q-box" id="q3-qbox">
+      <div class="q-text">Qual país é conhecido como a Terra do Sol Nascente?</div>
+    </div>
+
     <div class="timer-track"><div class="timer-fill" id="q3-bar"></div></div>
+
     <div class="opts">
       <div class="opt" id="q3-opt-0">
+        <div class="opt-ico" id="q3-ico-0"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#fef3c7" stroke="#0f172a" stroke-width="3.5"/><circle cx="32" cy="32" r="13" fill="#ef4444" stroke="#0f172a" stroke-width="3"/></svg></div>
         <span class="opt-let">A</span>
         <span class="opt-txt">China</span>
         <span class="opt-check" id="q3-chk-0">✓</span>
       </div>
       <div class="opt" id="q3-opt-1">
+        <div class="opt-ico" id="q3-ico-1"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#fef3c7" stroke="#0f172a" stroke-width="3.5"/><circle cx="32" cy="32" r="13" fill="#ef4444" stroke="#0f172a" stroke-width="3"/></svg></div>
         <span class="opt-let">B</span>
         <span class="opt-txt">Japão</span>
         <span class="opt-check" id="q3-chk-1">✓</span>
       </div>
       <div class="opt" id="q3-opt-2">
+        <div class="opt-ico" id="q3-ico-2"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#fef3c7" stroke="#0f172a" stroke-width="3.5"/><circle cx="32" cy="32" r="13" fill="#ef4444" stroke="#0f172a" stroke-width="3"/></svg></div>
         <span class="opt-let">C</span>
         <span class="opt-txt">Coreia do Sul</span>
         <span class="opt-check" id="q3-chk-2">✓</span>
       </div></div>
+
     <div class="footer">@CREATORSTUDIO</div>
   </div>
 
-  <div id="q4" class="scene clip" style="background:#4ade80" data-start="48.94" data-duration="16.44">
+  <div id="q4" class="scene clip" style="background:#4ade80" data-start="46.378" data-duration="15.34">
+    <div class="wp-wrap" data-layout-allow-overflow>
+      <div class="wp-grid" id="q4-wp"><div class="wp-tile" id="q4-wpt-0-0" style="top:-120px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q4-wpt-0-1" style="top:-10px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q4-wpt-0-2" style="top:-120px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q4-wpt-0-3" style="top:-10px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q4-wpt-0-4" style="top:-120px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q4-wpt-1-0" style="top:190px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q4-wpt-1-1" style="top:300px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q4-wpt-1-2" style="top:190px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q4-wpt-1-3" style="top:300px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q4-wpt-1-4" style="top:190px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q4-wpt-2-0" style="top:500px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q4-wpt-2-1" style="top:610px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q4-wpt-2-2" style="top:500px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q4-wpt-2-3" style="top:610px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q4-wpt-2-4" style="top:500px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q4-wpt-3-0" style="top:810px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q4-wpt-3-1" style="top:920px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q4-wpt-3-2" style="top:810px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q4-wpt-3-3" style="top:920px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q4-wpt-3-4" style="top:810px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q4-wpt-4-0" style="top:1120px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q4-wpt-4-1" style="top:1230px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q4-wpt-4-2" style="top:1120px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q4-wpt-4-3" style="top:1230px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q4-wpt-4-4" style="top:1120px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q4-wpt-5-0" style="top:1430px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q4-wpt-5-1" style="top:1540px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q4-wpt-5-2" style="top:1430px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q4-wpt-5-3" style="top:1540px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q4-wpt-5-4" style="top:1430px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q4-wpt-6-0" style="top:1740px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q4-wpt-6-1" style="top:1850px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q4-wpt-6-2" style="top:1740px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q4-wpt-6-3" style="top:1850px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q4-wpt-6-4" style="top:1740px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div></div>
+    </div>
+
     <div class="wave-header">
       <div class="h-left">
-        <span class="h-badge">🎓</span>
+        <div class="h-mascot"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div>
         <div class="h-titles">
-          <span class="h-cat">GEOGRAFIA</span>
-          <span class="h-round">RODADA 4/6</span>
+          <span class="h-cat">CONHECIMENTOS GERAIS</span>
+          <span class="h-round">RODADA 4 DE 6</span>
         </div>
       </div>
-      <div class="clock" id="q4-clock"><span id="q4-num">5</span></div>
+
+      <div class="alarm-clock" id="q4-clock">
+        <svg viewBox="0 0 160 160" width="168" height="168">
+          <g id="q4-bells">
+            <path d="M22 38 C12 22, 30 6, 48 18 Z" fill="#facc15" stroke="#0f172a" stroke-width="6" stroke-linejoin="round"/>
+            <path d="M138 38 C148 22, 130 6, 112 18 Z" fill="#facc15" stroke="#0f172a" stroke-width="6" stroke-linejoin="round"/>
+            <rect x="74" y="8" width="12" height="18" rx="4" fill="#facc15" stroke="#0f172a" stroke-width="5"/>
+          </g>
+          <line x1="38" y1="136" x2="26" y2="152" stroke="#0f172a" stroke-width="9" stroke-linecap="round"/>
+          <line x1="122" y1="136" x2="134" y2="152" stroke="#0f172a" stroke-width="9" stroke-linecap="round"/>
+          <circle cx="80" cy="86" r="62" fill="#e11d48" stroke="#0f172a" stroke-width="7"/>
+          <circle id="q4-dial" cx="80" cy="86" r="49" fill="#fde047" stroke="#0f172a" stroke-width="5"/>
+          <circle id="q4-ring" cx="80" cy="86" r="54" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"
+            stroke-dasharray="339.29" stroke-dashoffset="0" transform="rotate(-90 80 86)"/>
+        </svg>
+        <span class="alarm-num" id="q4-num">5</span>
+      </div>
     </div>
+
     <div class="dots"><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot active"></span><span class="dot "></span><span class="dot "></span></div>
-    <div class="q-box" id="q4-qbox">Qual é o rio mais longo do mundo?</div>
+
+    <div class="q-box" id="q4-qbox">
+      <div class="q-text">Qual é o rio mais longo do mundo?</div>
+    </div>
+
     <div class="timer-track"><div class="timer-fill" id="q4-bar"></div></div>
+
     <div class="opts">
       <div class="opt" id="q4-opt-0">
+        <div class="opt-ico" id="q4-ico-0"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#cffafe" stroke="#0f172a" stroke-width="3.5"/><path d="M14 28Q23 20 32 28T50 28M14 38Q23 30 32 38T50 38" fill="none" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/></svg></div>
         <span class="opt-let">A</span>
         <span class="opt-txt">Rio Amazonas</span>
         <span class="opt-check" id="q4-chk-0">✓</span>
       </div>
       <div class="opt" id="q4-opt-1">
+        <div class="opt-ico" id="q4-ico-1"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#cffafe" stroke="#0f172a" stroke-width="3.5"/><path d="M14 28Q23 20 32 28T50 28M14 38Q23 30 32 38T50 38" fill="none" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/></svg></div>
         <span class="opt-let">B</span>
         <span class="opt-txt">Rio Nilo</span>
         <span class="opt-check" id="q4-chk-1">✓</span>
       </div>
       <div class="opt" id="q4-opt-2">
+        <div class="opt-ico" id="q4-ico-2"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#cffafe" stroke="#0f172a" stroke-width="3.5"/><path d="M14 28Q23 20 32 28T50 28M14 38Q23 30 32 38T50 38" fill="none" stroke="#0284c7" stroke-width="4" stroke-linecap="round"/></svg></div>
         <span class="opt-let">C</span>
         <span class="opt-txt">Rio Yangtzé</span>
         <span class="opt-check" id="q4-chk-2">✓</span>
       </div></div>
+
     <div class="footer">@CREATORSTUDIO</div>
   </div>
 
-  <div id="q5" class="scene clip" style="background:#a78bfa" data-start="65.38" data-duration="17.85">
+  <div id="q5" class="scene clip" style="background:#a78bfa" data-start="61.719" data-duration="16.88">
+    <div class="wp-wrap" data-layout-allow-overflow>
+      <div class="wp-grid" id="q5-wp"><div class="wp-tile" id="q5-wpt-0-0" style="top:-120px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q5-wpt-0-1" style="top:-10px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q5-wpt-0-2" style="top:-120px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q5-wpt-0-3" style="top:-10px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q5-wpt-0-4" style="top:-120px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q5-wpt-1-0" style="top:190px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q5-wpt-1-1" style="top:300px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q5-wpt-1-2" style="top:190px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q5-wpt-1-3" style="top:300px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q5-wpt-1-4" style="top:190px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q5-wpt-2-0" style="top:500px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q5-wpt-2-1" style="top:610px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q5-wpt-2-2" style="top:500px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q5-wpt-2-3" style="top:610px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q5-wpt-2-4" style="top:500px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q5-wpt-3-0" style="top:810px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q5-wpt-3-1" style="top:920px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q5-wpt-3-2" style="top:810px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q5-wpt-3-3" style="top:920px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q5-wpt-3-4" style="top:810px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q5-wpt-4-0" style="top:1120px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q5-wpt-4-1" style="top:1230px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q5-wpt-4-2" style="top:1120px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q5-wpt-4-3" style="top:1230px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q5-wpt-4-4" style="top:1120px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q5-wpt-5-0" style="top:1430px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q5-wpt-5-1" style="top:1540px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q5-wpt-5-2" style="top:1430px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q5-wpt-5-3" style="top:1540px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q5-wpt-5-4" style="top:1430px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q5-wpt-6-0" style="top:1740px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q5-wpt-6-1" style="top:1850px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q5-wpt-6-2" style="top:1740px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q5-wpt-6-3" style="top:1850px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q5-wpt-6-4" style="top:1740px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div></div>
+    </div>
+
     <div class="wave-header">
       <div class="h-left">
-        <span class="h-badge">🎓</span>
+        <div class="h-mascot"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div>
         <div class="h-titles">
-          <span class="h-cat">GEOGRAFIA</span>
-          <span class="h-round">RODADA 5/6</span>
+          <span class="h-cat">CONHECIMENTOS GERAIS</span>
+          <span class="h-round">RODADA 5 DE 6</span>
         </div>
       </div>
-      <div class="clock" id="q5-clock"><span id="q5-num">5</span></div>
+
+      <div class="alarm-clock" id="q5-clock">
+        <svg viewBox="0 0 160 160" width="168" height="168">
+          <g id="q5-bells">
+            <path d="M22 38 C12 22, 30 6, 48 18 Z" fill="#facc15" stroke="#0f172a" stroke-width="6" stroke-linejoin="round"/>
+            <path d="M138 38 C148 22, 130 6, 112 18 Z" fill="#facc15" stroke="#0f172a" stroke-width="6" stroke-linejoin="round"/>
+            <rect x="74" y="8" width="12" height="18" rx="4" fill="#facc15" stroke="#0f172a" stroke-width="5"/>
+          </g>
+          <line x1="38" y1="136" x2="26" y2="152" stroke="#0f172a" stroke-width="9" stroke-linecap="round"/>
+          <line x1="122" y1="136" x2="134" y2="152" stroke="#0f172a" stroke-width="9" stroke-linecap="round"/>
+          <circle cx="80" cy="86" r="62" fill="#e11d48" stroke="#0f172a" stroke-width="7"/>
+          <circle id="q5-dial" cx="80" cy="86" r="49" fill="#fde047" stroke="#0f172a" stroke-width="5"/>
+          <circle id="q5-ring" cx="80" cy="86" r="54" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"
+            stroke-dasharray="339.29" stroke-dashoffset="0" transform="rotate(-90 80 86)"/>
+        </svg>
+        <span class="alarm-num" id="q5-num">5</span>
+      </div>
     </div>
+
     <div class="dots"><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot active"></span><span class="dot "></span></div>
-    <div class="q-box" id="q5-qbox">Qual país possui a maior extensão de costa marítima do mundo?</div>
+
+    <div class="q-box" id="q5-qbox">
+      <div class="q-text">Qual país possui a maior extensão de costa marítima do mundo?</div>
+    </div>
+
     <div class="timer-track"><div class="timer-fill" id="q5-bar"></div></div>
+
     <div class="opts">
       <div class="opt" id="q5-opt-0">
+        <div class="opt-ico" id="q5-ico-0"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#ddd6fe" stroke="#0f172a" stroke-width="3.5"/><circle cx="32" cy="32" r="15" fill="#38bdf8" stroke="#0f172a" stroke-width="3"/><path d="M22 28Q30 22 36 28T44 34" fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round"/></svg></div>
         <span class="opt-let">A</span>
         <span class="opt-txt">Rússia</span>
         <span class="opt-check" id="q5-chk-0">✓</span>
       </div>
       <div class="opt" id="q5-opt-1">
+        <div class="opt-ico" id="q5-ico-1"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#fde68a" stroke="#0f172a" stroke-width="3.5"/><polygon points="32,13 37,25 50,26 40,35 43,48 32,41 21,48 24,35 14,26 27,25" fill="#f59e0b" stroke="#0f172a" stroke-width="3" stroke-linejoin="round"/></svg></div>
         <span class="opt-let">B</span>
         <span class="opt-txt">Austrália</span>
         <span class="opt-check" id="q5-chk-1">✓</span>
       </div>
       <div class="opt" id="q5-opt-2">
+        <div class="opt-ico" id="q5-ico-2"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#fecdd3" stroke="#0f172a" stroke-width="3.5"/><polygon points="34,12 18,35 30,35 28,52 46,28 34,28" fill="#fb7185" stroke="#0f172a" stroke-width="3" stroke-linejoin="round"/></svg></div>
         <span class="opt-let">C</span>
         <span class="opt-txt">Canadá</span>
         <span class="opt-check" id="q5-chk-2">✓</span>
       </div></div>
+
     <div class="footer">@CREATORSTUDIO</div>
   </div>
 
-  <div id="q6" class="scene clip" style="background:#fb923c" data-start="83.23" data-duration="17.58">
+  <div id="q6" class="scene clip" style="background:#fb923c" data-start="78.599" data-duration="15.93">
+    <div class="wp-wrap" data-layout-allow-overflow>
+      <div class="wp-grid" id="q6-wp"><div class="wp-tile" id="q6-wpt-0-0" style="top:-120px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q6-wpt-0-1" style="top:-10px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q6-wpt-0-2" style="top:-120px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q6-wpt-0-3" style="top:-10px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q6-wpt-0-4" style="top:-120px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q6-wpt-1-0" style="top:190px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q6-wpt-1-1" style="top:300px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q6-wpt-1-2" style="top:190px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q6-wpt-1-3" style="top:300px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q6-wpt-1-4" style="top:190px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q6-wpt-2-0" style="top:500px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q6-wpt-2-1" style="top:610px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q6-wpt-2-2" style="top:500px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q6-wpt-2-3" style="top:610px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q6-wpt-2-4" style="top:500px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q6-wpt-3-0" style="top:810px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q6-wpt-3-1" style="top:920px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q6-wpt-3-2" style="top:810px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q6-wpt-3-3" style="top:920px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q6-wpt-3-4" style="top:810px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q6-wpt-4-0" style="top:1120px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q6-wpt-4-1" style="top:1230px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q6-wpt-4-2" style="top:1120px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q6-wpt-4-3" style="top:1230px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q6-wpt-4-4" style="top:1120px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q6-wpt-5-0" style="top:1430px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q6-wpt-5-1" style="top:1540px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q6-wpt-5-2" style="top:1430px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q6-wpt-5-3" style="top:1540px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q6-wpt-5-4" style="top:1430px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q6-wpt-6-0" style="top:1740px;left:-80px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div><div class="wp-tile" id="q6-wpt-6-1" style="top:1850px;left:180px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="8,48 26,20 38,38 46,26 56,48"/></svg></div><div class="wp-tile" id="q6-wpt-6-2" style="top:1740px;left:440px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div><div class="wp-tile" id="q6-wpt-6-3" style="top:1850px;left:700px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><polygon points="26,38 30,26 42,22 36,34"/></svg></div><div class="wp-tile" id="q6-wpt-6-4" style="top:1740px;left:960px"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M32 12C23 12 16 19 16 28C16 40 32 52 32 52C32 52 48 40 48 28C48 19 41 12 32 12Z"/><circle cx="32" cy="28" r="6"/></svg></div></div>
+    </div>
+
     <div class="wave-header">
       <div class="h-left">
-        <span class="h-badge">🎓</span>
+        <div class="h-mascot"><svg viewBox="0 0 64 64" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="20"/><ellipse cx="32" cy="32" rx="9" ry="20"/><line x1="12" y1="32" x2="52" y2="32"/></svg></div>
         <div class="h-titles">
-          <span class="h-cat">GEOGRAFIA</span>
-          <span class="h-round">RODADA 6/6</span>
+          <span class="h-cat">CONHECIMENTOS GERAIS</span>
+          <span class="h-round">RODADA 6 DE 6</span>
         </div>
       </div>
-      <div class="clock" id="q6-clock"><span id="q6-num">5</span></div>
+
+      <div class="alarm-clock" id="q6-clock">
+        <svg viewBox="0 0 160 160" width="168" height="168">
+          <g id="q6-bells">
+            <path d="M22 38 C12 22, 30 6, 48 18 Z" fill="#facc15" stroke="#0f172a" stroke-width="6" stroke-linejoin="round"/>
+            <path d="M138 38 C148 22, 130 6, 112 18 Z" fill="#facc15" stroke="#0f172a" stroke-width="6" stroke-linejoin="round"/>
+            <rect x="74" y="8" width="12" height="18" rx="4" fill="#facc15" stroke="#0f172a" stroke-width="5"/>
+          </g>
+          <line x1="38" y1="136" x2="26" y2="152" stroke="#0f172a" stroke-width="9" stroke-linecap="round"/>
+          <line x1="122" y1="136" x2="134" y2="152" stroke="#0f172a" stroke-width="9" stroke-linecap="round"/>
+          <circle cx="80" cy="86" r="62" fill="#e11d48" stroke="#0f172a" stroke-width="7"/>
+          <circle id="q6-dial" cx="80" cy="86" r="49" fill="#fde047" stroke="#0f172a" stroke-width="5"/>
+          <circle id="q6-ring" cx="80" cy="86" r="54" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"
+            stroke-dasharray="339.29" stroke-dashoffset="0" transform="rotate(-90 80 86)"/>
+        </svg>
+        <span class="alarm-num" id="q6-num">5</span>
+      </div>
     </div>
+
     <div class="dots"><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot active"></span></div>
-    <div class="q-box" id="q6-qbox">Qual é o menor país do mundo em território?</div>
+
+    <div class="q-box" id="q6-qbox">
+      <div class="q-text">Qual é o menor país do mundo em território?</div>
+    </div>
+
     <div class="timer-track"><div class="timer-fill" id="q6-bar"></div></div>
+
     <div class="opts">
       <div class="opt" id="q6-opt-0">
+        <div class="opt-ico" id="q6-ico-0"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#ddd6fe" stroke="#0f172a" stroke-width="3.5"/><circle cx="32" cy="32" r="15" fill="#38bdf8" stroke="#0f172a" stroke-width="3"/><path d="M22 28Q30 22 36 28T44 34" fill="none" stroke="#22c55e" stroke-width="4" stroke-linecap="round"/></svg></div>
         <span class="opt-let">A</span>
         <span class="opt-txt">Mônaco</span>
         <span class="opt-check" id="q6-chk-0">✓</span>
       </div>
       <div class="opt" id="q6-opt-1">
+        <div class="opt-ico" id="q6-ico-1"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#fde68a" stroke="#0f172a" stroke-width="3.5"/><polygon points="32,13 37,25 50,26 40,35 43,48 32,41 21,48 24,35 14,26 27,25" fill="#f59e0b" stroke="#0f172a" stroke-width="3" stroke-linejoin="round"/></svg></div>
         <span class="opt-let">B</span>
         <span class="opt-txt">Vaticano</span>
         <span class="opt-check" id="q6-chk-1">✓</span>
       </div>
       <div class="opt" id="q6-opt-2">
+        <div class="opt-ico" id="q6-ico-2"><svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="28" fill="#bae6fd" stroke="#0f172a" stroke-width="3.5"/><path d="M14 36C14 24 26 20 38 22C46 23 50 20 52 16C52 24 48 30 46 34C48 38 52 40 52 40C44 44 26 44 14 36Z" fill="#0284c7" stroke="#0f172a" stroke-width="3"/><circle cx="24" cy="30" r="2.5" fill="#0f172a"/></svg></div>
         <span class="opt-let">C</span>
         <span class="opt-txt">San Marino</span>
         <span class="opt-check" id="q6-chk-2">✓</span>
       </div></div>
+
     <div class="footer">@CREATORSTUDIO</div>
   </div>
 
-  <div id="outro" class="scene outro clip" data-start="100.81" data-duration="7.96">
-    <img class="outro-logo" src="assets/quiz_logo.png" alt="Quiz Mobile" />
-    <div class="outro-title">QUAL FOI SEU PLACAR?</div>
-    <div class="outro-sub">Comente quantas você acertou!</div>
-    <div class="outro-cta" id="outro-cta">Siga para mais desafios!</div>
+  <div id="outro" class="scene outro clip" style="background:#31105f" data-start="94.527" data-duration="5.74">
+    <img class="outro-logo" src="assets/sfx/quiz_logo.png" alt="Quiz Mobile" />
+    <div class="outro-title">DESAFIO CONCLUÍDO!</div>
+    <div class="outro-sub">QUANTAS VOCÊ ACERTOU?</div>
+    <div class="outro-cta" id="outro-cta">COMENTE SUA PONTUAÇÃO!</div>
   </div>
 </div>
 <script>
-gsap.set("#q1-qbox", { opacity: 0, scale: 0.94 });
-gsap.set("#q1-opt-0", { opacity: 0, y: 24 });
-gsap.set("#q1-chk-0", { opacity: 0, scale: 0.4 });
-gsap.set("#q1-opt-1", { opacity: 0, y: 24 });
-gsap.set("#q1-chk-1", { opacity: 0, scale: 0.4 });
-gsap.set("#q1-opt-2", { opacity: 0, y: 24 });
-gsap.set("#q1-chk-2", { opacity: 0, scale: 0.4 });
-gsap.set("#q1-bar", { scaleX: 0 });
-gsap.set("#q2", { opacity: 0, x: 60 });
-gsap.set("#q2-qbox", { opacity: 0, scale: 0.94 });
-gsap.set("#q2-opt-0", { opacity: 0, y: 24 });
-gsap.set("#q2-chk-0", { opacity: 0, scale: 0.4 });
-gsap.set("#q2-opt-1", { opacity: 0, y: 24 });
-gsap.set("#q2-chk-1", { opacity: 0, scale: 0.4 });
-gsap.set("#q2-opt-2", { opacity: 0, y: 24 });
-gsap.set("#q2-chk-2", { opacity: 0, scale: 0.4 });
-gsap.set("#q2-bar", { scaleX: 0 });
-gsap.set("#q3", { opacity: 0, x: 60 });
-gsap.set("#q3-qbox", { opacity: 0, scale: 0.94 });
-gsap.set("#q3-opt-0", { opacity: 0, y: 24 });
-gsap.set("#q3-chk-0", { opacity: 0, scale: 0.4 });
-gsap.set("#q3-opt-1", { opacity: 0, y: 24 });
-gsap.set("#q3-chk-1", { opacity: 0, scale: 0.4 });
-gsap.set("#q3-opt-2", { opacity: 0, y: 24 });
-gsap.set("#q3-chk-2", { opacity: 0, scale: 0.4 });
-gsap.set("#q3-bar", { scaleX: 0 });
-gsap.set("#q4", { opacity: 0, x: 60 });
-gsap.set("#q4-qbox", { opacity: 0, scale: 0.94 });
-gsap.set("#q4-opt-0", { opacity: 0, y: 24 });
-gsap.set("#q4-chk-0", { opacity: 0, scale: 0.4 });
-gsap.set("#q4-opt-1", { opacity: 0, y: 24 });
-gsap.set("#q4-chk-1", { opacity: 0, scale: 0.4 });
-gsap.set("#q4-opt-2", { opacity: 0, y: 24 });
-gsap.set("#q4-chk-2", { opacity: 0, scale: 0.4 });
-gsap.set("#q4-bar", { scaleX: 0 });
-gsap.set("#q5", { opacity: 0, x: 60 });
-gsap.set("#q5-qbox", { opacity: 0, scale: 0.94 });
-gsap.set("#q5-opt-0", { opacity: 0, y: 24 });
-gsap.set("#q5-chk-0", { opacity: 0, scale: 0.4 });
-gsap.set("#q5-opt-1", { opacity: 0, y: 24 });
-gsap.set("#q5-chk-1", { opacity: 0, scale: 0.4 });
-gsap.set("#q5-opt-2", { opacity: 0, y: 24 });
-gsap.set("#q5-chk-2", { opacity: 0, scale: 0.4 });
-gsap.set("#q5-bar", { scaleX: 0 });
-gsap.set("#q6", { opacity: 0, x: 60 });
-gsap.set("#q6-qbox", { opacity: 0, scale: 0.94 });
-gsap.set("#q6-opt-0", { opacity: 0, y: 24 });
-gsap.set("#q6-chk-0", { opacity: 0, scale: 0.4 });
-gsap.set("#q6-opt-1", { opacity: 0, y: 24 });
-gsap.set("#q6-chk-1", { opacity: 0, scale: 0.4 });
-gsap.set("#q6-opt-2", { opacity: 0, y: 24 });
-gsap.set("#q6-chk-2", { opacity: 0, scale: 0.4 });
-gsap.set("#q6-bar", { scaleX: 0 });
+gsap.set("#q1-qbox", { opacity: 0, y: 30, scale: 0.92 });
+gsap.set("#q1-opt-0", { opacity: 0, x: -70, scale: 0.9 });
+gsap.set("#q1-ico-0", { scale: 0, rotation: -25 });
+gsap.set("#q1-chk-0", { opacity: 0, scale: 0.3 });
+gsap.set("#q1-opt-1", { opacity: 0, x: -70, scale: 0.9 });
+gsap.set("#q1-ico-1", { scale: 0, rotation: -25 });
+gsap.set("#q1-chk-1", { opacity: 0, scale: 0.3 });
+gsap.set("#q1-opt-2", { opacity: 0, x: -70, scale: 0.9 });
+gsap.set("#q1-ico-2", { scale: 0, rotation: -25 });
+gsap.set("#q1-chk-2", { opacity: 0, scale: 0.3 });
+gsap.set("#q1-bar", { scaleX: 1 });
+gsap.set("#q1-ring", { strokeDashoffset: 0 });
+gsap.set("#q2", { opacity: 0, x: 980, rotation: 4, scale: 0.94 });
+gsap.set("#q2-qbox", { opacity: 0, y: 30, scale: 0.92 });
+gsap.set("#q2-opt-0", { opacity: 0, x: -70, scale: 0.9 });
+gsap.set("#q2-ico-0", { scale: 0, rotation: -25 });
+gsap.set("#q2-chk-0", { opacity: 0, scale: 0.3 });
+gsap.set("#q2-opt-1", { opacity: 0, x: -70, scale: 0.9 });
+gsap.set("#q2-ico-1", { scale: 0, rotation: -25 });
+gsap.set("#q2-chk-1", { opacity: 0, scale: 0.3 });
+gsap.set("#q2-opt-2", { opacity: 0, x: -70, scale: 0.9 });
+gsap.set("#q2-ico-2", { scale: 0, rotation: -25 });
+gsap.set("#q2-chk-2", { opacity: 0, scale: 0.3 });
+gsap.set("#q2-bar", { scaleX: 1 });
+gsap.set("#q2-ring", { strokeDashoffset: 0 });
+gsap.set("#q3", { opacity: 0, x: 980, rotation: 4, scale: 0.94 });
+gsap.set("#q3-qbox", { opacity: 0, y: 30, scale: 0.92 });
+gsap.set("#q3-opt-0", { opacity: 0, x: -70, scale: 0.9 });
+gsap.set("#q3-ico-0", { scale: 0, rotation: -25 });
+gsap.set("#q3-chk-0", { opacity: 0, scale: 0.3 });
+gsap.set("#q3-opt-1", { opacity: 0, x: -70, scale: 0.9 });
+gsap.set("#q3-ico-1", { scale: 0, rotation: -25 });
+gsap.set("#q3-chk-1", { opacity: 0, scale: 0.3 });
+gsap.set("#q3-opt-2", { opacity: 0, x: -70, scale: 0.9 });
+gsap.set("#q3-ico-2", { scale: 0, rotation: -25 });
+gsap.set("#q3-chk-2", { opacity: 0, scale: 0.3 });
+gsap.set("#q3-bar", { scaleX: 1 });
+gsap.set("#q3-ring", { strokeDashoffset: 0 });
+gsap.set("#q4", { opacity: 0, x: 980, rotation: 4, scale: 0.94 });
+gsap.set("#q4-qbox", { opacity: 0, y: 30, scale: 0.92 });
+gsap.set("#q4-opt-0", { opacity: 0, x: -70, scale: 0.9 });
+gsap.set("#q4-ico-0", { scale: 0, rotation: -25 });
+gsap.set("#q4-chk-0", { opacity: 0, scale: 0.3 });
+gsap.set("#q4-opt-1", { opacity: 0, x: -70, scale: 0.9 });
+gsap.set("#q4-ico-1", { scale: 0, rotation: -25 });
+gsap.set("#q4-chk-1", { opacity: 0, scale: 0.3 });
+gsap.set("#q4-opt-2", { opacity: 0, x: -70, scale: 0.9 });
+gsap.set("#q4-ico-2", { scale: 0, rotation: -25 });
+gsap.set("#q4-chk-2", { opacity: 0, scale: 0.3 });
+gsap.set("#q4-bar", { scaleX: 1 });
+gsap.set("#q4-ring", { strokeDashoffset: 0 });
+gsap.set("#q5", { opacity: 0, x: 980, rotation: 4, scale: 0.94 });
+gsap.set("#q5-qbox", { opacity: 0, y: 30, scale: 0.92 });
+gsap.set("#q5-opt-0", { opacity: 0, x: -70, scale: 0.9 });
+gsap.set("#q5-ico-0", { scale: 0, rotation: -25 });
+gsap.set("#q5-chk-0", { opacity: 0, scale: 0.3 });
+gsap.set("#q5-opt-1", { opacity: 0, x: -70, scale: 0.9 });
+gsap.set("#q5-ico-1", { scale: 0, rotation: -25 });
+gsap.set("#q5-chk-1", { opacity: 0, scale: 0.3 });
+gsap.set("#q5-opt-2", { opacity: 0, x: -70, scale: 0.9 });
+gsap.set("#q5-ico-2", { scale: 0, rotation: -25 });
+gsap.set("#q5-chk-2", { opacity: 0, scale: 0.3 });
+gsap.set("#q5-bar", { scaleX: 1 });
+gsap.set("#q5-ring", { strokeDashoffset: 0 });
+gsap.set("#q6", { opacity: 0, x: 980, rotation: 4, scale: 0.94 });
+gsap.set("#q6-qbox", { opacity: 0, y: 30, scale: 0.92 });
+gsap.set("#q6-opt-0", { opacity: 0, x: -70, scale: 0.9 });
+gsap.set("#q6-ico-0", { scale: 0, rotation: -25 });
+gsap.set("#q6-chk-0", { opacity: 0, scale: 0.3 });
+gsap.set("#q6-opt-1", { opacity: 0, x: -70, scale: 0.9 });
+gsap.set("#q6-ico-1", { scale: 0, rotation: -25 });
+gsap.set("#q6-chk-1", { opacity: 0, scale: 0.3 });
+gsap.set("#q6-opt-2", { opacity: 0, x: -70, scale: 0.9 });
+gsap.set("#q6-ico-2", { scale: 0, rotation: -25 });
+gsap.set("#q6-chk-2", { opacity: 0, scale: 0.3 });
+gsap.set("#q6-bar", { scaleX: 1 });
+gsap.set("#q6-ring", { strokeDashoffset: 0 });
 gsap.set("#outro", { opacity: 0, scale: 0.94 });
 const tl = gsap.timeline({ paused: true });
-tl.to("#q1-qbox", { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)" }, 0.1);
-tl.to("#q1-opt-0", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 1.2);
-tl.to("#q1-opt-1", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 1.55);
-tl.to("#q1-opt-2", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 1.9);
-tl.to("#q1-bar", { scaleX: 1, duration: 6.05, ease: "none" }, 7.583);
-tl.set("#q1-num", { textContent: "5" }, 7.583);
-tl.fromTo("#q1-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 7.583);
-tl.set("#q1-num", { textContent: "4" }, 8.911);
-tl.fromTo("#q1-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 8.911);
-tl.set("#q1-num", { textContent: "3" }, 10.089);
-tl.fromTo("#q1-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 10.089);
-tl.set("#q1-num", { textContent: "2" }, 11.26);
-tl.fromTo("#q1-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 11.26);
-tl.set("#q1-num", { textContent: "1" }, 12.53);
-tl.fromTo("#q1-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 12.53);
-tl.set("#q1-num", { textContent: "0" }, 13.63);
-tl.to("#q1-clock", { backgroundColor: "#4ade80", scale: 1.12, duration: 0.2, yoyo: true, repeat: 1 }, 13.63);
-tl.to("#q1-opt-0", { opacity: 0.48, duration: 0.25 }, 13.63);
-tl.to("#q1-opt-1", { opacity: 0.48, duration: 0.25 }, 13.63);
-tl.to("#q1-opt-2", { backgroundColor: "#4ade80", borderColor: "#ffffff", boxShadow: "0 0 36px rgba(74,222,128,.75)", scale: 1.03, duration: 0.28, ease: "back.out(2)" }, 13.63);
-tl.to("#q1-chk-2", { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2.5)" }, 13.680000000000001);
-tl.to("#q1", { opacity: 0, x: -60, duration: 0.25, ease: "power2.in" }, 15.48);
-tl.to("#q2", { opacity: 1, x: 0, duration: 0.28, ease: "power3.out" }, 15.73);
-tl.to("#q2-qbox", { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)" }, 15.83);
-tl.to("#q2-opt-0", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 16.93);
-tl.to("#q2-opt-1", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 17.28);
-tl.to("#q2-opt-2", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 17.63);
-tl.to("#q2-bar", { scaleX: 1, duration: 6.05, ease: "none" }, 23.623);
-tl.set("#q2-num", { textContent: "5" }, 23.623);
-tl.fromTo("#q2-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 23.623);
-tl.set("#q2-num", { textContent: "4" }, 24.95);
-tl.fromTo("#q2-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 24.95);
-tl.set("#q2-num", { textContent: "3" }, 26.128);
-tl.fromTo("#q2-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 26.128);
-tl.set("#q2-num", { textContent: "2" }, 27.299);
-tl.fromTo("#q2-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 27.299);
-tl.set("#q2-num", { textContent: "1" }, 28.569);
-tl.fromTo("#q2-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 28.569);
-tl.set("#q2-num", { textContent: "0" }, 29.669);
-tl.to("#q2-clock", { backgroundColor: "#4ade80", scale: 1.12, duration: 0.2, yoyo: true, repeat: 1 }, 29.669);
-tl.to("#q2-opt-0", { opacity: 0.48, duration: 0.25 }, 29.669);
-tl.to("#q2-opt-1", { opacity: 0.48, duration: 0.25 }, 29.669);
-tl.to("#q2-opt-2", { backgroundColor: "#4ade80", borderColor: "#ffffff", boxShadow: "0 0 36px rgba(74,222,128,.75)", scale: 1.03, duration: 0.28, ease: "back.out(2)" }, 29.669);
-tl.to("#q2-chk-2", { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2.5)" }, 29.719);
-tl.to("#q2", { opacity: 0, x: -60, duration: 0.25, ease: "power2.in" }, 31.52);
-tl.to("#q3", { opacity: 1, x: 0, duration: 0.28, ease: "power3.out" }, 31.77);
-tl.to("#q3-qbox", { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)" }, 31.87);
-tl.to("#q3-opt-0", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 32.97);
-tl.to("#q3-opt-1", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 33.32);
-tl.to("#q3-opt-2", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 33.67);
-tl.to("#q3-bar", { scaleX: 1, duration: 6.05, ease: "none" }, 40.79);
-tl.set("#q3-num", { textContent: "5" }, 40.79);
-tl.fromTo("#q3-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 40.79);
-tl.set("#q3-num", { textContent: "4" }, 42.118);
-tl.fromTo("#q3-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 42.118);
-tl.set("#q3-num", { textContent: "3" }, 43.295);
-tl.fromTo("#q3-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 43.295);
-tl.set("#q3-num", { textContent: "2" }, 44.466);
-tl.fromTo("#q3-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 44.466);
-tl.set("#q3-num", { textContent: "1" }, 45.737);
-tl.fromTo("#q3-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 45.737);
-tl.set("#q3-num", { textContent: "0" }, 46.836);
-tl.to("#q3-clock", { backgroundColor: "#4ade80", scale: 1.12, duration: 0.2, yoyo: true, repeat: 1 }, 46.836);
-tl.to("#q3-opt-0", { opacity: 0.48, duration: 0.25 }, 46.836);
-tl.to("#q3-opt-1", { backgroundColor: "#4ade80", borderColor: "#ffffff", boxShadow: "0 0 36px rgba(74,222,128,.75)", scale: 1.03, duration: 0.28, ease: "back.out(2)" }, 46.836);
-tl.to("#q3-chk-1", { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2.5)" }, 46.885999999999996);
-tl.to("#q3-opt-2", { opacity: 0.48, duration: 0.25 }, 46.836);
-tl.to("#q3", { opacity: 0, x: -60, duration: 0.25, ease: "power2.in" }, 48.69);
-tl.to("#q4", { opacity: 1, x: 0, duration: 0.28, ease: "power3.out" }, 48.94);
-tl.to("#q4-qbox", { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)" }, 49.04);
-tl.to("#q4-opt-0", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 50.14);
-tl.to("#q4-opt-1", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 50.49);
-tl.to("#q4-opt-2", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 50.84);
-tl.to("#q4-bar", { scaleX: 1, duration: 6.05, ease: "none" }, 57.232);
-tl.set("#q4-num", { textContent: "5" }, 57.232);
-tl.fromTo("#q4-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 57.232);
-tl.set("#q4-num", { textContent: "4" }, 58.559);
-tl.fromTo("#q4-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 58.559);
-tl.set("#q4-num", { textContent: "3" }, 59.737);
-tl.fromTo("#q4-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 59.737);
-tl.set("#q4-num", { textContent: "2" }, 60.908);
-tl.fromTo("#q4-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 60.908);
-tl.set("#q4-num", { textContent: "1" }, 62.179);
-tl.fromTo("#q4-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 62.179);
-tl.set("#q4-num", { textContent: "0" }, 63.278);
-tl.to("#q4-clock", { backgroundColor: "#4ade80", scale: 1.12, duration: 0.2, yoyo: true, repeat: 1 }, 63.278);
-tl.to("#q4-opt-0", { opacity: 0.48, duration: 0.25 }, 63.278);
-tl.to("#q4-opt-1", { backgroundColor: "#4ade80", borderColor: "#ffffff", boxShadow: "0 0 36px rgba(74,222,128,.75)", scale: 1.03, duration: 0.28, ease: "back.out(2)" }, 63.278);
-tl.to("#q4-chk-1", { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2.5)" }, 63.327999999999996);
-tl.to("#q4-opt-2", { opacity: 0.48, duration: 0.25 }, 63.278);
-tl.to("#q4", { opacity: 0, x: -60, duration: 0.25, ease: "power2.in" }, 65.13);
-tl.to("#q5", { opacity: 1, x: 0, duration: 0.28, ease: "power3.out" }, 65.38);
-tl.to("#q5-qbox", { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)" }, 65.47999999999999);
-tl.to("#q5-opt-0", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 66.58);
-tl.to("#q5-opt-1", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 66.93);
-tl.to("#q5-opt-2", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 67.28);
-tl.to("#q5-bar", { scaleX: 1, duration: 6.05, ease: "none" }, 75.08);
-tl.set("#q5-num", { textContent: "5" }, 75.08);
-tl.fromTo("#q5-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 75.08);
-tl.set("#q5-num", { textContent: "4" }, 76.407);
-tl.fromTo("#q5-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 76.407);
-tl.set("#q5-num", { textContent: "3" }, 77.585);
-tl.fromTo("#q5-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 77.585);
-tl.set("#q5-num", { textContent: "2" }, 78.756);
-tl.fromTo("#q5-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 78.756);
-tl.set("#q5-num", { textContent: "1" }, 80.027);
-tl.fromTo("#q5-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 80.027);
-tl.set("#q5-num", { textContent: "0" }, 81.126);
-tl.to("#q5-clock", { backgroundColor: "#4ade80", scale: 1.12, duration: 0.2, yoyo: true, repeat: 1 }, 81.126);
-tl.to("#q5-opt-0", { opacity: 0.48, duration: 0.25 }, 81.126);
-tl.to("#q5-opt-1", { opacity: 0.48, duration: 0.25 }, 81.126);
-tl.to("#q5-opt-2", { backgroundColor: "#4ade80", borderColor: "#ffffff", boxShadow: "0 0 36px rgba(74,222,128,.75)", scale: 1.03, duration: 0.28, ease: "back.out(2)" }, 81.126);
-tl.to("#q5-chk-2", { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2.5)" }, 81.176);
-tl.to("#q5", { opacity: 0, x: -60, duration: 0.25, ease: "power2.in" }, 82.98);
-tl.to("#q6", { opacity: 1, x: 0, duration: 0.28, ease: "power3.out" }, 83.23);
-tl.to("#q6-qbox", { opacity: 1, scale: 1, duration: 0.35, ease: "back.out(1.6)" }, 83.33);
-tl.to("#q6-opt-0", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 84.43);
-tl.to("#q6-opt-1", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 84.78);
-tl.to("#q6-opt-2", { opacity: 1, y: 0, duration: 0.28, ease: "back.out(1.8)" }, 85.13);
-tl.to("#q6-bar", { scaleX: 1, duration: 6.05, ease: "none" }, 91.872);
-tl.set("#q6-num", { textContent: "5" }, 91.872);
-tl.fromTo("#q6-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 91.872);
-tl.set("#q6-num", { textContent: "4" }, 93.2);
-tl.fromTo("#q6-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 93.2);
-tl.set("#q6-num", { textContent: "3" }, 94.377);
-tl.fromTo("#q6-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 94.377);
-tl.set("#q6-num", { textContent: "2" }, 95.548);
-tl.fromTo("#q6-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 95.548);
-tl.set("#q6-num", { textContent: "1" }, 96.819);
-tl.fromTo("#q6-clock", { scale: 1.15 }, { scale: 1, duration: 0.25, ease: "back.out(2)", immediateRender: false }, 96.819);
-tl.set("#q6-num", { textContent: "0" }, 97.918);
-tl.to("#q6-clock", { backgroundColor: "#4ade80", scale: 1.12, duration: 0.2, yoyo: true, repeat: 1 }, 97.918);
-tl.to("#q6-opt-0", { opacity: 0.48, duration: 0.25 }, 97.918);
-tl.to("#q6-opt-1", { backgroundColor: "#4ade80", borderColor: "#ffffff", boxShadow: "0 0 36px rgba(74,222,128,.75)", scale: 1.03, duration: 0.28, ease: "back.out(2)" }, 97.918);
-tl.to("#q6-chk-1", { opacity: 1, scale: 1, duration: 0.25, ease: "back.out(2.5)" }, 97.968);
-tl.to("#q6-opt-2", { opacity: 0.48, duration: 0.25 }, 97.918);
-tl.to("#q6", { opacity: 0, x: -60, duration: 0.25, ease: "power2.in" }, 100.56);
-tl.to("#outro", { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.6)" }, 100.81);
-tl.to("#outro-cta", { scale: 1.07, duration: 0.4, yoyo: true, repeat: 6, ease: "sine.inOut" }, 101.31);
-tl.set({}, {}, 108.77);
+tl.fromTo("#q1-wpt-0-0", { rotation: -18 }, { rotation: 28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-0-1", { rotation: 18 }, { rotation: -28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-0-2", { rotation: -18 }, { rotation: 28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-0-3", { rotation: 18 }, { rotation: -28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-0-4", { rotation: -18 }, { rotation: 28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-1-0", { rotation: 18 }, { rotation: -28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-1-1", { rotation: -18 }, { rotation: 28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-1-2", { rotation: 18 }, { rotation: -28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-1-3", { rotation: -18 }, { rotation: 28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-1-4", { rotation: 18 }, { rotation: -28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-2-0", { rotation: -18 }, { rotation: 28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-2-1", { rotation: 18 }, { rotation: -28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-2-2", { rotation: -18 }, { rotation: 28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-2-3", { rotation: 18 }, { rotation: -28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-2-4", { rotation: -18 }, { rotation: 28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-3-0", { rotation: 18 }, { rotation: -28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-3-1", { rotation: -18 }, { rotation: 28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-3-2", { rotation: 18 }, { rotation: -28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-3-3", { rotation: -18 }, { rotation: 28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-3-4", { rotation: 18 }, { rotation: -28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-4-0", { rotation: -18 }, { rotation: 28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-4-1", { rotation: 18 }, { rotation: -28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-4-2", { rotation: -18 }, { rotation: 28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-4-3", { rotation: 18 }, { rotation: -28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-4-4", { rotation: -18 }, { rotation: 28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-5-0", { rotation: 18 }, { rotation: -28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-5-1", { rotation: -18 }, { rotation: 28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-5-2", { rotation: 18 }, { rotation: -28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-5-3", { rotation: -18 }, { rotation: 28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-5-4", { rotation: 18 }, { rotation: -28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-6-0", { rotation: -18 }, { rotation: 28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-6-1", { rotation: 18 }, { rotation: -28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-6-2", { rotation: -18 }, { rotation: 28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-6-3", { rotation: 18 }, { rotation: -28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wpt-6-4", { rotation: -18 }, { rotation: 28, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.fromTo("#q1-wp", { x: 0, y: 0 }, { x: -160, y: -220, duration: 15.38, ease: "none", immediateRender: false }, 0);
+tl.to("#q1-qbox", { opacity: 1, y: 0, scale: 1, duration: 0.38, ease: "back.out(1.7)" }, 0.08);
+tl.to("#q1-opt-0", { opacity: 1, x: 0, scale: 1, duration: 0.32, ease: "back.out(1.8)" }, 1.15);
+tl.to("#q1-ico-0", { scale: 1, rotation: 0, duration: 0.36, ease: "back.out(2.4)" }, 1.21);
+tl.to("#q1-opt-1", { opacity: 1, x: 0, scale: 1, duration: 0.32, ease: "back.out(1.8)" }, 1.51);
+tl.to("#q1-ico-1", { scale: 1, rotation: 0, duration: 0.36, ease: "back.out(2.4)" }, 1.57);
+tl.to("#q1-opt-2", { opacity: 1, x: 0, scale: 1, duration: 0.32, ease: "back.out(1.8)" }, 1.87);
+tl.to("#q1-ico-2", { scale: 1, rotation: 0, duration: 0.36, ease: "back.out(2.4)" }, 1.93);
+tl.to("#q1-bar", { scaleX: 0, duration: 5, ease: "none" }, 7.477);
+tl.to("#q1-ring", { strokeDashoffset: 339.29, duration: 5, ease: "none" }, 7.477);
+tl.set("#q1-num", { textContent: "5" }, 7.477);
+tl.fromTo("#q1-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 7.477);
+tl.fromTo("#q1-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 7.477);
+tl.set("#q1-num", { textContent: "4" }, 8.477);
+tl.fromTo("#q1-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 8.477);
+tl.fromTo("#q1-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 8.477);
+tl.set("#q1-num", { textContent: "3" }, 9.477);
+tl.fromTo("#q1-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 9.477);
+tl.fromTo("#q1-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 9.477);
+tl.set("#q1-num", { textContent: "2" }, 10.477);
+tl.fromTo("#q1-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 10.477);
+tl.fromTo("#q1-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 10.477);
+tl.set("#q1-num", { textContent: "1" }, 11.477);
+tl.fromTo("#q1-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 11.477);
+tl.fromTo("#q1-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 11.477);
+tl.set("#q1-num", { textContent: "0" }, 12.477);
+tl.to("#q1-dial", { attr: { fill: "#4ade80" }, duration: 0.2 }, 12.477);
+tl.fromTo("#q1-clock", { scale: 1.28, rotation: -10 }, { scale: 1.05, rotation: 0, duration: 0.45, ease: "elastic.out(1.4, 0.3)", immediateRender: false }, 12.477);
+tl.fromTo("#q1-bells", { rotation: -22, transformOrigin: "50% 80%" }, { rotation: 22, duration: 0.07, yoyo: true, repeat: 7, ease: "sine.inOut", immediateRender: false }, 12.477);
+tl.to("#q1-opt-0", { opacity: 0.45, scale: 0.97, duration: 0.25 }, 12.477);
+tl.to("#q1-opt-1", { opacity: 0.45, scale: 0.97, duration: 0.25 }, 12.477);
+tl.to("#q1-opt-2", { backgroundColor: "#4ade80", scale: 1.04, boxShadow: "0 14px 0 #0f172a, 0 0 40px rgba(74,222,128,0.85)", duration: 0.3, ease: "back.out(2)" }, 12.477);
+tl.to("#q1-ico-2", { scale: 1.18, rotation: 8, duration: 0.25, yoyo: true, repeat: 1 }, 12.477);
+tl.to("#q1-chk-2", { opacity: 1, scale: 1, duration: 0.28, ease: "back.out(2.5)" }, 12.53);
+tl.to("#q1", { opacity: 0, x: -920, rotation: -4, duration: 0.28, ease: "power2.in" }, 15.1);
+tl.fromTo("#q2-wpt-0-0", { rotation: -18 }, { rotation: 28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-0-1", { rotation: 18 }, { rotation: -28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-0-2", { rotation: -18 }, { rotation: 28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-0-3", { rotation: 18 }, { rotation: -28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-0-4", { rotation: -18 }, { rotation: 28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-1-0", { rotation: 18 }, { rotation: -28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-1-1", { rotation: -18 }, { rotation: 28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-1-2", { rotation: 18 }, { rotation: -28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-1-3", { rotation: -18 }, { rotation: 28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-1-4", { rotation: 18 }, { rotation: -28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-2-0", { rotation: -18 }, { rotation: 28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-2-1", { rotation: 18 }, { rotation: -28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-2-2", { rotation: -18 }, { rotation: 28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-2-3", { rotation: 18 }, { rotation: -28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-2-4", { rotation: -18 }, { rotation: 28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-3-0", { rotation: 18 }, { rotation: -28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-3-1", { rotation: -18 }, { rotation: 28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-3-2", { rotation: 18 }, { rotation: -28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-3-3", { rotation: -18 }, { rotation: 28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-3-4", { rotation: 18 }, { rotation: -28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-4-0", { rotation: -18 }, { rotation: 28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-4-1", { rotation: 18 }, { rotation: -28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-4-2", { rotation: -18 }, { rotation: 28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-4-3", { rotation: 18 }, { rotation: -28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-4-4", { rotation: -18 }, { rotation: 28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-5-0", { rotation: 18 }, { rotation: -28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-5-1", { rotation: -18 }, { rotation: 28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-5-2", { rotation: 18 }, { rotation: -28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-5-3", { rotation: -18 }, { rotation: 28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-5-4", { rotation: 18 }, { rotation: -28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-6-0", { rotation: -18 }, { rotation: 28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-6-1", { rotation: 18 }, { rotation: -28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-6-2", { rotation: -18 }, { rotation: 28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-6-3", { rotation: 18 }, { rotation: -28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wpt-6-4", { rotation: -18 }, { rotation: 28, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.fromTo("#q2-wp", { x: 0, y: 0 }, { x: -160, y: -220, duration: 14.96, ease: "none", immediateRender: false }, 15.377);
+tl.to("#q2", { opacity: 1, x: 0, rotation: 0, scale: 1, duration: 0.34, ease: "back.out(1.2)" }, 15.377);
+tl.to("#q2-qbox", { opacity: 1, y: 0, scale: 1, duration: 0.38, ease: "back.out(1.7)" }, 15.46);
+tl.to("#q2-opt-0", { opacity: 1, x: 0, scale: 1, duration: 0.32, ease: "back.out(1.8)" }, 16.53);
+tl.to("#q2-ico-0", { scale: 1, rotation: 0, duration: 0.36, ease: "back.out(2.4)" }, 16.59);
+tl.to("#q2-opt-1", { opacity: 1, x: 0, scale: 1, duration: 0.32, ease: "back.out(1.8)" }, 16.89);
+tl.to("#q2-ico-1", { scale: 1, rotation: 0, duration: 0.36, ease: "back.out(2.4)" }, 16.95);
+tl.to("#q2-opt-2", { opacity: 1, x: 0, scale: 1, duration: 0.32, ease: "back.out(1.8)" }, 17.25);
+tl.to("#q2-ico-2", { scale: 1, rotation: 0, duration: 0.36, ease: "back.out(2.4)" }, 17.31);
+tl.to("#q2-bar", { scaleX: 0, duration: 5, ease: "none" }, 22.47);
+tl.to("#q2-ring", { strokeDashoffset: 339.29, duration: 5, ease: "none" }, 22.47);
+tl.set("#q2-num", { textContent: "5" }, 22.47);
+tl.fromTo("#q2-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 22.47);
+tl.fromTo("#q2-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 22.47);
+tl.set("#q2-num", { textContent: "4" }, 23.47);
+tl.fromTo("#q2-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 23.47);
+tl.fromTo("#q2-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 23.47);
+tl.set("#q2-num", { textContent: "3" }, 24.47);
+tl.fromTo("#q2-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 24.47);
+tl.fromTo("#q2-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 24.47);
+tl.set("#q2-num", { textContent: "2" }, 25.47);
+tl.fromTo("#q2-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 25.47);
+tl.fromTo("#q2-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 25.47);
+tl.set("#q2-num", { textContent: "1" }, 26.47);
+tl.fromTo("#q2-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 26.47);
+tl.fromTo("#q2-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 26.47);
+tl.set("#q2-num", { textContent: "0" }, 27.47);
+tl.to("#q2-dial", { attr: { fill: "#4ade80" }, duration: 0.2 }, 27.47);
+tl.fromTo("#q2-clock", { scale: 1.28, rotation: -10 }, { scale: 1.05, rotation: 0, duration: 0.45, ease: "elastic.out(1.4, 0.3)", immediateRender: false }, 27.47);
+tl.fromTo("#q2-bells", { rotation: -22, transformOrigin: "50% 80%" }, { rotation: 22, duration: 0.07, yoyo: true, repeat: 7, ease: "sine.inOut", immediateRender: false }, 27.47);
+tl.to("#q2-opt-0", { opacity: 0.45, scale: 0.97, duration: 0.25 }, 27.47);
+tl.to("#q2-opt-1", { opacity: 0.45, scale: 0.97, duration: 0.25 }, 27.47);
+tl.to("#q2-opt-2", { backgroundColor: "#4ade80", scale: 1.04, boxShadow: "0 14px 0 #0f172a, 0 0 40px rgba(74,222,128,0.85)", duration: 0.3, ease: "back.out(2)" }, 27.47);
+tl.to("#q2-ico-2", { scale: 1.18, rotation: 8, duration: 0.25, yoyo: true, repeat: 1 }, 27.47);
+tl.to("#q2-chk-2", { opacity: 1, scale: 1, duration: 0.28, ease: "back.out(2.5)" }, 27.52);
+tl.to("#q2", { opacity: 0, x: -920, rotation: -4, duration: 0.28, ease: "power2.in" }, 30.05);
+tl.fromTo("#q3-wpt-0-0", { rotation: -18 }, { rotation: 28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-0-1", { rotation: 18 }, { rotation: -28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-0-2", { rotation: -18 }, { rotation: 28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-0-3", { rotation: 18 }, { rotation: -28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-0-4", { rotation: -18 }, { rotation: 28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-1-0", { rotation: 18 }, { rotation: -28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-1-1", { rotation: -18 }, { rotation: 28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-1-2", { rotation: 18 }, { rotation: -28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-1-3", { rotation: -18 }, { rotation: 28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-1-4", { rotation: 18 }, { rotation: -28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-2-0", { rotation: -18 }, { rotation: 28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-2-1", { rotation: 18 }, { rotation: -28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-2-2", { rotation: -18 }, { rotation: 28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-2-3", { rotation: 18 }, { rotation: -28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-2-4", { rotation: -18 }, { rotation: 28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-3-0", { rotation: 18 }, { rotation: -28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-3-1", { rotation: -18 }, { rotation: 28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-3-2", { rotation: 18 }, { rotation: -28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-3-3", { rotation: -18 }, { rotation: 28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-3-4", { rotation: 18 }, { rotation: -28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-4-0", { rotation: -18 }, { rotation: 28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-4-1", { rotation: 18 }, { rotation: -28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-4-2", { rotation: -18 }, { rotation: 28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-4-3", { rotation: 18 }, { rotation: -28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-4-4", { rotation: -18 }, { rotation: 28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-5-0", { rotation: 18 }, { rotation: -28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-5-1", { rotation: -18 }, { rotation: 28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-5-2", { rotation: 18 }, { rotation: -28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-5-3", { rotation: -18 }, { rotation: 28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-5-4", { rotation: 18 }, { rotation: -28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-6-0", { rotation: -18 }, { rotation: 28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-6-1", { rotation: 18 }, { rotation: -28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-6-2", { rotation: -18 }, { rotation: 28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-6-3", { rotation: 18 }, { rotation: -28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wpt-6-4", { rotation: -18 }, { rotation: 28, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.fromTo("#q3-wp", { x: 0, y: 0 }, { x: -160, y: -220, duration: 16.04, ease: "none", immediateRender: false }, 30.334);
+tl.to("#q3", { opacity: 1, x: 0, rotation: 0, scale: 1, duration: 0.34, ease: "back.out(1.2)" }, 30.334);
+tl.to("#q3-qbox", { opacity: 1, y: 0, scale: 1, duration: 0.38, ease: "back.out(1.7)" }, 30.41);
+tl.to("#q3-opt-0", { opacity: 1, x: 0, scale: 1, duration: 0.32, ease: "back.out(1.8)" }, 31.48);
+tl.to("#q3-ico-0", { scale: 1, rotation: 0, duration: 0.36, ease: "back.out(2.4)" }, 31.54);
+tl.to("#q3-opt-1", { opacity: 1, x: 0, scale: 1, duration: 0.32, ease: "back.out(1.8)" }, 31.84);
+tl.to("#q3-ico-1", { scale: 1, rotation: 0, duration: 0.36, ease: "back.out(2.4)" }, 31.9);
+tl.to("#q3-opt-2", { opacity: 1, x: 0, scale: 1, duration: 0.32, ease: "back.out(1.8)" }, 32.2);
+tl.to("#q3-ico-2", { scale: 1, rotation: 0, duration: 0.36, ease: "back.out(2.4)" }, 32.26);
+tl.to("#q3-bar", { scaleX: 0, duration: 5, ease: "none" }, 38.591);
+tl.to("#q3-ring", { strokeDashoffset: 339.29, duration: 5, ease: "none" }, 38.591);
+tl.set("#q3-num", { textContent: "5" }, 38.591);
+tl.fromTo("#q3-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 38.591);
+tl.fromTo("#q3-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 38.591);
+tl.set("#q3-num", { textContent: "4" }, 39.591);
+tl.fromTo("#q3-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 39.591);
+tl.fromTo("#q3-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 39.591);
+tl.set("#q3-num", { textContent: "3" }, 40.591);
+tl.fromTo("#q3-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 40.591);
+tl.fromTo("#q3-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 40.591);
+tl.set("#q3-num", { textContent: "2" }, 41.591);
+tl.fromTo("#q3-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 41.591);
+tl.fromTo("#q3-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 41.591);
+tl.set("#q3-num", { textContent: "1" }, 42.591);
+tl.fromTo("#q3-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 42.591);
+tl.fromTo("#q3-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 42.591);
+tl.set("#q3-num", { textContent: "0" }, 43.591);
+tl.to("#q3-dial", { attr: { fill: "#4ade80" }, duration: 0.2 }, 43.591);
+tl.fromTo("#q3-clock", { scale: 1.28, rotation: -10 }, { scale: 1.05, rotation: 0, duration: 0.45, ease: "elastic.out(1.4, 0.3)", immediateRender: false }, 43.591);
+tl.fromTo("#q3-bells", { rotation: -22, transformOrigin: "50% 80%" }, { rotation: 22, duration: 0.07, yoyo: true, repeat: 7, ease: "sine.inOut", immediateRender: false }, 43.591);
+tl.to("#q3-opt-0", { opacity: 0.45, scale: 0.97, duration: 0.25 }, 43.591);
+tl.to("#q3-opt-1", { backgroundColor: "#4ade80", scale: 1.04, boxShadow: "0 14px 0 #0f172a, 0 0 40px rgba(74,222,128,0.85)", duration: 0.3, ease: "back.out(2)" }, 43.591);
+tl.to("#q3-ico-1", { scale: 1.18, rotation: 8, duration: 0.25, yoyo: true, repeat: 1 }, 43.591);
+tl.to("#q3-chk-1", { opacity: 1, scale: 1, duration: 0.28, ease: "back.out(2.5)" }, 43.64);
+tl.to("#q3-opt-2", { opacity: 0.45, scale: 0.97, duration: 0.25 }, 43.591);
+tl.to("#q3", { opacity: 0, x: -920, rotation: -4, duration: 0.28, ease: "power2.in" }, 46.1);
+tl.fromTo("#q4-wpt-0-0", { rotation: -18 }, { rotation: 28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-0-1", { rotation: 18 }, { rotation: -28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-0-2", { rotation: -18 }, { rotation: 28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-0-3", { rotation: 18 }, { rotation: -28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-0-4", { rotation: -18 }, { rotation: 28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-1-0", { rotation: 18 }, { rotation: -28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-1-1", { rotation: -18 }, { rotation: 28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-1-2", { rotation: 18 }, { rotation: -28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-1-3", { rotation: -18 }, { rotation: 28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-1-4", { rotation: 18 }, { rotation: -28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-2-0", { rotation: -18 }, { rotation: 28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-2-1", { rotation: 18 }, { rotation: -28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-2-2", { rotation: -18 }, { rotation: 28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-2-3", { rotation: 18 }, { rotation: -28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-2-4", { rotation: -18 }, { rotation: 28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-3-0", { rotation: 18 }, { rotation: -28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-3-1", { rotation: -18 }, { rotation: 28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-3-2", { rotation: 18 }, { rotation: -28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-3-3", { rotation: -18 }, { rotation: 28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-3-4", { rotation: 18 }, { rotation: -28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-4-0", { rotation: -18 }, { rotation: 28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-4-1", { rotation: 18 }, { rotation: -28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-4-2", { rotation: -18 }, { rotation: 28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-4-3", { rotation: 18 }, { rotation: -28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-4-4", { rotation: -18 }, { rotation: 28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-5-0", { rotation: 18 }, { rotation: -28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-5-1", { rotation: -18 }, { rotation: 28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-5-2", { rotation: 18 }, { rotation: -28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-5-3", { rotation: -18 }, { rotation: 28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-5-4", { rotation: 18 }, { rotation: -28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-6-0", { rotation: -18 }, { rotation: 28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-6-1", { rotation: 18 }, { rotation: -28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-6-2", { rotation: -18 }, { rotation: 28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-6-3", { rotation: 18 }, { rotation: -28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wpt-6-4", { rotation: -18 }, { rotation: 28, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.fromTo("#q4-wp", { x: 0, y: 0 }, { x: -160, y: -220, duration: 15.34, ease: "none", immediateRender: false }, 46.378);
+tl.to("#q4", { opacity: 1, x: 0, rotation: 0, scale: 1, duration: 0.34, ease: "back.out(1.2)" }, 46.378);
+tl.to("#q4-qbox", { opacity: 1, y: 0, scale: 1, duration: 0.38, ease: "back.out(1.7)" }, 46.46);
+tl.to("#q4-opt-0", { opacity: 1, x: 0, scale: 1, duration: 0.32, ease: "back.out(1.8)" }, 47.53);
+tl.to("#q4-ico-0", { scale: 1, rotation: 0, duration: 0.36, ease: "back.out(2.4)" }, 47.59);
+tl.to("#q4-opt-1", { opacity: 1, x: 0, scale: 1, duration: 0.32, ease: "back.out(1.8)" }, 47.89);
+tl.to("#q4-ico-1", { scale: 1, rotation: 0, duration: 0.36, ease: "back.out(2.4)" }, 47.95);
+tl.to("#q4-opt-2", { opacity: 1, x: 0, scale: 1, duration: 0.32, ease: "back.out(1.8)" }, 48.25);
+tl.to("#q4-ico-2", { scale: 1, rotation: 0, duration: 0.36, ease: "back.out(2.4)" }, 48.31);
+tl.to("#q4-bar", { scaleX: 0, duration: 5, ease: "none" }, 53.987);
+tl.to("#q4-ring", { strokeDashoffset: 339.29, duration: 5, ease: "none" }, 53.987);
+tl.set("#q4-num", { textContent: "5" }, 53.987);
+tl.fromTo("#q4-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 53.987);
+tl.fromTo("#q4-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 53.987);
+tl.set("#q4-num", { textContent: "4" }, 54.987);
+tl.fromTo("#q4-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 54.987);
+tl.fromTo("#q4-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 54.987);
+tl.set("#q4-num", { textContent: "3" }, 55.987);
+tl.fromTo("#q4-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 55.987);
+tl.fromTo("#q4-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 55.987);
+tl.set("#q4-num", { textContent: "2" }, 56.987);
+tl.fromTo("#q4-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 56.987);
+tl.fromTo("#q4-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 56.987);
+tl.set("#q4-num", { textContent: "1" }, 57.987);
+tl.fromTo("#q4-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 57.987);
+tl.fromTo("#q4-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 57.987);
+tl.set("#q4-num", { textContent: "0" }, 58.987);
+tl.to("#q4-dial", { attr: { fill: "#4ade80" }, duration: 0.2 }, 58.987);
+tl.fromTo("#q4-clock", { scale: 1.28, rotation: -10 }, { scale: 1.05, rotation: 0, duration: 0.45, ease: "elastic.out(1.4, 0.3)", immediateRender: false }, 58.987);
+tl.fromTo("#q4-bells", { rotation: -22, transformOrigin: "50% 80%" }, { rotation: 22, duration: 0.07, yoyo: true, repeat: 7, ease: "sine.inOut", immediateRender: false }, 58.987);
+tl.to("#q4-opt-0", { opacity: 0.45, scale: 0.97, duration: 0.25 }, 58.987);
+tl.to("#q4-opt-1", { backgroundColor: "#4ade80", scale: 1.04, boxShadow: "0 14px 0 #0f172a, 0 0 40px rgba(74,222,128,0.85)", duration: 0.3, ease: "back.out(2)" }, 58.987);
+tl.to("#q4-ico-1", { scale: 1.18, rotation: 8, duration: 0.25, yoyo: true, repeat: 1 }, 58.987);
+tl.to("#q4-chk-1", { opacity: 1, scale: 1, duration: 0.28, ease: "back.out(2.5)" }, 59.04);
+tl.to("#q4-opt-2", { opacity: 0.45, scale: 0.97, duration: 0.25 }, 58.987);
+tl.to("#q4", { opacity: 0, x: -920, rotation: -4, duration: 0.28, ease: "power2.in" }, 61.44);
+tl.fromTo("#q5-wpt-0-0", { rotation: -18 }, { rotation: 28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-0-1", { rotation: 18 }, { rotation: -28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-0-2", { rotation: -18 }, { rotation: 28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-0-3", { rotation: 18 }, { rotation: -28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-0-4", { rotation: -18 }, { rotation: 28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-1-0", { rotation: 18 }, { rotation: -28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-1-1", { rotation: -18 }, { rotation: 28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-1-2", { rotation: 18 }, { rotation: -28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-1-3", { rotation: -18 }, { rotation: 28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-1-4", { rotation: 18 }, { rotation: -28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-2-0", { rotation: -18 }, { rotation: 28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-2-1", { rotation: 18 }, { rotation: -28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-2-2", { rotation: -18 }, { rotation: 28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-2-3", { rotation: 18 }, { rotation: -28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-2-4", { rotation: -18 }, { rotation: 28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-3-0", { rotation: 18 }, { rotation: -28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-3-1", { rotation: -18 }, { rotation: 28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-3-2", { rotation: 18 }, { rotation: -28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-3-3", { rotation: -18 }, { rotation: 28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-3-4", { rotation: 18 }, { rotation: -28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-4-0", { rotation: -18 }, { rotation: 28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-4-1", { rotation: 18 }, { rotation: -28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-4-2", { rotation: -18 }, { rotation: 28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-4-3", { rotation: 18 }, { rotation: -28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-4-4", { rotation: -18 }, { rotation: 28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-5-0", { rotation: 18 }, { rotation: -28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-5-1", { rotation: -18 }, { rotation: 28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-5-2", { rotation: 18 }, { rotation: -28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-5-3", { rotation: -18 }, { rotation: 28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-5-4", { rotation: 18 }, { rotation: -28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-6-0", { rotation: -18 }, { rotation: 28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-6-1", { rotation: 18 }, { rotation: -28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-6-2", { rotation: -18 }, { rotation: 28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-6-3", { rotation: 18 }, { rotation: -28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wpt-6-4", { rotation: -18 }, { rotation: 28, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.fromTo("#q5-wp", { x: 0, y: 0 }, { x: -160, y: -220, duration: 16.88, ease: "none", immediateRender: false }, 61.719);
+tl.to("#q5", { opacity: 1, x: 0, rotation: 0, scale: 1, duration: 0.34, ease: "back.out(1.2)" }, 61.719);
+tl.to("#q5-qbox", { opacity: 1, y: 0, scale: 1, duration: 0.38, ease: "back.out(1.7)" }, 61.8);
+tl.to("#q5-opt-0", { opacity: 1, x: 0, scale: 1, duration: 0.32, ease: "back.out(1.8)" }, 62.87);
+tl.to("#q5-ico-0", { scale: 1, rotation: 0, duration: 0.36, ease: "back.out(2.4)" }, 62.93);
+tl.to("#q5-opt-1", { opacity: 1, x: 0, scale: 1, duration: 0.32, ease: "back.out(1.8)" }, 63.23);
+tl.to("#q5-ico-1", { scale: 1, rotation: 0, duration: 0.36, ease: "back.out(2.4)" }, 63.29);
+tl.to("#q5-opt-2", { opacity: 1, x: 0, scale: 1, duration: 0.32, ease: "back.out(1.8)" }, 63.59);
+tl.to("#q5-ico-2", { scale: 1, rotation: 0, duration: 0.36, ease: "back.out(2.4)" }, 63.65);
+tl.to("#q5-bar", { scaleX: 0, duration: 5, ease: "none" }, 70.789);
+tl.to("#q5-ring", { strokeDashoffset: 339.29, duration: 5, ease: "none" }, 70.789);
+tl.set("#q5-num", { textContent: "5" }, 70.789);
+tl.fromTo("#q5-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 70.789);
+tl.fromTo("#q5-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 70.789);
+tl.set("#q5-num", { textContent: "4" }, 71.789);
+tl.fromTo("#q5-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 71.789);
+tl.fromTo("#q5-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 71.789);
+tl.set("#q5-num", { textContent: "3" }, 72.789);
+tl.fromTo("#q5-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 72.789);
+tl.fromTo("#q5-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 72.789);
+tl.set("#q5-num", { textContent: "2" }, 73.789);
+tl.fromTo("#q5-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 73.789);
+tl.fromTo("#q5-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 73.789);
+tl.set("#q5-num", { textContent: "1" }, 74.789);
+tl.fromTo("#q5-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 74.789);
+tl.fromTo("#q5-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 74.789);
+tl.set("#q5-num", { textContent: "0" }, 75.789);
+tl.to("#q5-dial", { attr: { fill: "#4ade80" }, duration: 0.2 }, 75.789);
+tl.fromTo("#q5-clock", { scale: 1.28, rotation: -10 }, { scale: 1.05, rotation: 0, duration: 0.45, ease: "elastic.out(1.4, 0.3)", immediateRender: false }, 75.789);
+tl.fromTo("#q5-bells", { rotation: -22, transformOrigin: "50% 80%" }, { rotation: 22, duration: 0.07, yoyo: true, repeat: 7, ease: "sine.inOut", immediateRender: false }, 75.789);
+tl.to("#q5-opt-0", { opacity: 0.45, scale: 0.97, duration: 0.25 }, 75.789);
+tl.to("#q5-opt-1", { opacity: 0.45, scale: 0.97, duration: 0.25 }, 75.789);
+tl.to("#q5-opt-2", { backgroundColor: "#4ade80", scale: 1.04, boxShadow: "0 14px 0 #0f172a, 0 0 40px rgba(74,222,128,0.85)", duration: 0.3, ease: "back.out(2)" }, 75.789);
+tl.to("#q5-ico-2", { scale: 1.18, rotation: 8, duration: 0.25, yoyo: true, repeat: 1 }, 75.789);
+tl.to("#q5-chk-2", { opacity: 1, scale: 1, duration: 0.28, ease: "back.out(2.5)" }, 75.84);
+tl.to("#q5", { opacity: 0, x: -920, rotation: -4, duration: 0.28, ease: "power2.in" }, 78.32);
+tl.fromTo("#q6-wpt-0-0", { rotation: -18 }, { rotation: 28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-0-1", { rotation: 18 }, { rotation: -28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-0-2", { rotation: -18 }, { rotation: 28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-0-3", { rotation: 18 }, { rotation: -28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-0-4", { rotation: -18 }, { rotation: 28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-1-0", { rotation: 18 }, { rotation: -28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-1-1", { rotation: -18 }, { rotation: 28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-1-2", { rotation: 18 }, { rotation: -28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-1-3", { rotation: -18 }, { rotation: 28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-1-4", { rotation: 18 }, { rotation: -28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-2-0", { rotation: -18 }, { rotation: 28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-2-1", { rotation: 18 }, { rotation: -28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-2-2", { rotation: -18 }, { rotation: 28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-2-3", { rotation: 18 }, { rotation: -28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-2-4", { rotation: -18 }, { rotation: 28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-3-0", { rotation: 18 }, { rotation: -28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-3-1", { rotation: -18 }, { rotation: 28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-3-2", { rotation: 18 }, { rotation: -28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-3-3", { rotation: -18 }, { rotation: 28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-3-4", { rotation: 18 }, { rotation: -28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-4-0", { rotation: -18 }, { rotation: 28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-4-1", { rotation: 18 }, { rotation: -28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-4-2", { rotation: -18 }, { rotation: 28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-4-3", { rotation: 18 }, { rotation: -28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-4-4", { rotation: -18 }, { rotation: 28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-5-0", { rotation: 18 }, { rotation: -28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-5-1", { rotation: -18 }, { rotation: 28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-5-2", { rotation: 18 }, { rotation: -28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-5-3", { rotation: -18 }, { rotation: 28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-5-4", { rotation: 18 }, { rotation: -28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-6-0", { rotation: -18 }, { rotation: 28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-6-1", { rotation: 18 }, { rotation: -28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-6-2", { rotation: -18 }, { rotation: 28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-6-3", { rotation: 18 }, { rotation: -28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wpt-6-4", { rotation: -18 }, { rotation: 28, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.fromTo("#q6-wp", { x: 0, y: 0 }, { x: -160, y: -220, duration: 15.93, ease: "none", immediateRender: false }, 78.599);
+tl.to("#q6", { opacity: 1, x: 0, rotation: 0, scale: 1, duration: 0.34, ease: "back.out(1.2)" }, 78.599);
+tl.to("#q6-qbox", { opacity: 1, y: 0, scale: 1, duration: 0.38, ease: "back.out(1.7)" }, 78.68);
+tl.to("#q6-opt-0", { opacity: 1, x: 0, scale: 1, duration: 0.32, ease: "back.out(1.8)" }, 79.75);
+tl.to("#q6-ico-0", { scale: 1, rotation: 0, duration: 0.36, ease: "back.out(2.4)" }, 79.81);
+tl.to("#q6-opt-1", { opacity: 1, x: 0, scale: 1, duration: 0.32, ease: "back.out(1.8)" }, 80.11);
+tl.to("#q6-ico-1", { scale: 1, rotation: 0, duration: 0.36, ease: "back.out(2.4)" }, 80.17);
+tl.to("#q6-opt-2", { opacity: 1, x: 0, scale: 1, duration: 0.32, ease: "back.out(1.8)" }, 80.47);
+tl.to("#q6-ico-2", { scale: 1, rotation: 0, duration: 0.36, ease: "back.out(2.4)" }, 80.53);
+tl.to("#q6-bar", { scaleX: 0, duration: 5, ease: "none" }, 86.535);
+tl.to("#q6-ring", { strokeDashoffset: 339.29, duration: 5, ease: "none" }, 86.535);
+tl.set("#q6-num", { textContent: "5" }, 86.535);
+tl.fromTo("#q6-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 86.535);
+tl.fromTo("#q6-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 86.535);
+tl.set("#q6-num", { textContent: "4" }, 87.535);
+tl.fromTo("#q6-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 87.535);
+tl.fromTo("#q6-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 87.535);
+tl.set("#q6-num", { textContent: "3" }, 88.535);
+tl.fromTo("#q6-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 88.535);
+tl.fromTo("#q6-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 88.535);
+tl.set("#q6-num", { textContent: "2" }, 89.535);
+tl.fromTo("#q6-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 89.535);
+tl.fromTo("#q6-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 89.535);
+tl.set("#q6-num", { textContent: "1" }, 90.535);
+tl.fromTo("#q6-clock", { scale: 1.22, rotation: -6 }, { scale: 1, rotation: 0, duration: 0.28, ease: "elastic.out(1.2, 0.5)", immediateRender: false }, 90.535);
+tl.fromTo("#q6-bells", { rotation: -14, transformOrigin: "50% 80%" }, { rotation: 0, duration: 0.26, ease: "elastic.out(1.5, 0.3)", immediateRender: false }, 90.535);
+tl.set("#q6-num", { textContent: "0" }, 91.535);
+tl.to("#q6-dial", { attr: { fill: "#4ade80" }, duration: 0.2 }, 91.535);
+tl.fromTo("#q6-clock", { scale: 1.28, rotation: -10 }, { scale: 1.05, rotation: 0, duration: 0.45, ease: "elastic.out(1.4, 0.3)", immediateRender: false }, 91.535);
+tl.fromTo("#q6-bells", { rotation: -22, transformOrigin: "50% 80%" }, { rotation: 22, duration: 0.07, yoyo: true, repeat: 7, ease: "sine.inOut", immediateRender: false }, 91.535);
+tl.to("#q6-opt-0", { opacity: 0.45, scale: 0.97, duration: 0.25 }, 91.535);
+tl.to("#q6-opt-1", { backgroundColor: "#4ade80", scale: 1.04, boxShadow: "0 14px 0 #0f172a, 0 0 40px rgba(74,222,128,0.85)", duration: 0.3, ease: "back.out(2)" }, 91.535);
+tl.to("#q6-ico-1", { scale: 1.18, rotation: 8, duration: 0.25, yoyo: true, repeat: 1 }, 91.535);
+tl.to("#q6-chk-1", { opacity: 1, scale: 1, duration: 0.28, ease: "back.out(2.5)" }, 91.58);
+tl.to("#q6-opt-2", { opacity: 0.45, scale: 0.97, duration: 0.25 }, 91.535);
+tl.to("#q6", { opacity: 0, x: -920, rotation: -4, duration: 0.28, ease: "power2.in" }, 94.25);
+tl.to("#outro", { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.6)" }, 94.527);
+tl.to("#outro-cta", { scale: 1.07, duration: 0.4, yoyo: true, repeat: 6, ease: "sine.inOut" }, 95.027);
+tl.set({}, {}, 100.27);
 window.__timelines = { main: tl };
 </script>
 </body>

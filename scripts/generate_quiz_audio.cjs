@@ -50,6 +50,9 @@ if (inputQuizFile && fs.existsSync(inputQuizFile)) {
           opts,
           ans,
           category: item.category || undefined,
+          bgTheme: item.bgTheme || undefined,
+          bgSvg: item.bgSvg || undefined,
+          optSvgs: Array.isArray(item.optSvgs) ? item.optSvgs : undefined,
         };
       });
     }
@@ -201,6 +204,9 @@ async function main() {
     roundsData.push({
       round: qIdx + 1,
       category: item.category || undefined,
+      bgTheme: item.bgTheme || undefined,
+      bgSvg: item.bgSvg || undefined,
+      optSvgs: item.optSvgs || undefined,
       question: item.q,
       options: item.opts,
       answer: item.ans,

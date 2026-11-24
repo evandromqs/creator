@@ -67,67 +67,83 @@ const outTimingsFinal = process.argv[4] || path.join(ROOT, "transcript", "quiz-t
 const tickSfx = path.join(ROOT, "assets", "sfx", "tic-tac.mp3");
 const trimSfx = path.join(ROOT, "assets", "sfx", "trim_alarm.mp3");
 
-async function synthChunk(tts, text, outMp3) {
-  const { audioStream, metadataStream } = tts.toStream(text, { rate: 0.9 });
-  const chunks = [];
-  const words = [];
+async function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
-  audioStream.on("data", (d) => chunks.push(d));
-  if (metadataStream) {
-    metadataStream.on("data", (buf) => {
-      try {
-        const msg = JSON.parse(buf.toString("utf-8"));
-        const items = msg.Metadata || (Array.isArray(msg) ? msg : [msg]);
-        for (const item of items) {
-          if (item.Type === "WordBoundary" && item.Data?.text?.Text) {
-            const start = Number((item.Data.Offset / 1e7).toFixed(3));
-            const dur = Number((item.Data.Duration / 1e7).toFixed(3));
-            words.push({ word: item.Data.text.Text, start, end: Number((start + dur).toFixed(3)) });
-          }
-        }
-      } catch {}
-    });
+async function synthChunkWithRetry(ttsFactory, text, outMp3, maxRetries = 4) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const tts = await ttsFactory();
+      const { audioStream, metadataStream } = tts.toStream(text, { rate: 0.9 });
+      const chunks = [];
+      const words = [];
+
+      audioStream.on("data", (d) => chunks.push(d));
+      if (metadataStream) {
+        metadataStream.on("data", (buf) => {
+          try {
+            const msg = JSON.parse(buf.toString("utf-8"));
+            const items = msg.Metadata || (Array.isArray(msg) ? msg : [msg]);
+            for (const item of items) {
+              if (item.Type === "WordBoundary" && item.Data?.text?.Text) {
+                const start = Number((item.Data.Offset / 1e7).toFixed(3));
+                const dur = Number((item.Data.Duration / 1e7).toFixed(3));
+                words.push({ word: item.Data.text.Text, start, end: Number((start + dur).toFixed(3)) });
+              }
+            }
+          } catch {}
+        });
+      }
+
+      await new Promise((resolve, reject) => {
+        audioStream.on("end", resolve);
+        audioStream.on("error", reject);
+      });
+
+      const rawMp3 = outMp3 + ".raw.mp3";
+      fs.writeFileSync(rawMp3, Buffer.concat(chunks));
+      execFileSync(
+        FFMPEG,
+        [
+          "-y",
+          "-i",
+          rawMp3,
+          "-af",
+          "silenceremove=start_periods=1:start_silence=0.02:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_silence=0.02:start_threshold=-45dB,areverse",
+          "-b:a",
+          "96k",
+          outMp3,
+        ],
+        { stdio: "ignore" }
+      );
+      fs.rmSync(rawMp3, { force: true });
+
+      const durStr = execFileSync(
+        FFPROBE,
+        ["-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", outMp3],
+        { encoding: "utf-8" }
+      ).trim();
+      return { duration: parseFloat(durStr), words };
+    } catch (err) {
+      console.warn(`[TTS] Falha na síntese tentativa ${attempt}/${maxRetries} ("${text.slice(0, 30)}..."): ${err.message}`);
+      if (attempt === maxRetries) throw err;
+      await sleep(1500 * attempt);
+    }
   }
-
-  await new Promise((resolve, reject) => {
-    audioStream.on("end", resolve);
-    audioStream.on("error", reject);
-  });
-
-  const rawMp3 = outMp3 + ".raw.mp3";
-  fs.writeFileSync(rawMp3, Buffer.concat(chunks));
-  execFileSync(
-    FFMPEG,
-    [
-      "-y",
-      "-i",
-      rawMp3,
-      "-af",
-      "silenceremove=start_periods=1:start_silence=0.02:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_silence=0.02:start_threshold=-45dB,areverse",
-      "-b:a",
-      "96k",
-      outMp3,
-    ],
-    { stdio: "ignore" }
-  );
-  fs.rmSync(rawMp3, { force: true });
-
-  const durStr = execFileSync(
-    FFPROBE,
-    ["-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", outMp3],
-    { encoding: "utf-8" }
-  ).trim();
-  return { duration: parseFloat(durStr), words };
 }
 
 async function main() {
   const tmpDir = path.join(ROOT, "audio", "_tmp_quiz_build");
   fs.mkdirSync(tmpDir, { recursive: true });
 
-  const tts = new MsEdgeTTS();
-  await tts.setMetadata("pt-BR-FranciscaNeural", OUTPUT_FORMAT.AUDIO_24KHZ_96KBITRATE_MONO_MP3, {
-    wordBoundaryEnabled: true,
-  });
+  const getTts = async () => {
+    const tts = new MsEdgeTTS();
+    await tts.setMetadata("pt-BR-FranciscaNeural", OUTPUT_FORMAT.AUDIO_24KHZ_96KBITRATE_MONO_MP3, {
+      wordBoundaryEnabled: true,
+    });
+    return tts;
+  };
 
   // Gera arquivos de silêncio para pausas calibradas
   const silMap = {};
@@ -155,7 +171,8 @@ async function main() {
 
     // 1. Pergunta
     const qFile = path.join(tmpDir, `seg_${segIndex++}.mp3`);
-    const qInfo = await synthChunk(tts, item.q, qFile);
+    const qInfo = await synthChunkWithRetry(getTts, item.q, qFile);
+    await sleep(200);
     listLines.push(`file '${qFile.replace(/\\/g, "/")}'`);
     cursor += qInfo.duration;
     listLines.push(`file '${silMap[0.35].replace(/\\/g, "/")}'`);
@@ -168,7 +185,8 @@ async function main() {
 
       // Letra A / B / C
       const letFile = path.join(tmpDir, `seg_${segIndex++}.mp3`);
-      const letInfo = await synthChunk(tts, `${letChar}:`, letFile);
+      const letInfo = await synthChunkWithRetry(getTts, `${letChar}:`, letFile);
+      await sleep(150);
       listLines.push(`file '${letFile.replace(/\\/g, "/")}'`);
       cursor += letInfo.duration;
       listLines.push(`file '${silMap[0.2].replace(/\\/g, "/")}'`);
@@ -176,7 +194,8 @@ async function main() {
 
       // Opção com interrogação
       const optFile = path.join(tmpDir, `seg_${segIndex++}.mp3`);
-      const optInfo = await synthChunk(tts, `${optText}?`, optFile);
+      const optInfo = await synthChunkWithRetry(getTts, `${optText}?`, optFile);
+      await sleep(150);
       listLines.push(`file '${optFile.replace(/\\/g, "/")}'`);
       cursor += optInfo.duration;
       const pauseOpt = oIdx < 2 ? 0.3 : 0.45;
@@ -194,7 +213,8 @@ async function main() {
     // 4. Resposta e Revelação
     const revealTime = Number(cursor.toFixed(3));
     const ansFile = path.join(tmpDir, `seg_${segIndex++}.mp3`);
-    const ansInfo = await synthChunk(tts, `Resposta certa: ${item.ans}!`, ansFile);
+    const ansInfo = await synthChunkWithRetry(getTts, `Resposta certa: ${item.ans}!`, ansFile);
+    await sleep(250);
     listLines.push(`file '${ansFile.replace(/\\/g, "/")}'`);
     cursor += ansInfo.duration;
     listLines.push(`file '${silMap[0.9].replace(/\\/g, "/")}'`);
@@ -220,8 +240,8 @@ async function main() {
   // 5. Outro / Chamada para ação
   const outroStart = Number(cursor.toFixed(3));
   const outroFile = path.join(tmpDir, `seg_${segIndex++}.mp3`);
-  const outroInfo = await synthChunk(
-    tts,
+  const outroInfo = await synthChunkWithRetry(
+    getTts,
     "Qual foi a mais difícil? Comente sua nota aqui embaixo e siga o canal para mais desafios!",
     outroFile
   );
@@ -241,8 +261,6 @@ async function main() {
 
   console.log(`Voz base gerada (${totalDur}s). Mixando SFX (tic-tac contínuo e trim_alarm)...`);
 
-  // Monta o filtro de mixagem do FFmpeg para tocar tic-tac.mp3 em loop durante toda a contagem 5..1
-  // e disparar trim_alarm.mp3 no instante exato da revelação
   const hasTick = fs.existsSync(tickSfx);
   const hasTrim = fs.existsSync(trimSfx);
   const swooshSfx = path.join(ROOT, "assets", "sfx", "swoosh.mp3");
@@ -334,7 +352,6 @@ async function main() {
       { stdio: "ignore" }
     );
   } else {
-    // Caso faltem SFX, copia a voz diretamente
     fs.mkdirSync(path.dirname(outMp3Final), { recursive: true });
     fs.copyFileSync(voiceMp3, outMp3Final);
   }
